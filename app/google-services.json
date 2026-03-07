@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "961262926327",
+    "project_id": "organivy-e7f04",
+    "storage_bucket": "organivy-e7f04.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961262926327:android:e231fec93584f8bc9196f2",
+        "android_client_info": {
+          "package_name": "com.example.organivy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961262926327-3p2ur6d7iohdrajf5csaq2mjg41jsl93.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.organivy",
+            "certificate_hash": "88e1a25179eeca3f7031ec4abf3c4181ccadba14"
+          }
+        },
+        {
+          "client_id": "961262926327-3daqjfjlt7jqhd2aj6id6cbf5hp0dsnn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4lc3ir9mDxpYs11UL8R12E4AO8T_vlwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961262926327-3daqjfjlt7jqhd2aj6id6cbf5hp0dsnn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
