@@ -109,6 +109,7 @@ val surfaceContainerLightHighContrast = Color(0xFFDEE4DF)
 val surfaceContainerHighLightHighContrast = Color(0xFFD0D6D1)
 val surfaceContainerHighestLightHighContrast = Color(0xFFC2C8C3)
 
+// dark starts there
 val primaryDark = Color(0xFF90D5AD)
 val onPrimaryDark = Color(0xFF003822)
 val primaryContainerDark = Color(0xFF015234)
@@ -217,6 +218,7 @@ val surfaceContainerDarkHighContrast = Color(0xFF2C322F)
 val surfaceContainerHighDarkHighContrast = Color(0xFF373D39)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF424845)
 
+// light again???
 val textLight = Color(0xFF326941)
 val onTextLight = Color(0xFFFFFFFF)
 val textContainerLight = Color(0xFFB4F1BE)
@@ -232,6 +234,7 @@ val onTextLightHighContrast = Color(0xFFFFFFFF)
 val textContainerLightHighContrast = Color(0xFF1A532D)
 val onTextContainerLightHighContrast = Color(0xFFFFFFFF)
 
+// dark text colours
 val textDark = Color(0xFF99D4A3)
 val onTextDark = Color(0xFF003918)
 val textContainerDark = Color(0xFF17512B)
@@ -247,11 +250,13 @@ val onTextDarkHighContrast = Color(0xFF000000)
 val textContainerDarkHighContrast = Color(0xFF95D09F)
 val onTextContainerDarkHighContrast = Color(0xFF000F04)
 
+//light
 val customTextLight = Color(0xFF145D30)
 val onCustomTextLight = Color(0xFFFFFFFF)
 val customTextContainerLight = Color(0xFFACF2C8)
 val onCustomTextContainerLight = Color(0xFF00210E)
 
+//dark
 val customTextDark = Color(0xFF90D5AD)
 val onCustomTextDark = Color(0xFF00391C)
 val customTextContainerDark = Color(0xFF00522C)
