@@ -27,6 +27,8 @@ class PhotoScanner (private val context: Context) {
             MediaStore.Images.Media.WIDTH
         ) + arrayOf(
             MediaStore.Images.Media.HEIGHT
+        ) + arrayOf (
+            MediaStore.Images.Media._ID
         )
 
         val sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC"
@@ -66,6 +68,9 @@ class PhotoScanner (private val context: Context) {
             val heightIndex = cursorObject.getColumnIndexOrThrow(
                 MediaStore.Images.Media.HEIGHT
             )
+            val idIndex = cursorObject. getColumnIndexOrThrow(
+                MediaStore.Images.Media._ID
+            )
 
             while (cursorObject.moveToNext()) {
                 // where i take it from
@@ -78,6 +83,8 @@ class PhotoScanner (private val context: Context) {
                 val imageDAdded = cursorObject.getLong(dAddedIndex)
                 val imageWidth = cursorObject.getInt(widthIndex)
                 val imageHeight = cursorObject.getInt(heightIndex)
+                val imageId = cursorObject.getLong(idIndex)
+
 
                 val photo = Photo(
                     name = imageName,
@@ -86,7 +93,8 @@ class PhotoScanner (private val context: Context) {
                     dateTaken = cursorObject.getLong(dTakenIndex),
                     dateAdded = cursorObject.getLong(dAddedIndex),
                     width = imageWidth,
-                    height = imageHeight
+                    height = imageHeight,
+                    id = imageId
                 )
 
                 photoList.add(photo)

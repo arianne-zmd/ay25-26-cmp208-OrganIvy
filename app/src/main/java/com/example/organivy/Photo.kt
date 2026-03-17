@@ -7,5 +7,6 @@ data class Photo(
     val dateTaken: Long,
     val dateAdded: Long,
     val width: Int,
-    val height: Int
+    val height: Int,
+    val id: Long
 )
