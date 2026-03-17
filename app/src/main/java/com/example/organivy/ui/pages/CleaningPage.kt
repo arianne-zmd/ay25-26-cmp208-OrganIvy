@@ -8,14 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,14 +29,12 @@ import com.google.common.math.LinearTransformation.horizontal
 
 
 @Composable
-fun CleaningPage(onNavigateToProfile: () -> Unit) {
-    /*Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Cleaning Page")
-    } */
+fun CleaningPage(onNavigateToProfile: () -> Unit,
+                 onNavigateToCamera: () -> Unit,
+                 onNavigateToDownloads: () -> Unit,
+                 onNavigateToScreenshots: () -> Unit,
+                 onNavigateToWhatsappImages: () -> Unit) {
+
 
     //code in here
     LazyColumn(
@@ -105,7 +106,59 @@ fun CleaningPage(onNavigateToProfile: () -> Unit) {
             )
         }
 
-        item { Spacer(modifier = Modifier.height(110.dp)) }
+        val catergories = listOf(
+            "Camera   " to onNavigateToCamera,
+            "Screenshots" to onNavigateToScreenshots,
+            "Downloads" to onNavigateToDownloads,
+            "WhatsApp Images" to onNavigateToWhatsappImages)
+        val temp2 = listOf("bat", "ball", "cap", "glove", "shoe")
+        item {
+            LazyRow(
+                modifier = Modifier
+                    .padding(10.dp, 20.dp,)
+                    .height(130.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+
+            ) {
+                itemsIndexed(catergories ) { index, (name,action) ->
+
+                    Column(
+                        modifier = Modifier
+                            .padding(0.dp, 0.dp)
+                            .height(120.dp)
+
+                    ) {
+
+                        Card(
+                            modifier = Modifier,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 5.dp
+                            ),
+                        ) {
+
+                            TextButton(onClick = action) {
+                                Text(name, Modifier.padding(15.dp))
+                            }
+
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(
+                            text = "no. of photos: "+ temp2[index],
+                            fontSize = 15.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+
+                } // <-- end of types
+            }
+        }
 
         item {
             Text(
@@ -115,91 +168,74 @@ fun CleaningPage(onNavigateToProfile: () -> Unit) {
             )
         }
 
+        val storageTypes = listOf("Old Images", "Large Images", "Blurry Images", "Duplicated Images")
+        val temp = listOf("bat", "ball", "cap", "glove")
+        item {
+            LazyRow(
+                modifier = Modifier
+                    .padding(10.dp, 20.dp)
+                    .height(130.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
 
-    }
+            ) {
+
+                itemsIndexed(storageTypes, ) { index, name ->
+
+                    Column(
+                        modifier = Modifier
+                            .padding(0.dp, 0.dp)
+                            .height(120.dp)
+
+                    ) {
+
+                        Card(
+                            modifier = Modifier,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 5.dp
+                            ),
+                        ) {
+                            Text(name, Modifier.padding(15.dp))
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(
+                            text = "no. of photos: "+ temp[index],
+                            fontSize = 15.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+
+                } // <-- end of types
 
 
 
 
 
-
-
-
-    val types = listOf("Camera", "Screenshots", "Downloads", "WhatsApp Images")
-    LazyRow (
-        modifier = Modifier
-            .padding(20.dp, 410.dp, 20.dp, 30.dp)
-            .height(100.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-
-    ) {
-        items(types) { type ->
-
-             Card(
-                 modifier = Modifier,
-                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ), elevation = CardDefaults.cardElevation(
-                    defaultElevation = 5.dp
-                ),){
-                Text(type, Modifier.padding(15.dp))
             }
-            //item ends here
+
         }
-    }
 
-    val storageTypes = listOf("Old Images", "Large Images", "Blurry Images", "Duplicated Images")
-    LazyRow (
-        modifier = Modifier
-            .padding(20.dp, 550.dp, 20.dp, 30.dp)
-            .height(100.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
 
-    ) {
-        items(storageTypes) { type ->
 
-            Card(
-                modifier = Modifier,
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ), elevation = CardDefaults.cardElevation(
-                    defaultElevation = 5.dp
-                ),){
-                Text(type, Modifier.padding(15.dp))
-            }
-            //item ends here
-        }
+
     }
 
 
-/*
-    Card(
-        //modifier = Modifier
-        //    .padding(5.dp)
-        //    .wrapContentHeight(),
-        modifier = Modifier
-            //.padding(200.dp,350.dp)
-            .padding(210.dp, 400.dp, 20.dp, 30.dp)
-            .size(200.dp),
-
-
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
 
 
 
-        ){
-        Text(text = "Facts Learned", Modifier.padding(20.dp))
 
-    } */
+
+
+
+
+
 
 
     // end on cleaning page
@@ -209,5 +245,5 @@ fun CleaningPage(onNavigateToProfile: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewCleaningPage() {
-    CleaningPage(onNavigateToProfile = {})
+    CleaningPage(onNavigateToProfile = {}, onNavigateToCamera = {} , onNavigateToDownloads = {}, onNavigateToScreenshots = {}, onNavigateToWhatsappImages = {})
 }
