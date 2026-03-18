@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- For 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- For 12- -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -25,9 +31,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Was giving an error and i didn't know what to do with it
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
+        -->
+
 
     </application>
 

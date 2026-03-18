@@ -20,11 +20,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.MainActivity
+import com.example.organivy.data.PhotoScanner
 import com.google.common.math.LinearTransformation.horizontal
 
 
@@ -35,6 +41,12 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
                  onNavigateToScreenshots: () -> Unit,
                  onNavigateToWhatsappImages: () -> Unit) {
 
+
+
+//    val large by remember { mutableStateOf(MainActivity.PhotoStats.largePhotos) }
+//    val old by remember { mutableStateOf(MainActivity.PhotoStats.oldPhotos) }
+//    val duplicates by remember { mutableStateOf(MainActivity.PhotoStats.duplicateGroups) }
+//    val blurry by remember { mutableStateOf(MainActivity.PhotoStats.blurryPhotos) }
 
     //code in here
     LazyColumn(
@@ -168,8 +180,14 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
             )
         }
 
+
         val storageTypes = listOf("Old Images", "Large Images", "Blurry Images", "Duplicated Images")
-        val temp = listOf("bat", "ball", "cap", "glove")
+        val temp = listOf("${MainActivity.PhotoStats.oldPhotos}", "${MainActivity.PhotoStats.largePhotos}", "${MainActivity.PhotoStats.blurryPhotos}", "${MainActivity.PhotoStats.duplicateGroups}")
+
+//        android.util.Log.d("PHOTO_TEST", "Large photos: ${MainActivity.PhotoStats.largePhotos}")
+//        android.util.Log.d("PHOTO_TEST", "Old photos: ${MainActivity.PhotoStats.oldPhotos}")
+//        android.util.Log.d("PHOTO_TEST", "Duplicate groups: ${MainActivity.PhotoStats.duplicateGroups}")
+//        android.util.Log.d("PHOTO_TEST", "Blurry photos: ${MainActivity.PhotoStats.blurryPhotos}")
         item {
             LazyRow(
                 modifier = Modifier
