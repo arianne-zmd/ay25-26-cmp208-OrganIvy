@@ -4,19 +4,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -29,8 +26,9 @@ import com.example.organivy.ui.pages.HomeScreen
 import com.example.organivy.ui.pages.ShopScreen
 import com.example.organivy.ui.pages.CleaningPage
 import com.example.organivy.ui.pages.GardenScreen
-import com.example.organivy.ui.pages.StatsandImpactPage
 import com.example.organivy.ui.pages.SettingsScreen
+import com.example.organivy.ui.pages.BadgePage
+import com.example.organivy.ui.pages.StatsandImpactPage
 import com.example.organivy.ui.subpages.cleaning.CameraSubscreen
 import com.example.organivy.ui.subpages.cleaning.DownloadsSubscreen
 import com.example.organivy.ui.subpages.cleaning.ScreenshotsSubscreen
@@ -53,14 +51,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
         val requestPermissionLauncher =
             registerForActivityResult(
                 androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
                 if (isGranted) {
-
                     lifecycleScope.launch(Dispatchers.IO) {
                         val scanner = PhotoScanner(this@MainActivity)
                         val photo = scanner.logScanImages()
@@ -89,38 +84,30 @@ class MainActivity : ComponentActivity() {
                             android.util.Log.d("PHOTO_TEST", "Duplicate groups: ${duplicatedPics.size}")
                             android.util.Log.d("PHOTO_TEST", "Blurry photos: ${blurryPics.size}")
 
-
-//
-//                            PhotoStats.totalPhotos = photo.size
-//                            PhotoStats.largePhotos = largePics.size
-//                            PhotoStats.oldPhotos = oldPics.size
-//                            PhotoStats.duplicateGroups = duplicatedPics.size
-//                            PhotoStats.blurryPhotos = blurryPics.size
+                            PhotoStats.totalPhotos = photo.size
+                            PhotoStats.largePhotos = largePics.size
+                            PhotoStats.oldPhotos = oldPics.size
+                            PhotoStats.duplicateGroups = duplicatedPics.size
+                            PhotoStats.blurryPhotos = blurryPics.size
                         }
                     }
-                }else {
+                } else {
                     // permission denied
                     Toast.makeText(this, "Permission required to access photos", Toast.LENGTH_SHORT).show()
                 }
             }
-        // ENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 
-
-        // INSIDE ON CREATE B4 SET CONTENT
+        // Request permissions
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
         } else {
             requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-        // ENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-
 
         setContent {
             // Setting dynamicColor to false ensures your custom backgroundLight color is used
             AppTheme(dynamicColor = false) {
                 val navController = rememberNavController()
-
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = { BottomNavigationBar(navController) },
@@ -137,20 +124,33 @@ class MainActivity : ComponentActivity() {
                             startDestination = "home"
                         ) {
 
-
                             composable("home") {
-                                HomeScreen(onNavigateToProfile = { navController.navigate("profile") })
+                                HomeScreen(
+                                    onNavigateToProfile = { navController.navigate("profile") },
+                                    onNavigateToBadges = { navController.navigate("badges") },
+                                    onNavigateToStatsandImpact = { navController.navigate("stats") },
+                                    onNavigateToShop = { navController.navigate("shop") },
+                                    onNavigateToJournal = { navController.navigate("journal") }
+                                )
                             }
                             composable("garden") {
-                                GardenScreen(onNavigateToProfile = { navController.navigate("profile") })
+                                GardenScreen(
+                                    onNavigateToProfile = { navController.navigate("profile") },
+                                    onNavigateToShop = { navController.navigate("shop") },
+                                    onNavigateToJournal = { navController.navigate("journal") },
+                                    onNavigateToStats = { navController.navigate("stats") }
+                                )
                             }
                             composable("shop") {
                                 ShopScreen(onNavigateToProfile = { navController.navigate("profile") })
                             }
+                            composable("badges") {
+                                BadgePage(onNavigateToProfile = { navController.navigate("profile") })
+                            }
+                            composable("stats") {
+                                StatsandImpactPage(onNavigateToProfile = { navController.navigate("profile") })
+                            }
 
-//                            composable("cleaning") {
-//                                CleaningPage(onNavigateToProfile = { navController.navigate("profile") })
-//                            }
                             navigation(
                                 startDestination = "cleaning_main",
                                 route = "cleaning"
@@ -191,14 +191,16 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            composable("stats") {
-                                StatsandImpactPage(onNavigateToProfile = { navController.navigate("profile") })
-                            }
                             composable("settings") {
                                 SettingsScreen(onNavigateToProfile = { navController.navigate("profile") })
                             }
                             composable("journal") {
                                 GreenJournalScreen(onNavigateToProfile = { navController.navigate("profile") })
+                            }
+
+                            // Temporary profile route to prevent crash
+                            composable("profile") {
+                                SettingsScreen(onNavigateToProfile = { navController.navigate("profile") })
                             }
                         }
                     }

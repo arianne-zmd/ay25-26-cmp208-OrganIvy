@@ -14,6 +14,6 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Welcome to OrganIvy Home!")
+        Text(text = "Shop")
     }
 }

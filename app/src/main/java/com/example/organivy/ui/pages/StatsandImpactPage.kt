@@ -15,6 +15,6 @@ fun StatsandImpactPage(onNavigateToProfile: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Welcome to OrganIvy Home!")
+        Text(text = "Stats and Impact Page")
     }
 }
