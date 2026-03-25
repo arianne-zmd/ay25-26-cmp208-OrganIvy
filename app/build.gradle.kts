@@ -68,6 +68,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.5.1")
     implementation(libs.androidx.navigation.compose)
 
+    //coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
 
 }

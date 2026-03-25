@@ -1,14 +1,17 @@
 package com.example.organivy.ui.pages
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -33,10 +38,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.organivy.R
 import com.example.organivy.ui.theme.textLight
 
 @Composable
@@ -57,6 +65,7 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.End
             ) {
+
                 // Expanded FABs
                 AnimatedVisibility(
                     visible = expanded,
@@ -101,66 +110,161 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
                 .padding(innerPadding)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
+                .padding(20.dp, ),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+            //verticalArrangement = Arrangement.spacedBy(16.dp)
+        ){
+
+        }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+                    .padding(20.dp, ),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "  Welcome to OrganIvy User!",
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                horizontalAlignment = Alignment.Start,
+            ){
+
+                item{
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        header()
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "  Welcome to OrganIvy User!",
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+
+                item{
+                    Card(
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp,30.dp ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                    ) {
+                        Text(text = "Username", Modifier.padding(15.dp))
+                        Text(text = "Level", Modifier.padding(15.dp))
+                        Text(text = "Progress Bar", Modifier.padding(15.dp))
+                    }
+                }
+
+                item { Spacer(modifier = Modifier.height(100.dp))  }
+
+
+                item{
+
+                    Row(
+                        modifier = Modifier//.fillMaxSize()
+                            .padding(20.dp, 30.dp ),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    ){
+
+                        Card(
+                            modifier = Modifier
+                                .size(150.dp, 200.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                        ) {
+                            Text(text = "Badges Earning", Modifier.padding(20.dp))
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .size(150.dp, 200.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                        ) {
+                            Text(text = "Facts Learned", Modifier.padding(20.dp))
+                        }
+                    }
+
+                }
+
+                item{
+
+                }
+
+                item{}
+
+                item{}
             }
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp, 60.dp, 30.dp, 450.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-            ) {
-                Text(text = "Username", Modifier.padding(15.dp))
-                Text(text = "Level", Modifier.padding(15.dp))
-                Text(text = "Progress Bar", Modifier.padding(15.dp))
-            }
 
-            Card(
-                modifier = Modifier
-                    .padding(20.dp, 400.dp, 210.dp, 30.dp)
-                    .size(200.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-            ) {
-                Text(text = "Badges Earning", Modifier.padding(20.dp))
-            }
 
-            Card(
-                modifier = Modifier
-                    .padding(210.dp, 400.dp, 20.dp, 30.dp)
-                    .size(200.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-            ) {
-                Text(text = "Facts Learned", Modifier.padding(20.dp))
-            }
+
+
+
         }
     }
+//}
+
+@Composable
+fun header(){
+
+    Spacer(modifier = Modifier.height(7.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        // = Alignment.CenterVertically
+    ) {
+
+
+        Image(
+            modifier = Modifier
+                .size(30.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            painter = painterResource(R.drawable.placeholder_icon),
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = " CO\u2082 Saved",
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier
+                .padding(0.dp,0.dp ),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        ){
+            Text(
+                text = "\uD83E\uDE99 300 ",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+
 }
 
 @Preview(showBackground = true)
