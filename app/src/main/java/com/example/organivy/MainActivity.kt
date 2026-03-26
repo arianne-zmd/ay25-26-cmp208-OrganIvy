@@ -188,38 +188,43 @@ class MainActivity : ComponentActivity() {
 
                                 composable("camera") {
                                     CameraSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        viewModel = viewModel
                                     )
                                 }
 
                                 composable("downloads") {
                                     DownloadsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        viewModel = viewModel
                                     )
                                 }
 
                                 composable("whatsapp_images") {
                                     WhatsappImagesSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        viewModel = viewModel
                                     )
                                 }
 
                                 composable("screenshots") {
                                     ScreenshotsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        viewModel = viewModel
                                     )
                                 }
 
 
                                 composable("old") {
                                     OldPicsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
+                                        onNavigateToProfile = { navController.navigate("profile") },viewModel = viewModel
                                     )
                                 }
 
                                 composable("large") {
                                     LargePicsSubscreen (
-                                        onNavigateToProfile = { navController.navigate("profile") }
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        viewModel = viewModel
                                     )
                                 }
 
