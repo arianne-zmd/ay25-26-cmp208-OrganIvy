@@ -111,20 +111,11 @@ fun HomeScreen(
         }
     ) { innerPadding ->
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-                .padding(innerPadding)
-                .padding(20.dp, ),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
-            //verticalArrangement = Arrangement.spacedBy(16.dp)
-        ){
-
-        }
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
-                    .padding(20.dp, ),
+                    .padding(innerPadding) // 👈 THIS fixes the warning
+                    .padding(20.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
             ){
@@ -135,6 +126,7 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.Start
                     ) {
+                        Spacer(modifier = Modifier.height(16.dp))
                         header()
 
                         Spacer(modifier = Modifier.height(16.dp))

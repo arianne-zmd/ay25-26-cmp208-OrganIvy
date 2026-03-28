@@ -13,6 +13,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import com.example.organivy.ui.pages.AppThemeOption
 
 @Immutable
 data class ExtendedColorScheme(
@@ -372,4 +373,20 @@ fun AppTheme(
     typography = AppTypography,
     content = content
   )
+}
+
+@Composable
+fun AppThemeWrapper(
+    selectedTheme: AppThemeOption,
+    content: @Composable () -> Unit
+) {
+    val darkTheme = when(selectedTheme) {
+        AppThemeOption.SYSTEM -> isSystemInDarkTheme()
+        AppThemeOption.LIGHT -> false
+        AppThemeOption.DARK -> true
+    }
+
+    AppTheme(darkTheme = darkTheme) {
+        content()
+    }
 }
