@@ -180,9 +180,9 @@ fun GardenScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CategoryButton(text = "Stats and Impact", onClick = onNavigateToStats)
+                    CategoryButton(text = "Already Owned", onClick = onNavigateToStats)
                     Text("|", color = primaryLight.copy(alpha = 0.3f))
-                    CategoryButton(text = "Profile", onClick = onNavigateToProfile)
+                    CategoryButton(text = "Purchasable", onClick = onNavigateToProfile)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
