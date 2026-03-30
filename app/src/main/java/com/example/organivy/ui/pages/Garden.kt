@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.organivy.R
@@ -38,7 +39,8 @@ fun GardenScreen(
     onNavigateToProfile: () -> Unit,
     onNavigateToShop: () -> Unit,
     onNavigateToJournal: () -> Unit,
-    onNavigateToStats: () -> Unit
+    onNavigateToStats: () -> Unit,
+    onNavigateToMap: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -92,6 +94,8 @@ fun GardenScreen(
             }
         }
     ) { innerPadding ->
+
+        // i will be changing this down. i wonder if i should comment it out?
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -105,6 +109,9 @@ fun GardenScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                header()
+                Spacer(modifier = Modifier.height(16.dp))
+
                 // Garden Title pill
                 Surface(
                     shape = CircleShape,
@@ -113,6 +120,7 @@ fun GardenScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
+
                     Text(
                         text = "Garden",
                         modifier = Modifier.padding(12.dp),
@@ -188,9 +196,18 @@ fun GardenScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Plant Grid
-                PlantGrid()
+                //PlantGrid()
+
+                Spacer(modifier = Modifier.height(50.dp))
+                Button(onClick = onNavigateToMap ) {
+                    Text(" OrganIvy World Map")
+                }
             }
-        }
+        } // all of thing can be in a lazy colunm ^
+
+
+
+
     }
 }
 
@@ -266,4 +283,14 @@ fun PlantItem() {
             modifier = Modifier.padding(top = 4.dp)
         )
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewGardenScreen() { GardenScreen(onNavigateToProfile = {},onNavigateToShop = {},
+    onNavigateToJournal = {}, onNavigateToStats ={}, onNavigateToMap ={}
+)
+
+
 }

@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.organivy.data.BlurDetection
 import com.example.organivy.data.PhotoScanner
 import com.example.organivy.ui.components.BottomNavigationBar
+import com.example.organivy.ui.pages.AppThemeOption
 import com.example.organivy.ui.pages.GreenJournalScreen
 import com.example.organivy.ui.pages.HomeScreen
 import com.example.organivy.ui.pages.ShopScreen
@@ -40,7 +41,9 @@ import com.example.organivy.ui.subpages.cleaning.LargePicsSubscreen
 import com.example.organivy.ui.subpages.cleaning.OldPicsSubscreen
 import com.example.organivy.ui.subpages.cleaning.ScreenshotsSubscreen
 import com.example.organivy.ui.subpages.cleaning.WhatsappImagesSubscreen
+import com.example.organivy.ui.subpages.garden.WorldMapSubscreen
 import com.example.organivy.ui.theme.AppTheme
+import com.example.organivy.ui.theme.AppThemeWrapper
 import com.example.organivy.viewmodel.PhotoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -110,6 +113,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
+
             val hasPermission = hasPermissionState
             val viewModel: PhotoViewModel = viewModel()
             LaunchedEffect(hasPermission) {
@@ -118,137 +122,168 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            var selectedTheme by remember { mutableStateOf(AppThemeOption.SYSTEM) }
 
             // Setting dynamicColor to false ensures your custom backgroundLight color is used
-            AppTheme(dynamicColor = false) {
-                val navController = rememberNavController()
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigationBar(navController) },
-                    containerColor = MaterialTheme.colorScheme.background
-                ) { innerPadding ->
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = "home"
+            AppThemeWrapper(selectedTheme = selectedTheme) {
+                AppTheme(dynamicColor = false) {
+                    val navController = rememberNavController()
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        bottomBar = { BottomNavigationBar(navController) },
+                        containerColor = MaterialTheme.colorScheme.background
+                    ) { innerPadding ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                            color = MaterialTheme.colorScheme.background
                         ) {
-
-                            composable("home") {
-                                HomeScreen(
-                                    onNavigateToProfile = { navController.navigate("profile") },
-                                    onNavigateToBadges = { navController.navigate("badges") },
-                                    onNavigateToStatsandImpact = { navController.navigate("stats") },
-                                    onNavigateToShop = { navController.navigate("shop") },
-                                    onNavigateToJournal = { navController.navigate("journal") }
-                                )
-                            }
-                            composable("garden") {
-                                GardenScreen(
-                                    onNavigateToProfile = { navController.navigate("profile") },
-                                    onNavigateToShop = { navController.navigate("shop") },
-                                    onNavigateToJournal = { navController.navigate("journal") },
-                                    onNavigateToStats = { navController.navigate("stats") }
-                                )
-                            }
-                            composable("shop") {
-                                ShopScreen(onNavigateToProfile = { navController.navigate("profile") })
-                            }
-                            composable("badges") {
-                                BadgePage(onNavigateToProfile = { navController.navigate("profile") })
-                            }
-                            composable("stats") {
-                                StatsandImpactPage(onNavigateToProfile = { navController.navigate("profile") })
-                            }
-
-                            navigation(
-                                startDestination = "cleaning_main",
-                                route = "cleaning"
+                            NavHost(
+                                navController = navController,
+                                startDestination = "home"
                             ) {
 
-                                composable("cleaning_main") {
-                                    CleaningPage(
+                                composable("home") {
+                                    HomeScreen(
                                         onNavigateToProfile = { navController.navigate("profile") },
-                                        onNavigateToCamera = { navController.navigate("camera") },
-                                        onNavigateToDownloads = { navController.navigate("downloads") },
-                                        onNavigateToScreenshots = { navController.navigate("screenshots") },
-                                        onNavigateToWhatsappImages = { navController.navigate("whatsapp_images") },
-
-                                        onNavigateToOld = { navController.navigate("old") },
-                                        onNavigateToLarge = { navController.navigate("large") },
-                                        onNavigateToBlurry = { navController.navigate("blurry") },
-                                        onNavigateToDuplicated = { navController.navigate("duplicated") },
-                                        viewModel = viewModel
+                                        onNavigateToBadges = { navController.navigate("badges") },
+                                        onNavigateToStatsandImpact = { navController.navigate("stats") },
+                                        onNavigateToShop = { navController.navigate("shop") },
+                                        onNavigateToJournal = { navController.navigate("journal") }
+                                    )
+                                }
+                                composable("garden") {
+                                    GardenScreen(
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        onNavigateToShop = { navController.navigate("shop") },
+                                        onNavigateToJournal = { navController.navigate("journal") },
+                                        onNavigateToStats = { navController.navigate("stats") },
+                                        onNavigateToMap = { navController.navigate("map") }
+                                    )
+                                }
+                                composable("shop") {
+                                    ShopScreen(onNavigateToProfile = { navController.navigate("profile") })
+                                }
+                                composable("badges") {
+                                    BadgePage(onNavigateToProfile = { navController.navigate("profile") })
+                                }
+                                composable("stats") {
+                                    StatsandImpactPage(onNavigateToProfile = {
+                                        navController.navigate(
+                                            "profile"
                                         )
+                                    })
+                                }
+                                composable("map") {
+                                    WorldMapSubscreen(onNavigateToProfile = {
+                                        navController.navigate(
+                                            "profile"
+                                        )
+                                    })
                                 }
 
-                                composable("camera") {
-                                    CameraSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
+                                navigation(
+                                    startDestination = "cleaning_main",
+                                    route = "cleaning"
+                                ) {
+
+                                    composable("cleaning_main") {
+                                        CleaningPage(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            onNavigateToCamera = { navController.navigate("camera") },
+                                            onNavigateToDownloads = { navController.navigate("downloads") },
+                                            onNavigateToScreenshots = { navController.navigate("screenshots") },
+                                            onNavigateToWhatsappImages = { navController.navigate("whatsapp_images") },
+
+                                            onNavigateToOld = { navController.navigate("old") },
+                                            onNavigateToLarge = { navController.navigate("large") },
+                                            onNavigateToBlurry = { navController.navigate("blurry") },
+                                            onNavigateToDuplicated = { navController.navigate("duplicated") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+                                    composable("camera") {
+                                        CameraSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+                                    composable("downloads") {
+                                        DownloadsSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+                                    composable("whatsapp_images") {
+                                        WhatsappImagesSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+                                    composable("screenshots") {
+                                        ScreenshotsSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+
+                                    composable("old") {
+                                        OldPicsSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+                                    composable("large") {
+                                        LargePicsSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") },
+                                            viewModel = viewModel
+                                        )
+                                    }
+
+
+                                    composable("blurry") {
+                                        BlurryPicsSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") }
+                                        )
+                                    }
+
+                                    composable("duplicated") {
+                                        DuplicatedPicsSubscreen(
+                                            onNavigateToProfile = { navController.navigate("profile") }
+                                        )
+                                    }
+
+
                                 }
 
-                                composable("downloads") {
-                                    DownloadsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
+                                composable("settings") {
+                                    SettingsScreen(
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        selectedTheme = selectedTheme,
+                                        onThemeChange = { newTheme -> selectedTheme = newTheme })
+                                }
+                                composable("journal") {
+                                    GreenJournalScreen(onNavigateToProfile = {
+                                        navController.navigate(
+                                            "profile"
+                                        )
+                                    })
                                 }
 
-                                composable("whatsapp_images") {
-                                    WhatsappImagesSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
+                                // Temporary profile route to prevent crash
+                                composable("profile") {
+                                    SettingsScreen(
+                                        onNavigateToProfile = { navController.navigate("profile") },
+                                        selectedTheme = selectedTheme,
+                                        onThemeChange = { newTheme -> selectedTheme = newTheme })
                                 }
-
-                                composable("screenshots") {
-                                    ScreenshotsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
-                                }
-
-
-                                composable("old") {
-                                    OldPicsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
-                                }
-
-                                composable("large") {
-                                    LargePicsSubscreen (
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
-                                }
-
-
-                                composable("blurry") {
-                                    BlurryPicsSubscreen(
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
-                                }
-
-                                composable("duplicated") {
-                                    DuplicatedPicsSubscreen (
-                                        onNavigateToProfile = { navController.navigate("profile") }
-                                    )
-                                }
-
-
-                            }
-
-                            composable("settings") {
-                                SettingsScreen(onNavigateToProfile = { navController.navigate("profile") })
-                            }
-                            composable("journal") {
-                                GreenJournalScreen(onNavigateToProfile = { navController.navigate("profile") })
-                            }
-
-                            // Temporary profile route to prevent crash
-                            composable("profile") {
-                                SettingsScreen(onNavigateToProfile = { navController.navigate("profile") })
                             }
                         }
                     }

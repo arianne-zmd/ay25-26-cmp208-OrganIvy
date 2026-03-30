@@ -63,15 +63,7 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
     }
 
 
-    // Show loading spinner if scanning
-    if (state.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    } else {
+
         //code in here
         LazyColumn(
             modifier = Modifier.fillMaxSize()
@@ -285,7 +277,7 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
 
 
         }
-    }
+
 
 
 

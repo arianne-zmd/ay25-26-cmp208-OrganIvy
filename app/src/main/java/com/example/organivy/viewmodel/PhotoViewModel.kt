@@ -8,11 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.organivy.data.Photo
 import com.example.organivy.data.PhotoScanner
 import com.example.organivy.data.PhotoState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.collections.List
 
 class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -35,7 +37,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             //val blurDetector = BlurDetection(this@MainActivity)
 
 
-            // Filtering the photos
+            // Filtering the photos types
             val largePics = withContext(Dispatchers.Default) {
                 photo.filter { pic -> pic.size >= 500_000 }
             }
@@ -49,6 +51,22 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 //                            photo.filter { blurDetector.isImageBlurry(it) }
 //                        }
 
+            // Filtering the photos cateries
+            val camPics = withContext(Dispatchers.Default) {
+                photo.filter { pic -> pic.path.contains("DCIM/Camera") }
+            }
+            val sSPics = withContext(Dispatchers.Default) {
+                photo.filter { pic -> pic.path.contains("/Screenshots") }
+            }
+            val dPics = withContext(Dispatchers.Default) {
+                photo.filter { pic -> pic.path.contains("Download/") }
+            }
+            val wIPics = withContext(Dispatchers.Default) {
+                photo.filter { pic -> pic.path.contains("/WhatsApp Images") }
+            }
+
+
+
 
             withContext(Dispatchers.Main) {
                 uiState = PhotoState(
@@ -56,7 +74,17 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                     totalPhotos = photo.size,
                     largePhotos = largePics.size,
                     oldPhotos = oldPics.size,
-                    duplicatePhotos = duplicatedPics.size
+                    duplicatePhotos = duplicatedPics.size,
+
+                    //lists
+                    oldPicsList = oldPics,
+                    largePicsList  = largePics,
+
+                    cameraPicsList = camPics,
+                    screenshotsList = sSPics,
+                    downloadsList = dPics,
+                    whatsappPicsList = wIPics
+
                 )
             }
         }

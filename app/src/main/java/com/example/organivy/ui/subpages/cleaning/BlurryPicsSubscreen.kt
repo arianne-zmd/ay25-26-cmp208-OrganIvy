@@ -25,6 +25,8 @@ fun BlurryPicsSubscreen(onNavigateToProfile: () -> Unit,
         horizontalAlignment = Alignment.Start,
         //verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        item{ header() }
+
         item{Text(
             text = "Blurry",
             fontSize = 20.sp,

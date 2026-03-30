@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.organivy.ui.pages.header
 
 @Composable
 fun DuplicatedPicsSubscreen(onNavigateToProfile: () -> Unit,
@@ -25,6 +26,8 @@ fun DuplicatedPicsSubscreen(onNavigateToProfile: () -> Unit,
         horizontalAlignment = Alignment.Start,
         //verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        item{ header() }
+
         item{Text(
             text = "Duplicated Images",
             fontSize = 20.sp,
