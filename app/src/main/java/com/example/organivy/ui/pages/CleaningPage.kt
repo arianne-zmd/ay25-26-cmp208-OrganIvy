@@ -32,12 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.organivy.MainActivity
-import com.example.organivy.data.PhotoScanner
 import com.example.organivy.data.PhotoState
 import com.example.organivy.viewmodel.PhotoViewModel
-import com.google.common.math.LinearTransformation.horizontal
 
 
 @Composable
@@ -81,7 +77,7 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
             item { Spacer(modifier = Modifier.height(16.dp)) }
             item {
                 Text(
-                    text = "Make the World Cleaner One Photo \n at a Time!",
+                    text = "Make the World Cleaner One Photo at a Time!",
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -150,7 +146,12 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
                 "Downloads" to onNavigateToDownloads,
                 "WhatsApp Images" to onNavigateToWhatsappImages
             )
-            val temp2 = listOf("bat", "ball", "cap", "glove", "shoe")
+            val temp2 = listOf(
+                "${state?.cameraPicsList?.size}",
+                "${state?.screenshotsList?.size}",
+                "${state?.downloadsList?.size}",
+                "${state?.whatsappPicsList?.size}"
+            )
             item {
                 LazyRow(
                     modifier = Modifier

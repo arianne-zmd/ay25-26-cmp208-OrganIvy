@@ -83,7 +83,7 @@ fun LazyGridScreenWAP(viewModel: PhotoViewModel) {
 
         items(state.whatsappPicsList) {photo ->
 
-            GridItem(photo = photo)
+            GridItem(photo = photo, viewModel = viewModel)
             Spacer(modifier = Modifier.height(8.dp))
 
         }

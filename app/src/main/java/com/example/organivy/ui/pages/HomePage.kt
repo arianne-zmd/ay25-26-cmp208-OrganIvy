@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -161,14 +162,16 @@ fun HomeScreen(
                 item{
 
                     Row(
-                        modifier = Modifier//.fillMaxSize()
-                            .padding(20.dp, 30.dp ),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        modifier = Modifier.fillMaxSize()
+                            .padding(20.dp, 20.dp ),
+                        //horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,  // push children to edges
+                        verticalAlignment = Alignment.Top
                     ){
 
                         Card(
                             modifier = Modifier
-                                .size(150.dp, 200.dp),
+                                .size(130.dp, 200.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -178,17 +181,23 @@ fun HomeScreen(
                             Text(text = "Badges Earning", Modifier.padding(20.dp))
                         }
 
-                        Card(
-                            modifier = Modifier
-                                .size(150.dp, 200.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                        ) {
-                            Text(text = "Facts Learned", Modifier.padding(20.dp))
-                        }
+
+
+                            Card(
+                                modifier = Modifier
+                                    .size(130.dp, 200.dp),
+
+
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                ),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                            ) {
+                                Text(text = "Facts Learned", Modifier.padding(20.dp))
+                            }
+
+
                     }
 
                 }

@@ -83,7 +83,7 @@ fun LazyGridScreenDP(viewModel: PhotoViewModel) {
 
         items(state.downloadsList) {photo ->
 
-            GridItem(photo = photo)
+            GridItem(photo = photo, viewModel = viewModel)
             Spacer(modifier = Modifier.height(8.dp))
 
         }

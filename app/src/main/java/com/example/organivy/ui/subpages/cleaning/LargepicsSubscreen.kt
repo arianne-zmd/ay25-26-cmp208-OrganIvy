@@ -92,7 +92,7 @@ fun LazyGridScreenLP(viewModel: PhotoViewModel) {
 
         items(state.largePicsList) {photo ->
 
-            GridItem(photo = photo)
+            GridItem(photo = photo, viewModel = viewModel)
             Spacer(modifier = Modifier.height(8.dp))
 
         }

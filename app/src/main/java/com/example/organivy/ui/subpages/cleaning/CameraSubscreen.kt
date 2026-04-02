@@ -1,8 +1,10 @@
 package com.example.organivy.ui.subpages.cleaning
 
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -11,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.data.Photo
+import com.example.organivy.data.PhotoState
 import com.example.organivy.ui.pages.header
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -82,7 +88,8 @@ fun LazyGridScreenCP(viewModel: PhotoViewModel) {
 
         items(state.cameraPicsList) {photo ->
 
-            GridItem(photo = photo)
+
+            GridItem(photo = photo, viewModel = viewModel)
             Spacer(modifier = Modifier.height(8.dp))
 
         }
@@ -90,6 +97,66 @@ fun LazyGridScreenCP(viewModel: PhotoViewModel) {
 
 
 }
+
+
+// CHECKBOXESSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+
+
+@Composable
+fun PicCheckbox(photo: Photo,viewModel: PhotoViewModel){
+
+    // Observe ViewModel state
+    val uiState = viewModel.uiState
+
+    // Determine if this photo is selected
+    val isChecked = uiState.deletionList.contains(photo)
+
+
+
+        Row(
+            modifier = Modifier.padding(4.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Top
+        ) {
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = {
+                    checked ->
+                    // Tell ViewModel to update deletionList
+                    viewModel.onPhotoChecked(photo, checked)
+
+
+
+
+                }
+
+            )
+            //Text(text= info.text)
+        }
+
+
+}
+
+
+
+
+//CHECKBOXESSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Preview function goes outside MainActivity class

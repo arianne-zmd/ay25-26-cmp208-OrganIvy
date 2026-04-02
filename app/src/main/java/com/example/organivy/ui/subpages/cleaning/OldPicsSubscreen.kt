@@ -3,8 +3,10 @@ package com.example.organivy.ui.subpages.cleaning
 import android.content.ContentUris
 import android.provider.MediaStore
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -101,7 +103,7 @@ fun LazyGridScreen(viewModel: PhotoViewModel) {
 
         items(state.oldPicsList) {photo ->
 
-            GridItem(photo = photo)
+            GridItem(photo = photo, viewModel = viewModel)
             Spacer(modifier = Modifier.height(8.dp))
 
         }
@@ -111,14 +113,16 @@ fun LazyGridScreen(viewModel: PhotoViewModel) {
 }
 
 @Composable
-fun GridItem(photo: Photo) {
+fun GridItem(photo: Photo, viewModel: PhotoViewModel) {
 
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp)
             .height(300.dp)
             .width(200.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        //horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.End
+
     ){
 
          val uri = ContentUris.withAppendedId(
@@ -127,6 +131,9 @@ fun GridItem(photo: Photo) {
 
 
 
+        PicCheckbox(photo = photo, viewModel = viewModel )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         AsyncImage(
             modifier = Modifier
@@ -143,6 +150,9 @@ fun GridItem(photo: Photo) {
         Text(text = photo.name ,
             fontWeight = FontWeight.SemiBold
         )
+
+
+
 
 
     }

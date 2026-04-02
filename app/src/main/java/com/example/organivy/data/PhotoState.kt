@@ -20,5 +20,8 @@ data class PhotoState(
     val downloadsList: List<Photo> = emptyList(),
     val whatsappPicsList: List<Photo> = emptyList(),
 
+    //deletion list
+    val deletionList: List<Photo> = emptyList()
+
 
 )

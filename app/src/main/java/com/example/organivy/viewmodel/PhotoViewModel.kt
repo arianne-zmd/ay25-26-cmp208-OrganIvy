@@ -68,6 +68,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
+
             withContext(Dispatchers.Main) {
                 uiState = PhotoState(
                     isLoading = false,
@@ -83,10 +84,23 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                     cameraPicsList = camPics,
                     screenshotsList = sSPics,
                     downloadsList = dPics,
-                    whatsappPicsList = wIPics
+                    whatsappPicsList = wIPics,
+
+                    //deletion list
+                    deletionList = emptyList()
+
+
 
                 )
             }
+        }
+    }
+
+    fun onPhotoChecked(photo: Photo, isChecked: Boolean) {
+        uiState = if (isChecked) {
+            uiState.copy(deletionList = uiState.deletionList + photo)
+        } else {
+            uiState.copy(deletionList = uiState.deletionList - photo)
         }
     }
 }

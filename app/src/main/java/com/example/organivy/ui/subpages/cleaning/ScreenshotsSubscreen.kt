@@ -83,7 +83,7 @@ fun LazyGridScreenSSP(viewModel: PhotoViewModel) {
 
         items(state.screenshotsList) {photo ->
 
-            GridItem(photo = photo)
+            GridItem(photo = photo, viewModel = viewModel)
             Spacer(modifier = Modifier.height(8.dp))
 
         }

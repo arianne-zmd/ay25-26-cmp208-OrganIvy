@@ -15,6 +15,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -29,11 +31,10 @@ import androidx.compose.runtime.setValue
 
 @Composable
 fun SettingsScreen(onNavigateToProfile: () -> Unit,
-                   selectedTheme: AppThemeOption,
-                   onThemeChange: (AppThemeOption) -> Unit
+                   selectedTheme: ThemeOption,
+                   onThemeChange: (ThemeOption) -> Unit
 ) {
 
-    var selectedTheme by remember { mutableStateOf(AppThemeOption.SYSTEM) }
 
 
     LazyColumn(
@@ -94,7 +95,7 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
 
                 RadioButtons(
                     selectedTheme = selectedTheme,
-                    onThemeSelected = { newTheme -> selectedTheme = newTheme }
+                    onThemeSelected = onThemeChange
                 )
                 //WARNINGGGGGGGGGGGG
                 //button does not work. idk y. if you can fix it then fix it. i added
@@ -197,43 +198,41 @@ data class ToggleableInfo(
     val text: String
 )
 
-enum class AppThemeOption {
-    SYSTEM,
-    LIGHT,
-    DARK
+enum class ThemeOption {
+    SYSTEM, LIGHT, DARK
 }
 
 @Composable
-fun RadioButtons(
-    selectedTheme: AppThemeOption,
-    onThemeSelected: (AppThemeOption) -> Unit
+fun RadioButtons(selectedTheme: ThemeOption,
+                 onThemeSelected: (ThemeOption) -> Unit
+
 ) {
 
     val options = listOf(
-        "System" to AppThemeOption.SYSTEM,
-        "Light Mode" to AppThemeOption.LIGHT,
-        "Dark Mode" to AppThemeOption.DARK
+        ThemeOption.SYSTEM,
+        ThemeOption.LIGHT,
+        ThemeOption.DARK
     )
 
     Row {
-        options.forEach { (text, themeOption) ->
+        options.forEach { option ->
+
+            val text = when(option) {
+                ThemeOption.SYSTEM -> "System"
+                ThemeOption.LIGHT -> "Light Mode"
+                ThemeOption.DARK -> "Dark Mode"
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .clickable { onThemeSelected(themeOption) }
+                    .clickable { onThemeSelected(option) }
                     .padding(8.dp)
             ) {
 
                 RadioButton(
-                    selected = (selectedTheme == themeOption),
-                    onClick = { onThemeSelected(themeOption) }
-//                onClick = {
-//                    radioButtons.replaceAll {
-//                        it.copy(
-//                            isChecked = it.text == info.text
-//                        )
-//                    }
-//                }
+                    selected = (selectedTheme == option),
+                    onClick = { onThemeSelected(option) }
                 )
                 Text(text = text, modifier = Modifier.padding(start = 8.dp))
 
@@ -245,8 +244,8 @@ fun RadioButtons(
 
 
 // Preview function goes outside MainActivity class
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewSettingScreen() {
-    SettingsScreen(onNavigateToProfile = {}, selectedTheme = AppThemeOption.SYSTEM, onThemeChange = {})
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewSettingScreen() {
+//    SettingsScreen(onNavigateToProfile = {}, selectedTheme = AppThemeOption.SYSTEM, onThemeChange = {})
+//}
