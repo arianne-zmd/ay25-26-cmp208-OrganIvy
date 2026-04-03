@@ -74,9 +74,9 @@ fun GameCanvas(modifier: Modifier = Modifier) {
         listOf(3,3,1,1,2,2,3,5,5,5,1,1,1,1,5,1,1,1,1,1,1,1,1,3,1,1,3,1,1,1,5,5,1,3,5,3,5,5,3,1,1,3,1,1,1,5,5,1,4,  3,3,3,3,3   ,4,3,1) +List(43){1},
         listOf(1,2,3,1,5,5,5,5,5,5,5,4,5,5,1,5,1,1,3,5,1,3,1,1,5,5,1,1,1,5,5,5,5,3,5,5,5,1,1,1,1,1,1,5,5,5,2,3,2,  3,3,3,3,3   ,1,3,1,1) +List(42){1},
         listOf(2,2,3,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,1,1,5,5,5,5,1,5,5,5,5,5,1,1,5,5,5,1,1,5,1,5,5,5,5,5,1,1,  3,3,3,3,3   ,1,3,1,1,3) +List(41){1},
-        listOf(3,3,1,5)  + List(45){5} + List(5){3} + List(10){5} +List(36){1},
-        listOf(1,2,3) + List(46){5} +List(5){3} + List(20){5} +List(26){1},
-        listOf(1,2,3,1) + List(45){5} +List(5){3} + List(20){5} +List(26){1},
+        listOf(3,3,1,5)  + List(7){5} + List(3){9} + List(35){5} + List(5){3} + List(10){5} +List(36){1},
+        listOf(1,2,3) + List(7){5} + List(3){9} + List(36){5} +List(5){3} + List(20){5} +List(26){1},
+        listOf(1,2,3,1) + List(7){5} + List(3){9} + List(35){5} +List(5){3} + List(20){5} +List(26){1},
 
         listOf(1,2,3,1,2) + List(44){5} +List(5){3} +List(24){5} +List(22){1},
         listOf(1,2,3,2,3) + List(44){5} +List(5){3} +List(25){5} +List(21){1},
@@ -101,9 +101,10 @@ fun GameCanvas(modifier: Modifier = Modifier) {
         listOf(3,3,1,1,5) + List(44){5} +List(5){3} + List(42){5} + listOf(2,2,3,1),
 
         //part you dont see
-        listOf(2,2,3,3,1,5) + List(89){5} + listOf(2,2,3,1,2),
-        listOf(3,3,1,1,2,2,5) + List(90){5} + listOf(2,2,3),
-        listOf(1,2,3,1,2,4,5) + List(90){5} + listOf(2,2,3),
+        listOf(2,2,3,3,1,5) + List(43){5} + List(46){3} + listOf(2,2,3,1,2),
+        listOf(3,3,1,1,2,2,5) + List(42){5} + List(48){3} + listOf(2,2,3),
+        listOf(1,2,3,1,2,4,5) + List(42){5} + List(48){3} + listOf(2,2,3),
+
         listOf(2,2,3,2,5,5) + List(89){5} + listOf(2,2,3,1,2),
         listOf(2,2,3,5) + List(88){5} + listOf(2,2,3,1,2,4,1,1),
         listOf(3,3,1,1,5) + List(87){5} + listOf(2,2,3,1,2,4,1,1),
@@ -123,9 +124,9 @@ fun GameCanvas(modifier: Modifier = Modifier) {
         listOf(2,2,3,2,3,1,4,4,3,1,2,5) + List(80){5} + listOf(5,2,3,1,4,4,1,2),
         listOf(2,2,3,2,3,1,4,4,3,1,2,4,5) + List(80){5} + listOf(5,1,2,2,1,4,3),
         listOf(2,2,3,2,3,1,4,4,3,1,2,3,2,5,5) + List(78){5} + listOf(5,5,2,3,4,3,2),
-        listOf(2,2,3,2,3,1,4,4,3,1,2,3,2,2,3,5) + List(77){5} + listOf(5,5,4,4,3,1,2),
-        listOf(3,3,1,1,4,2,2,1,4,2,1,1,2,3,4,1,5,5,5,5,5,5,5,5,5,5,5,5,4)+ List(71){1},
-        listOf(1,2,3,1,2,3,1,1,2,1,2,1,2,3,4,1,4,5,5,5,5,5,5,5,5,5,5,5,2) + List(71){1},
+        listOf(2,2,3,2,3,1,4,4,3,1,2,3,2,2,3,5) + List(77){6} + listOf(5,5,4,4,3,1,2),
+        listOf(3,3,1,1,4,2,2,1,4,2,1,1,2,3,4,1,5,5,5,5,5,5,5,5,5,5,10,5,4)+ List(71){1},
+        listOf(1,2,3,1,2,3,1,1,2,1,2,1,2,3,4,1,4,5,5,5,5,10,5,5,5,5,5,5,2) + List(71){1},
         listOf(2,2,3,2,3,1,4,4,3,1,2,1,2,3,4,1,2,5,5,5,5,5,5,5,5,5,2,2) + List(72){1},
         listOf(3,3,1,1,4,2,2,1,4,2,1,1,2,3,4,1,1,2,5,5,5,5,5,5,5,5,1,2,2) + List(71){1},
         listOf(1,2,3,1,2,3,1,1,2,1,2,1,2,3,4,1,4,2,2,5,5,5,5,5,5,3,1,2,2) + List(71){1},
@@ -145,6 +146,13 @@ fun GameCanvas(modifier: Modifier = Modifier) {
     val water1 = ImageBitmap.imageResource(R.drawable.basicwater1)
     val water3 = ImageBitmap.imageResource(R.drawable.basicwater2)
     val water4 = ImageBitmap.imageResource(R.drawable.basicwater3)
+
+    val bottom_edge = ImageBitmap.imageResource(R.drawable.bottom_edge)
+    val top_edge = ImageBitmap.imageResource(R.drawable.top_edge)
+    val left_edge = ImageBitmap.imageResource(R.drawable.left_edge)
+
+    val grayrock = ImageBitmap.imageResource(R.drawable.grayrock)
+    val graystone = ImageBitmap.imageResource(R.drawable.graystone)
 
     val deflaut_green = ImageBitmap.imageResource(R.drawable.deflaut_green)
 
@@ -171,6 +179,14 @@ fun GameCanvas(modifier: Modifier = Modifier) {
                     3 -> water3
                     4 -> water4
                     5 -> deflaut_green
+
+                    6 -> bottom_edge
+                    7 -> top_edge
+                    8 -> left_edge
+
+                    9 -> grayrock
+                    10 -> graystone
+
                     else -> water
                 }
 

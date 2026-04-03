@@ -16,14 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.organivy.data.BlurDetection
-import com.example.organivy.data.PhotoScanner
 import com.example.organivy.ui.components.BottomNavigationBar
 import com.example.organivy.ui.pages.GreenJournalScreen
 import com.example.organivy.ui.pages.HomeScreen
@@ -45,9 +42,6 @@ import com.example.organivy.ui.subpages.cleaning.WhatsappImagesSubscreen
 import com.example.organivy.ui.subpages.garden.WorldMapSubscreen
 import com.example.organivy.ui.theme.AppTheme
 import com.example.organivy.viewmodel.PhotoViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -65,39 +59,10 @@ class MainActivity : ComponentActivity() {
             ) { isGranted: Boolean ->
                 if (isGranted) {
 
+                    // needed to access the photos on the user's phone
                     hasPermissionState = isGranted
 
-                    lifecycleScope.launch(Dispatchers.IO) {
-//                        val scanner = PhotoScanner(this@MainActivity)
-//                        val photo = scanner.logScanImages()
-//
-//                        //val blurDetector = BlurDetection(this@MainActivity)
 
-//                        // Filtering the photos
-//                        val largePics = withContext(Dispatchers.Default) {
-//                            photo.filter { pic -> pic.size >= 500_000 }
-//                        }
-//                        val oldPics = withContext(Dispatchers.Default) {
-//                            photo.filter { pic -> pic.dateAdded <= (System.currentTimeMillis() / 1000) - 31_556_952L }
-//                        }
-//                        val duplicatedPics = withContext(Dispatchers.Default) {
-//                            photo.groupBy { pic -> pic.size }.filter { pic -> pic.value.size > 1 }
-//                        }
-////                        val blurryPics = withContext(Dispatchers.Default) {
-//                            photo.filter { blurDetector.isImageBlurry(it) }
-//                        }
-
-                        withContext(Dispatchers.Main) {
-                            // Logging results
-//                            android.util.Log.d("PHOTO_TEST", "Total photos: ${photo.size}")
-//                            android.util.Log.d("PHOTO_TEST", "Large photos: ${largePics.size}")
-//                            android.util.Log.d("PHOTO_TEST", "Old photos: ${oldPics.size}")
-//                            android.util.Log.d("PHOTO_TEST", "Duplicate groups: ${duplicatedPics.size}")
-                            //android.util.Log.d("PHOTO_TEST", "Blurry photos: ${blurryPics.size}")
-
-
-                        }
-                    }
                 } else {
                     // permission denied
                     Toast.makeText(this, "Permission required to access photos", Toast.LENGTH_SHORT).show()
@@ -115,6 +80,7 @@ class MainActivity : ComponentActivity() {
 
 
             val hasPermission = hasPermissionState
+
             val viewModel: PhotoViewModel = viewModel()
             LaunchedEffect(hasPermission) {
                 if (hasPermission) {
