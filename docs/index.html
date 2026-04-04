@@ -3,9 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>OrganIvy Website</title>
+    <link rel="stylesheet" href="styles.css"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <p>hi</p>
+    <!-- navigation bar-->
+    <nav class="navbar">
+        <div class="navbar__var">
+
+            <a href="/" id="navbar__logo">
+                <img src="images/logo2.PNG" alt="OrganIvy">
+                <span>OrganIvy</span>
+            </a>
+            <div class="navbar__toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="navbar__menu">
+                <!-- Making the different headers that will be on the menu bar-->
+                <li class="navbar__item">
+                    <a href="/" class="navbar__links">
+                        Home
+                    </a>
+                </li>
+
+                <li class="navbar__item">
+                    <a href="/docs/privacy.html" class="navbar__links">
+                        Privacy
+                    </a>
+                </li>
+
+                <li class="navbar__item">
+                    <a href="/docs/terms.html" class="navbar__links">
+                        Terms
+                    </a>
+                </li>
+
+                <li class="navbar__item">
+                    <a href="/docs/help.html" class="navbar__links">
+                        Help
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <!-- navigation bar-->
+
+    <!-- hero part-->
+    <div class="main">
+        <div class="main__container">
+            <div class="main__content">
+                <h1>OrganIvy</h1>
+                <h2>Helping the world in style</h2>
+
+            </div> 
+
+            <div class="main__img--container">
+                <img src="images/phonewithlogo.png" alt="hero pic" id="main__img">
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Section -->
+    <div class="services">
+        <div class="services__container">
+            
+            <div>
+                <p class=" topline">Features</p>
+                <h1 class="services__heading">What we offer(crazy)</h1>
+                <div class="services__features">
+                    <p class="services__feature">idk yet</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Services Section ( this isthe right fileeeeeeeeeeeeeeeeeeeeeeee)-->
+
+
+    <script src="app.js"> </script> 
+    
 </body>
 </html>
