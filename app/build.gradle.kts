@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.google.fonts)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
     implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
