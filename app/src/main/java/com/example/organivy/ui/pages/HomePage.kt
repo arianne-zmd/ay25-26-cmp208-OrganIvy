@@ -45,8 +45,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
+import com.example.organivy.data.Photo
+import com.example.organivy.data.PhotoState
 import com.example.organivy.ui.theme.textLight
+import com.example.organivy.viewmodel.GameViewModel
+import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun HomeScreen(
@@ -113,6 +118,8 @@ fun HomeScreen(
     ) { innerPadding ->
 
 
+
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
                     .padding(innerPadding) // 👈 THIS fixes the warning
@@ -128,7 +135,10 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        header()
+
+                        val photoViewModel = viewModel<PhotoViewModel>()
+                        val gameViewModel = viewModel<GameViewModel>()
+                        header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
 
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
@@ -221,7 +231,10 @@ fun HomeScreen(
 //}
 
 @Composable
-fun header(){
+fun header(photoviewModel: PhotoViewModel, gameviewModel: GameViewModel){
+
+    val state = photoviewModel.uiState
+    val state2 = gameviewModel.uiState
 
     Spacer(modifier = Modifier.height(7.dp))
     Row(
@@ -257,7 +270,7 @@ fun header(){
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         ){
             Text(
-                text = "\uD83E\uDE99 300 ",
+                text = "\uD83E\uDE99 ${state2.coins} ",
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )

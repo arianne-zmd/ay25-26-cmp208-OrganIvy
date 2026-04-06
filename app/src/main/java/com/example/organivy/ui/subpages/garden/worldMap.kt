@@ -28,11 +28,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
 import com.example.organivy.ui.pages.header
-
-
-
+import com.example.organivy.viewmodel.GameViewModel
+import com.example.organivy.viewmodel.PhotoViewModel
 
 
 @Composable
@@ -47,7 +47,9 @@ fun WorldMapSubscreen(onNavigateToProfile: () -> Unit,
         horizontalAlignment = Alignment.Start,
         //verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        header()
+        val photoViewModel = viewModel<PhotoViewModel>()
+        val gameViewModel = viewModel<GameViewModel>()
+        header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
 
         Text(
             text = "Map",
@@ -72,7 +74,7 @@ fun GameCanvas(modifier: Modifier = Modifier) {
         listOf(1,1,1,1,1,1,3,1,1,3,1,1) + List(88){1},
         listOf(2,2,3,3,1,1,4,4,3,1,2,4) + List(88){1},
         listOf(3,3,1,1,2,2,3,5,5,5,1,1,1,1,5,1,1,1,1,1,1,1,1,3,1,1,3,1,1,1,5,5,1,3,5,3,5,5,3,1,1,3,1,1,1,5,5,1,4,  3,3,3,3,3   ,4,3,1) +List(43){1},
-        listOf(1,2,3,1,5,5,5,5,5,5,5,4,5,5,1,5,1,1,3,5,1,3,1,1,5,5,1,1,1,5,5,5,5,3,5,5,5,1,1,1,1,1,1,5,5,5,2,3,2,  3,3,3,3,3   ,1,3,1,1) +List(42){1},
+        listOf(1,2,3,1,5,5,5,5,5,5,5,4,5,5,5,5,1,1,3,5,1,3,1,1,5,5,1,1,1,5,5,5,5,3,5,5,5,1,1,1,1,1,1,5,5,5,2,3,2,  3,3,3,3,3   ,1,3,1,1) +List(42){1},
         listOf(2,2,3,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,1,1,5,5,5,5,1,5,5,5,5,5,1,1,5,5,5,1,1,5,1,5,5,5,5,5,1,1,  3,3,3,3,3   ,1,3,1,1,3) +List(41){1},
         listOf(3,3,1,5)  + List(7){5} + List(3){9} + List(35){5} + List(5){3} + List(10){5} +List(36){1},
         listOf(1,2,3) + List(7){5} + List(3){9} + List(36){5} +List(5){3} + List(20){5} +List(26){1},
@@ -110,10 +112,11 @@ fun GameCanvas(modifier: Modifier = Modifier) {
         listOf(3,3,1,1,5) + List(87){5} + listOf(2,2,3,1,2,4,1,1),
         listOf(2,2,3,3,1,5) + List(87){5} + listOf(2,2,3,1,2,4,1),
         listOf(3,3,1,1,2,2,5) + List(87){5} + listOf(2,2,3,1,2,4),
-        listOf(1,2,3,1,2,5,5) + List(87){5} + listOf(2,2,3,1,2,4),
-        listOf(2,2,3,2,5) + List(86){5} + listOf(2,2,3,1,2,4,1,1,2),
-        listOf(2,2,3,5) + List(86){5} + listOf(2,2,3,1,2,4,1,1,2,3),
-        listOf(3,3,1,1,5) + List(86){5} + listOf(2,2,3,1,2,4,1,1,4),
+
+        listOf(1,2,3,1,2,5,5) + List(20){5} + listOf(2,2,3,1,2,4) + List(61){5} + listOf(2,2,3,1,2,4),
+        listOf(2,2,3,2,5) + List(20){5} + listOf(2,2,3,1,2,4) + List(60){5} + listOf(2,2,3,1,2,4,1,1,2),
+        listOf(2,2,3,5) + List(20){5} + listOf(2,2,3,1,2,4) + List(60){5} + listOf(2,2,3,1,2,4,1,1,2,3),
+        listOf(3,3,1,1,5) + List(20){5} + listOf(2,2,3,1,2,4) + List(60){5} + listOf(2,2,3,1,2,4,1,1,4),
 
         listOf(2,2,3,3,1,5) + List(86){5} + listOf(2,2,3,1,2,4,1,1),
         listOf(3,3,1,1,5) + List(86){5} + listOf(2,2,3,1,2,4,1,1,2),
@@ -124,11 +127,11 @@ fun GameCanvas(modifier: Modifier = Modifier) {
         listOf(2,2,3,2,3,1,4,4,3,1,2,5) + List(80){5} + listOf(5,2,3,1,4,4,1,2),
         listOf(2,2,3,2,3,1,4,4,3,1,2,4,5) + List(80){5} + listOf(5,1,2,2,1,4,3),
         listOf(2,2,3,2,3,1,4,4,3,1,2,3,2,5,5) + List(78){5} + listOf(5,5,2,3,4,3,2),
-        listOf(2,2,3,2,3,1,4,4,3,1,2,3,2,2,3,5) + List(77){6} + listOf(5,5,4,4,3,1,2),
+        listOf(2,2,3,2,3,1,4,4,3,1,2,3,2,2,3,5) + List(11){5} + List(66){6} + listOf(5,5,4,4,3,1,2),
         listOf(3,3,1,1,4,2,2,1,4,2,1,1,2,3,4,1,5,5,5,5,5,5,5,5,5,5,10,5,4)+ List(71){1},
         listOf(1,2,3,1,2,3,1,1,2,1,2,1,2,3,4,1,4,5,5,5,5,10,5,5,5,5,5,5,2) + List(71){1},
-        listOf(2,2,3,2,3,1,4,4,3,1,2,1,2,3,4,1,2,5,5,5,5,5,5,5,5,5,2,2) + List(72){1},
-        listOf(3,3,1,1,4,2,2,1,4,2,1,1,2,3,4,1,1,2,5,5,5,5,5,5,5,5,1,2,2) + List(71){1},
+        listOf(2,2,3,2,3,1,4,4,3,1,2,1,2,3,4,1,2,5,5,10,5,5,10,5,5,5,2,2) + List(72){1},
+        listOf(3,3,1,1,4,2,2,1,4,2,1,1,2,3,4,1,1,2,5,5,10,5,5,5,5,5,1,2,2) + List(71){1},
         listOf(1,2,3,1,2,3,1,1,2,1,2,1,2,3,4,1,4,2,2,5,5,5,5,5,5,3,1,2,2) + List(71){1},
         listOf(2,2,3,2,3,1,4,4,3,1,2,1,2,3,4,1,2,2,2,3,5,5,5,5,4,3,1,2,2) + List(71){1},
         listOf(2,2,3,2,3,1,4,4,3,1,2,1,2,3,4,1,2,2,2,3,2,5,5,4,4,3,1,2,2) + List(71){1},
@@ -155,6 +158,7 @@ fun GameCanvas(modifier: Modifier = Modifier) {
     val graystone = ImageBitmap.imageResource(R.drawable.graystone)
 
     val deflaut_green = ImageBitmap.imageResource(R.drawable.deflaut_green)
+    val brown_path = ImageBitmap.imageResource(R.drawable.brown_path)
 
 
 
@@ -186,6 +190,8 @@ fun GameCanvas(modifier: Modifier = Modifier) {
 
                     9 -> grayrock
                     10 -> graystone
+
+                    11 -> brown_path
 
                     else -> water
                 }

@@ -20,6 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.viewmodel.GameViewModel
+import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun SettingsScreen(onNavigateToProfile: () -> Unit,
@@ -37,7 +40,11 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
         horizontalAlignment = Alignment.Start,
     ) {
 
-        item { header() }
+        item {
+            val photoViewModel = viewModel<PhotoViewModel>()
+            val gameViewModel = viewModel<GameViewModel>()
+            header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
+        }
         item { Spacer(modifier = Modifier.height(16.dp)) }
         item {
             Text(

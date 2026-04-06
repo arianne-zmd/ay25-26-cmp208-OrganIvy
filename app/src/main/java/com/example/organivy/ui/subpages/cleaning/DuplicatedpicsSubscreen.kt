@@ -12,7 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.ui.pages.header
+import com.example.organivy.viewmodel.GameViewModel
+import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun DuplicatedPicsSubscreen(onNavigateToProfile: () -> Unit,
@@ -26,7 +29,9 @@ fun DuplicatedPicsSubscreen(onNavigateToProfile: () -> Unit,
         horizontalAlignment = Alignment.Start,
         //verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item{ header() }
+        item{ val photoViewModel = viewModel<PhotoViewModel>()
+            val gameViewModel = viewModel<GameViewModel>()
+            header(photoviewModel = photoViewModel, gameviewModel = gameViewModel) }
 
         item{Text(
             text = "Duplicated Images",
