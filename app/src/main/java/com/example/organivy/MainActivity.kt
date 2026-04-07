@@ -51,6 +51,7 @@ import com.example.organivy.viewmodel.PhotoViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import com.example.organivy.viewmodel.GameViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -91,10 +92,11 @@ class MainActivity : ComponentActivity() {
 
             val hasPermission = hasPermissionState
 
-            val viewModel: PhotoViewModel = viewModel()
+            val photoViewModel: PhotoViewModel = viewModel()
+            val gameViewModel: GameViewModel = viewModel()
             LaunchedEffect(hasPermission) {
                 if (hasPermission) {
-                    viewModel.loadPhotos()
+                    photoViewModel.loadPhotos()
                 }
             }
 
@@ -114,7 +116,11 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                MainApp(navController, viewModel, selectedTheme, { newTheme -> selectedTheme = newTheme })
+                MainApp(navController,
+                    photoViewModel,
+                    gameViewModel,
+                    selectedTheme,
+                    { newTheme -> selectedTheme = newTheme })
 
 
 
@@ -140,7 +146,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 
 fun MainApp(navController: NavHostController,
-            viewModel: PhotoViewModel,
+            photoViewModel: PhotoViewModel,
+            gameViewModel: GameViewModel,
             selectedTheme: ThemeOption,
             onThemeChange: (ThemeOption) -> Unit
 ) {
@@ -182,7 +189,11 @@ fun MainApp(navController: NavHostController,
             ) {
 
                 authGraph(navController)
-                appGraph(navController, viewModel, selectedTheme, onThemeChange)
+                appGraph(navController,
+                    photoViewModel,
+                    gameViewModel,
+                    selectedTheme,
+                    onThemeChange)
             }
 
         }
@@ -223,7 +234,8 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
 //main app
 
 fun NavGraphBuilder.appGraph(navController: NavHostController,
-                             viewModel: PhotoViewModel,
+                             photoViewModel: PhotoViewModel,
+                             gameViewModel: GameViewModel,
                              selectedTheme: ThemeOption,
                              onThemeChange: (ThemeOption) -> Unit
 ) {
@@ -289,35 +301,40 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                     onNavigateToLarge = { navController.navigate("large") },
                     onNavigateToBlurry = { navController.navigate("blurry") },
                     onNavigateToDuplicated = { navController.navigate("duplicated") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
             composable("camera") {
                 CameraSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
             composable("downloads") {
                 DownloadsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
             composable("whatsapp_images") {
                 WhatsappImagesSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
             composable("screenshots") {
                 ScreenshotsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
@@ -325,27 +342,33 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
             composable("old") {
                 OldPicsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
             composable("large") {
                 LargePicsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
-                    viewModel = viewModel
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
 
             composable("blurry") {
                 BlurryPicsSubscreen(
-                    onNavigateToProfile = { navController.navigate("profile") }
+                    onNavigateToProfile = { navController.navigate("profile")},
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 
             composable("duplicated") {
                 DuplicatedPicsSubscreen(
-                    onNavigateToProfile = { navController.navigate("profile") }
+                    onNavigateToProfile = { navController.navigate("profile") },
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
                 )
             }
 

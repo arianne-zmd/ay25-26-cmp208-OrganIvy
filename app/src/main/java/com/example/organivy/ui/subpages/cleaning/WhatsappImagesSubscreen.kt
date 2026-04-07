@@ -26,14 +26,15 @@ import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun WhatsappImagesSubscreen(onNavigateToProfile: () -> Unit,
-                            viewModel: PhotoViewModel?
+                            photoViewModel: PhotoViewModel?,
+                            gameViewModel: GameViewModel
 ){
 
-    val state = viewModel?.uiState
+    val state =photoViewModel?.uiState
 
 
     if (state != null && state.whatsappPicsList.isNotEmpty()) {
-        LazyGridScreenWAP(viewModel = viewModel)
+        LazyGridScreenWAP(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
     } else {
         Text(
             text = "Loading photos...",
@@ -45,8 +46,8 @@ fun WhatsappImagesSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenWAP(viewModel: PhotoViewModel) {
-    val state = viewModel.uiState  //: PhotoState()
+fun LazyGridScreenWAP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel) {
+    val state = photoViewModel.uiState  //: PhotoState()
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -67,15 +68,15 @@ fun LazyGridScreenWAP(viewModel: PhotoViewModel) {
 
             items(state.whatsappPicsList) { photo ->
 
-                GridItem(photo = photo, viewModel = viewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }
         }
         // under grid
 
-        val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
+        //val photoViewModel = viewModel<PhotoViewModel>()
+        //val gameViewModel = viewModel<GameViewModel>()
         BoxExtras(photoViewModel, gameViewModel)
 
         Text(
@@ -90,8 +91,8 @@ fun LazyGridScreenWAP(viewModel: PhotoViewModel) {
 }
 
 // Preview function goes outside MainActivity class
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewWhatsappImageSubscreen() {
-    WhatsappImagesSubscreen(onNavigateToProfile = {}, viewModel = null)
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewWhatsappImageSubscreen() {
+//    WhatsappImagesSubscreen(onNavigateToProfile = {}, photoViewModel = null)
+//}

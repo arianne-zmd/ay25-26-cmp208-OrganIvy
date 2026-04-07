@@ -47,7 +47,7 @@ class BlurDetection (private val context: Context) {
 
         bitmap.recycle()
 
-        return sharpness < 2
+        return sharpness < 1.5
     }
 
     fun calculateSampleSize(options: Options, reqWidth: Int, reqHeight: Int): Int {

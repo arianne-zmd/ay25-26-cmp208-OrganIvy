@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.organivy.data.BlurDetection
 import com.example.organivy.data.Photo
 import com.example.organivy.data.PhotoScanner
 import com.example.organivy.data.PhotoState
@@ -30,9 +31,9 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     var uiState by mutableStateOf(PhotoState())
         private set
 
-    init {
-        loadPhotos()
-    }
+//    init {
+//        loadPhotos()
+//    }
 
      fun loadPhotos() {
         // MOVED WHAT WAS IN MAIN KT HEREEEEEEEEEEE
@@ -40,7 +41,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
             val scanner = PhotoScanner(context)
             val photo = scanner.logScanImages()
-            //val blurDetector = BlurDetection(this@MainActivity)
+            //val blurDetector = BlurDetection(context)
 
 
             // Filtering the photos types
@@ -50,12 +51,22 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             val oldPics = withContext(Dispatchers.Default) {
                 photo.filter { pic -> pic.dateAdded <= (System.currentTimeMillis() / 1000) - 31_556_952L }
             }
-            val duplicatedPics = withContext(Dispatchers.Default) {
+            val duplicatedPics:  Map<Long, List<Photo>> = withContext(Dispatchers.Default) {
                 photo.groupBy { pic -> pic.size }.filter { pic -> pic.value.size > 1 }
             }
-//                        val blurryPics = withContext(Dispatchers.Default) {
-//                            photo.filter { blurDetector.isImageBlurry(it) }
-//                        }
+
+
+            // 2️ Flatten duplicates into a list
+            val allDuplicates: List<Photo> = withContext(Dispatchers.Default) {
+                duplicatedPics.flatMap { entry -> entry.value } // flatMap over map entries
+            }
+
+
+//            val blurryPics = withContext(Dispatchers.Default) {
+//                photo.chunked(100).flatMap { batch ->
+//                    batch.filter { blurDetector.isImageBlurry(it) }
+//                }
+//            }
 
             // Filtering the photos cateries
             val camPics = withContext(Dispatchers.Default) {
@@ -71,6 +82,36 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                 photo.filter { pic -> pic.path.contains("/WhatsApp Images") }
             }
 
+            //addddddddddddddd
+            viewModelScope.launch(Dispatchers.Default) {
+
+                val blurDetector = BlurDetection(context)
+                val result = mutableListOf<Photo>()
+
+
+                photo.chunked(50).forEachIndexed { index, batch ->
+
+                    val blurryBatch = batch.filter {
+                        blurDetector.isImageBlurry(it)
+                    }
+
+                    result.addAll(blurryBatch)
+
+                    //  Update UI while app is running
+                    withContext(Dispatchers.Main) {
+                        uiState = uiState.copy(
+                            blurryPhotos = result.size,
+                            blurryPicsList = result.toList()
+                        )
+                    }
+
+                    Log.d("BlurTest", "Batch $index done")
+
+                    // small pause so UI stays smooth
+                    kotlinx.coroutines.delay(10)
+                }
+            }
+            //addeddddddddddd
 
 
 
@@ -82,10 +123,13 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                     largePhotos = largePics.size,
                     oldPhotos = oldPics.size,
                     duplicatePhotos = duplicatedPics.size,
+                    //blurryPhotos = blurryPics.size,
 
                     //lists
                     oldPicsList = oldPics,
                     largePicsList  = largePics,
+                    duplicatePicsList = allDuplicates,
+                    //blurryPicsList = blurryPics,
 
                     cameraPicsList = camPics,
                     screenshotsList = sSPics,
@@ -100,6 +144,8 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
         }
+
+
     }
 
     fun onPhotoChecked(photo: Photo, isChecked: Boolean) {

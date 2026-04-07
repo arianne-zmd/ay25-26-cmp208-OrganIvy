@@ -22,21 +22,23 @@ import com.example.organivy.data.BoxExtras
 import com.example.organivy.data.GridItem
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
+import com.google.android.play.core.integrity.g
 
 @Composable
 fun OldPicsSubscreen(onNavigateToProfile: () -> Unit,
-                     viewModel: PhotoViewModel?
+                     photoViewModel: PhotoViewModel?,
+                     gameViewModel: GameViewModel
 
 ){
 
-    val state = viewModel?.uiState
+    val state = photoViewModel?.uiState
 
 
 
 
 
     if (state != null && state.oldPicsList.isNotEmpty()) {
-            LazyGridScreen(viewModel = viewModel)
+            LazyGridScreen(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
         } else {
             Text(
                 text = "Loading photos...",
@@ -48,8 +50,8 @@ fun OldPicsSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreen(viewModel: PhotoViewModel) {
-    val state = viewModel.uiState  //: PhotoState()
+fun LazyGridScreen(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel ) {
+    val state = photoViewModel.uiState  //: PhotoState()
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -70,15 +72,14 @@ fun LazyGridScreen(viewModel: PhotoViewModel) {
 
             items(state.oldPicsList) { photo ->
 
-                GridItem(photo = photo, viewModel = viewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }
         }
         // under grid
 
-        val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
+
         BoxExtras(photoViewModel, gameViewModel)
 
         Text(
@@ -99,8 +100,8 @@ fun LazyGridScreen(viewModel: PhotoViewModel) {
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewOldPicsSubscreen() {
-    OldPicsSubscreen(onNavigateToProfile = {}, viewModel = null)
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewOldPicsSubscreen() {
+//    OldPicsSubscreen(onNavigateToProfile = {}, photoViewModel = null, )
+//}

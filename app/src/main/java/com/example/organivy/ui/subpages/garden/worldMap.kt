@@ -30,14 +30,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
-import com.example.organivy.ui.pages.header
+import com.example.organivy.data.Header
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
 
 @Composable
 fun WorldMapSubscreen(onNavigateToProfile: () -> Unit,
+                      //photoViewModel: PhotoViewModel,
+                      //gameViewModel: GameViewModel
 ){
+
+
 
     Column(
         modifier = Modifier
@@ -49,7 +53,7 @@ fun WorldMapSubscreen(onNavigateToProfile: () -> Unit,
     ) {
         val photoViewModel = viewModel<PhotoViewModel>()
         val gameViewModel = viewModel<GameViewModel>()
-        header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
+        Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
 
         Text(
             text = "Map",

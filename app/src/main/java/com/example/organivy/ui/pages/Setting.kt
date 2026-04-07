@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.data.Header
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -43,7 +44,7 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
         item {
             val photoViewModel = viewModel<PhotoViewModel>()
             val gameViewModel = viewModel<GameViewModel>()
-            header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
+            Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
         }
         item { Spacer(modifier = Modifier.height(16.dp)) }
         item {
@@ -193,7 +194,7 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
 }
 
 
-
+// for display modes
 enum class ThemeOption {
     SYSTEM, LIGHT, DARK
 }
@@ -237,6 +238,7 @@ fun RadioButtons(selectedTheme: ThemeOption,
     }
 
 }
+// for display modes
 
 
 // Preview function goes outside MainActivity class

@@ -26,13 +26,14 @@ import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun LargePicsSubscreen(onNavigateToProfile: () -> Unit,
-                       viewModel: PhotoViewModel?
+                       photoViewModel: PhotoViewModel?,
+                       gameViewModel: GameViewModel
 ){
-    val state = viewModel?.uiState
+    val state = photoViewModel?.uiState
 
 
     if (state != null && state.oldPicsList.isNotEmpty()) {
-        LazyGridScreenLP(viewModel = viewModel)
+        LazyGridScreenLP(photoViewModel = photoViewModel,  gameViewModel = gameViewModel)
     } else {
         Text(
             text = "Loading photos...",
@@ -44,8 +45,8 @@ fun LargePicsSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenLP(viewModel: PhotoViewModel) {
-    val state = viewModel.uiState  //: PhotoState()
+fun LazyGridScreenLP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel) {
+    val state = photoViewModel.uiState  //: PhotoState()
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -66,15 +67,14 @@ fun LazyGridScreenLP(viewModel: PhotoViewModel) {
 
             items(state.largePicsList) { photo ->
 
-                GridItem(photo = photo, viewModel = viewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }
         }
         // under grid
 
-        val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
+
         BoxExtras(photoViewModel, gameViewModel)
 
         Text(
@@ -93,8 +93,8 @@ fun LazyGridScreenLP(viewModel: PhotoViewModel) {
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewLargePicsSubscreen() {
-    LargePicsSubscreen(onNavigateToProfile = {}, viewModel = null)
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewLargePicsSubscreen() {
+//    LargePicsSubscreen(onNavigateToProfile = {}, photoViewModel = null)
+//}

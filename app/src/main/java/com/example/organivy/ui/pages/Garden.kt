@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
+import com.example.organivy.data.Header
 import com.example.organivy.ui.theme.*
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
@@ -114,7 +115,7 @@ fun GardenScreen(
             ) {
                 val photoViewModel = viewModel<PhotoViewModel>()
                 val gameViewModel = viewModel<GameViewModel>()
-                header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
+                Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
 
                 Spacer(modifier = Modifier.height(16.dp))
 

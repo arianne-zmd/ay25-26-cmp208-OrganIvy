@@ -8,11 +8,15 @@ data class PhotoState(
     val largePhotos: Int = 0,
     val oldPhotos: Int = 0,
     val duplicatePhotos: Int = 0,
+    val blurryPhotos: Int = 0,
 
     // to list the different types and catergories of photos
     // types
     val oldPicsList: List<Photo> = emptyList(),
     val largePicsList: List<Photo> = emptyList(),
+    val blurryPicsList: List<Photo> = emptyList(),
+    val duplicatePicsList: List<Photo> = emptyList(),
+
 
     // catergories
     val cameraPicsList: List<Photo> = emptyList(),

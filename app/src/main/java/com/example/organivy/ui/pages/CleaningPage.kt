@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.data.Header
 import com.example.organivy.data.PhotoState
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
@@ -42,15 +43,17 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
                  onNavigateToLarge: () -> Unit,
                  onNavigateToBlurry: () -> Unit,
                  onNavigateToDuplicated: () -> Unit,
-                 viewModel: PhotoViewModel?
+                 photoViewModel: PhotoViewModel?,
+                 gameViewModel: GameViewModel
 ) {
 
-    val state = viewModel?.uiState ?: PhotoState()
+    val state = photoViewModel?.uiState// ?: PhotoState()
+    val state2 = gameViewModel.uiState
 
 
 
     if (state?.isLoading == true)  {
-        CircularProgressIndicator()
+        CircularProgressIndicator(modifier = Modifier.size(100.dp).padding(150.dp,200.dp))
         return
     }
 
@@ -68,8 +71,8 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
 
             item {
                 val photoViewModel = viewModel<PhotoViewModel>()
-                val gameViewModel = viewModel<GameViewModel>()
-                header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
+                //val gameViewModel = viewModel<GameViewModel>()
+                Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
             }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -116,7 +119,7 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
                 Button(
                     onClick = {
                         // boo
-                        viewModel?.loadPhotos()
+                        photoViewModel?.loadPhotos()
 
                     },
                     modifier = Modifier
@@ -216,7 +219,7 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
             val temp = listOf(
                 "${state?.oldPhotos}",
                 "${state?.largePhotos}",
-                "blurry",
+                "${state?.blurryPhotos}",
                 "${state?.duplicatePhotos}"
             )
 
@@ -294,11 +297,11 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
 }
 
 // Preview function goes outside MainActivity class
-@Preview(showBackground = true)
-@Composable
-fun PreviewCleaningPage() {
-    CleaningPage(onNavigateToProfile = {}, onNavigateToCamera = {} , onNavigateToDownloads = {}, onNavigateToScreenshots = {},
-        onNavigateToWhatsappImages = {}, onNavigateToOld = {}, onNavigateToLarge = {}, onNavigateToDuplicated = {},
-        onNavigateToBlurry = {},  viewModel = null
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewCleaningPage() {
+//    CleaningPage(onNavigateToProfile = {}, onNavigateToCamera = {} , onNavigateToDownloads = {}, onNavigateToScreenshots = {},
+//        onNavigateToWhatsappImages = {}, onNavigateToOld = {}, onNavigateToLarge = {}, onNavigateToDuplicated = {},
+//        onNavigateToBlurry = {},  photoViewModel = null, gameViewModel = null
+//    )
+//}

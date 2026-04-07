@@ -28,15 +28,16 @@ import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun CameraSubscreen(onNavigateToProfile: () -> Unit,
-                    viewModel: PhotoViewModel?
+                    photoViewModel: PhotoViewModel?,
+                    gameViewModel: GameViewModel
                    ){
 
-    val state = viewModel?.uiState
+    val state = photoViewModel?.uiState
 
 
 
     if (state != null && state.cameraPicsList.isNotEmpty()) {
-        LazyGridScreenCP(viewModel = viewModel)
+        LazyGridScreenCP(photoViewModel = photoViewModel,  gameViewModel = gameViewModel)
     } else {
         Text(
             text = "Loading photos...",
@@ -48,8 +49,8 @@ fun CameraSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenCP(viewModel: PhotoViewModel) {
-    val state = viewModel.uiState  //: PhotoState()
+fun LazyGridScreenCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel, ) {
+    val state = photoViewModel.uiState  //: PhotoState()
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -74,15 +75,14 @@ fun LazyGridScreenCP(viewModel: PhotoViewModel) {
             items(state.cameraPicsList) {photo ->
 
 
-                GridItem(photo = photo, viewModel = viewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }
         }
         // under grid
 
-        val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
+
         BoxExtras(photoViewModel, gameViewModel)
 
         Text(
@@ -116,8 +116,8 @@ fun LazyGridScreenCP(viewModel: PhotoViewModel) {
 
 
 // Preview function goes outside MainActivity class
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewCameraSubscreen() {
-    CameraSubscreen(onNavigateToProfile = {}, viewModel = null)
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewCameraSubscreen() {
+//    CameraSubscreen(onNavigateToProfile = {}, photoViewModel = null)
+//}

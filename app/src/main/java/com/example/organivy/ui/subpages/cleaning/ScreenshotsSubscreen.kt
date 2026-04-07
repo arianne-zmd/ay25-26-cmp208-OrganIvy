@@ -26,14 +26,15 @@ import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun ScreenshotsSubscreen(onNavigateToProfile: () -> Unit,
-                         viewModel: PhotoViewModel?
+                         photoViewModel: PhotoViewModel?,
+                         gameViewModel: GameViewModel
 ){
 
-    val state = viewModel?.uiState
+    val state = photoViewModel?.uiState
 
 
     if (state != null && state.screenshotsList.isNotEmpty()) {
-        LazyGridScreenSSP(viewModel = viewModel)
+        LazyGridScreenSSP(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
     } else {
         Text(
             text = "Loading photos...",
@@ -45,8 +46,8 @@ fun ScreenshotsSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenSSP(viewModel: PhotoViewModel) {
-    val state = viewModel.uiState  //: PhotoState()
+fun LazyGridScreenSSP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel) {
+    val state = photoViewModel.uiState  //: PhotoState()
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -66,15 +67,15 @@ fun LazyGridScreenSSP(viewModel: PhotoViewModel) {
 
             items(state.screenshotsList) { photo ->
 
-                GridItem(photo = photo, viewModel = viewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }
         }
         // under grid
 
-        val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
+        //val photoViewModel = viewModel<PhotoViewModel>()
+        //val gameViewModel = viewModel<GameViewModel>()
         BoxExtras(photoViewModel, gameViewModel)
 
         Text(
@@ -90,8 +91,8 @@ fun LazyGridScreenSSP(viewModel: PhotoViewModel) {
 
 
 // Preview function goes outside MainActivity class
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewScreenshotsSubscreen() {
-    ScreenshotsSubscreen(onNavigateToProfile = {}, viewModel = null)
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewScreenshotsSubscreen() {
+//    ScreenshotsSubscreen(onNavigateToProfile = {}, photoViewModel = null)
+//}

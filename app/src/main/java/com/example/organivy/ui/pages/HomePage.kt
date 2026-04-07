@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
+import com.example.organivy.data.Header
 import com.example.organivy.data.Photo
 import com.example.organivy.data.PhotoState
 import com.example.organivy.ui.theme.textLight
@@ -138,7 +139,7 @@ fun HomeScreen(
 
                         val photoViewModel = viewModel<PhotoViewModel>()
                         val gameViewModel = viewModel<GameViewModel>()
-                        header(photoviewModel = photoViewModel, gameviewModel = gameViewModel)
+                        Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
 
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
@@ -230,56 +231,7 @@ fun HomeScreen(
     }
 //}
 
-@Composable
-fun header(photoviewModel: PhotoViewModel, gameviewModel: GameViewModel){
 
-    val state = photoviewModel.uiState
-    val state2 = gameviewModel.uiState
-
-    Spacer(modifier = Modifier.height(7.dp))
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        // = Alignment.CenterVertically
-    ) {
-
-
-        Image(
-            modifier = Modifier
-                .size(30.dp)
-                .clip(RoundedCornerShape(20.dp)),
-            painter = painterResource(R.drawable.placeholder_icon),
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = " CO\u2082 Saved",
-            fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
-            modifier = Modifier
-                .padding(0.dp,0.dp ),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-        ){
-            Text(
-                text = "\uD83E\uDE99 ${state2.coins} ",
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-
-}
 
 @Preview(showBackground = true)
 @Composable

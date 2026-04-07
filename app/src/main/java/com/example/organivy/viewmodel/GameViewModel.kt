@@ -9,13 +9,15 @@ import com.example.organivy.data.GameState
 class GameViewModel: ViewModel () {
 
     var uiState by mutableStateOf(GameState())
+        private set
+
 
     //coins
-    fun onDeletion (){
+    fun onDeletion (photoNum: Int){
 
         //not finished yet
         uiState = uiState.copy(
-            coins = uiState.coins + 20
+            coins = uiState.coins + 20 + (photoNum * 5)
         )
 
 
