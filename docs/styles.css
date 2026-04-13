@@ -97,7 +97,7 @@
 #navbar__logo {
     text-decoration: none;
     background-color: #ff8177;
-    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: linear-gradient(to top, #00522C 0%, #90D5AD 100%);
     background-size: 100%;
     -webkit-background-clip: text;
     -moz-background-clip: text;
@@ -131,7 +131,7 @@
 }
 
 .navbar__links {
-    color: #fff;
+    color: #baefcf;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -142,7 +142,7 @@
 
 /* used to change the colour of the text int he menu when you hover over it  */
 .navbar__links:hover {
-    color:#f77062;
+    color:#348f64;
     transition: all 0.3s ease;
 }
 
@@ -237,7 +237,7 @@
 
 /* Hero Section CSS */
 .main {
-    background-color: #141414;
+    background-color: #0F1511; /*#0xFF0F1511;*/
 }
 
 .main__container {
@@ -247,7 +247,7 @@
     justify-self: center;
     margin: 0 auto;
     height: 91vh;
-    background-color: #141414;
+    background-color: #0F1511;/*#141414;*/
     z-index: 1;
     width: 100%;
     max-width: 1300px;
@@ -257,7 +257,7 @@
 .main__content h1 {
     font-size: 4rem;
     background-color: #ff8177;
-    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: linear-gradient(to top, #00522C 0%, #90D5AD 100%);
     background-size: 100%;
     -webkit-background-clip: text;
     -moz-background-clip: text;
@@ -270,7 +270,7 @@
 .main__content h2 {
     font-size: 4rem;
     background-color: #ff8177;
-    background-image: linear-gradient(to top, #b721ff 0%, #21d4fd 100%);
+    background-image: linear-gradient(to top, #00522C  20%,  #FFDDB1  100%);
     background-size: 100%;
     -webkit-background-clip: text;
     -moz-background-clip: text;
@@ -330,11 +330,11 @@
     
     }
 }
-
+   
 /* features*/
  .services {
     padding: 8rem calc((100vw - 1200px)/2);
-    background-color:antiquewhite;
+    background-color:#015234;
     
  }
 
@@ -344,7 +344,7 @@
  }
 
  .topline {
-    color: red;
+    color: green;
     text-transform: uppercase;
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -353,10 +353,12 @@
  .services__heading {
     margin-bottom: 1rem;
     font-size: clamp(1rem, 6vw, 3rem);
+    color: #90D5AD;
  }
 
  .services__features {
     list-style: none;
+    color: #ACF2C8 ;
     
  }
 
@@ -371,8 +373,8 @@
     padding: 5rem calc((100vw-1100px) /2);
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    color: white;
-    background: black;
+    color: antiquewhite;
+    background: #0F1511;
 }
 
 .footer__desc {
@@ -381,7 +383,7 @@
 
 .footer__desc h1 {
     margin-bottom: 2rem;
-    color: red;
+    color: #348f64;
     font-size: 1.5rem; 
 }
 
@@ -414,14 +416,14 @@
 
 .footer__link{
     text-decoration: none;
-    color: #ffb199;
+    color: #90d5ad;
     font-size: 14px;
     margin-bottom: 0.5rem;
     transition: 0.3s ease-in-out;
 }
 
 .footer__link:hover {
-    color: red;
+    color: #348f64;
 }
 
 @media screen and (max-width: 820px) {
@@ -440,4 +442,36 @@
         padding: 1rem;
     }
 
+}
+
+/*  */
+/*  Individual pages */
+
+/* terms page */
+ .terms {
+    padding: 8rem calc((100vw - 1200px)/2);
+    background-color:#015234;
+    color: #ACF2C8;
+    
+    
+ }
+
+ .terms__container {
+    padding: 1rem;
+    text-decoration: none;
+    
+ }
+
+.terms__container  h1 {
+    margin-bottom: 2rem;
+    color: #348f64;
+    font-size: 1.5rem; 
+}
+
+.terms__container  p {
+    margin-bottom: 1rem;
+}
+
+.terms__container  a {
+    color: #348f64;
 }
