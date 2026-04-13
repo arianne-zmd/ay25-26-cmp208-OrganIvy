@@ -14,60 +14,43 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.VerticalDivider
 import coil.compose.AsyncImage
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.organivy.data.ShopItem
+import com.example.organivy.viewmodel.GameViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun ShopScreen(onNavigateToProfile: () -> Unit) {
+fun ShopScreen(
+    gameViewModel: GameViewModel = viewModel(),
+    onNavigateToProfile: () -> Unit
+) {
     var showPlantPots by remember { mutableStateOf(false) }
     var showFlowers by remember { mutableStateOf(false) }
     var selectedPot by remember { mutableStateOf<Int?>(null) }
     var selectedFlower by remember { mutableStateOf<Int?>(null) }
+    val coins = gameViewModel.uiState.coins
+
 
     val potImages = listOf(
-        R.drawable.plantpot_1,
-        R.drawable.plantpot_2,
-        R.drawable.plantpot_3,
-        R.drawable.plantpot_4,
-        R.drawable.plantpot_5_1,
-        R.drawable.plantpot_5_2,
-        R.drawable.plantpot_5_3,
-        R.drawable.plantpot_5_4,
-        R.drawable.plantpot_6_1,
-        R.drawable.plantpot_6_2,
-        R.drawable.plantpot_6_3,
-        R.drawable.plantpot_6_4,
-        R.drawable.plantpot_6_5,
-        R.drawable.plantpot_6_6,
-        R.drawable.plantpot_6_7,
-        R.drawable.plantpot_7_1,
-        R.drawable.plantpot_7_2,
-        R.drawable.plantpot_7_3,
-        R.drawable.plantpot_7_5,
-        R.drawable.plantpot_8
+        ShopItem(R.drawable.pot_1, 50, "Standard Pot")
     )
 
     val flowerImages = listOf(
-        R.drawable.cheap_daisy,
-        R.drawable.cheap_daisy_2,
-        R.drawable.cheap_lily,
-        R.drawable.cheap_flower_1,
-        R.drawable.cheap_flower_2,
-        R.drawable.cheap_flower_3,
-        R.drawable.cheap_rose,
-        R.drawable.cheap_sunflower,
-        R.drawable.expensive_babybreath,
-        R.drawable.expensive_flower,
-        R.drawable.expensive_flower_2,
-        R.drawable.expensive_rose_1,
-        R.drawable.expensive_sunflower,
-        R.drawable.expensive_tulip_1,
-        R.drawable.expensive_tulip_2,
-        R.drawable.expensive_tulip_3,
+        ShopItem(R.drawable.daisy_1, 20, "Daisy"),
+        ShopItem(R.drawable.lily_1, 20, "Lily"),
+        ShopItem(R.drawable.mushroom_1, 20, "Mushroom"),
+        ShopItem(R.drawable.rose_1, 20, "Rose"),
+        ShopItem(R.drawable.sunflower_1, 20, "Sunflower"),
+        ShopItem(R.drawable.tulip_1, 20, "Tulip")
     )
 
     Column(
@@ -99,14 +82,22 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
                 
                 // Flower on top layer
                 selectedFlower?.let { flowerRes ->
+                    // Adjust offset dynamically based on the flower type
+                    // You can change these specific amounts to position the mushroom perfectly
+                    val (xOffset, yOffset) = when (flowerRes) {
+                        R.drawable.mushroom_1 -> (-5).dp to (-70).dp
+                        else -> 0.dp to (-92).dp
+                    }
+
                     AsyncImage(
                         model = flowerRes,
                         contentDescription = "Selected Flower",
                         modifier = Modifier
                             .fillMaxWidth(0.7f)
                             .align(Alignment.BottomCenter)
-                            .offset(y = (-140).dp) // Adjust this to sit on the rim
+                            .offset(x = xOffset, y = yOffset)
                     )
+
                 }
             }
         }
@@ -131,7 +122,7 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
 
             Spacer(modifier = Modifier.width(16.dp))
             
-            Divider(
+            VerticalDivider(
                 modifier = Modifier
                     .height(30.dp)
                     .width(2.dp),
@@ -154,7 +145,7 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
         // Grid area at the bottom (Under the buttons)
         if (showPlantPots) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(4),
+                columns = GridCells.Fixed(3),
                 modifier = Modifier
                     .height(300.dp)
                     .fillMaxWidth(),
@@ -162,21 +153,20 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(potImages) { imageRes ->
-                    AsyncImage(
-                        model = imageRes,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clickable { selectedPot = imageRes }
-
+                items(potImages) { item ->
+                    ShopGridItem(
+                        item = item,
+                        userCoins = coins,
+                        onBuy = {
+                            gameViewModel.spendCoins(item.price)
+                            selectedPot = item.imageRes
+                        }
                     )
                 }
             }
         } else if (showFlowers) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(4),
+                columns = GridCells.Fixed(3),
                 modifier = Modifier
                     .height(300.dp)
                     .fillMaxWidth(),
@@ -184,14 +174,14 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(flowerImages) { imageRes ->
-                    AsyncImage(
-                        model = imageRes,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clickable { selectedFlower = imageRes }
+                items(flowerImages) { item ->
+                    ShopGridItem(
+                        item = item,
+                        userCoins = coins,
+                        onBuy = {
+                            gameViewModel.spendCoins(item.price)
+                            selectedFlower = item.imageRes
+                        }
                     )
                 }
             }
@@ -199,5 +189,30 @@ fun ShopScreen(onNavigateToProfile: () -> Unit) {
             // Placeholder spacer to keep buttons in the same position
             Spacer(modifier = Modifier.height(300.dp))
         }
+    }
+}
+
+@Composable
+fun ShopGridItem(item: ShopItem, userCoins: Int, onBuy: () -> Unit){
+    Card(
+        modifier = Modifier.padding(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ){
+        Column(horizontalAlignment = Alignment.CenterHorizontally){
+            AsyncImage(model = item.imageRes,modifier = Modifier.size(60.dp), contentDescription = null)
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "🪙 ${item.price}", fontSize = 12.sp)
+
+            }
+            Button(
+                onClick =onBuy,
+                enabled = userCoins >= item.price,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Buy", fontSize = 10.sp)
+            }
+        }
+
     }
 }

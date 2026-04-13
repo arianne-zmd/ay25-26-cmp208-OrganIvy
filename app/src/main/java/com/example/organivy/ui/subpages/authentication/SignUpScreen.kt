@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SignUpScreen(onNavigateToProfile: () -> Unit,
                  onNavigateToForget: () -> Unit,
-                 onNavigateToLogin: () -> Unit
+                 onNavigateToLogin: () -> Unit,
+                 onNavigateToHome: () -> Unit
 ){
 
     LazyColumn(
@@ -93,7 +94,7 @@ fun SignUpScreen(onNavigateToProfile: () -> Unit,
         item {
 
             Button(
-                onClick = onNavigateToLogin,
+                onClick = onNavigateToHome,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -111,5 +112,5 @@ fun SignUpScreen(onNavigateToProfile: () -> Unit,
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSignUpScreen() {
-    SignUpScreen(onNavigateToProfile = {}, onNavigateToForget = {}, onNavigateToLogin = {})
+    SignUpScreen(onNavigateToProfile = {}, onNavigateToForget = {}, onNavigateToLogin = {}, onNavigateToHome = {})
 }

@@ -1,13 +1,10 @@
 package com.example.organivy.ui.pages
 
-import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -39,30 +33,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.organivy.R
 import com.example.organivy.data.Header
-import com.example.organivy.data.Photo
-import com.example.organivy.data.PhotoState
+import com.example.organivy.data.StatBar
+import com.example.organivy.ui.components.ChallengeItem
 import com.example.organivy.ui.theme.textLight
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun HomeScreen(
+    gameViewModel: GameViewModel,
     onNavigateToProfile: () -> Unit,
     onNavigateToBadges: () -> Unit,
     onNavigateToStatsandImpact: () -> Unit,
     onNavigateToShop: () -> Unit,
     onNavigateToJournal: () -> Unit
 ) {
-    val context = LocalContext.current
+    val photoViewModel: PhotoViewModel = viewModel()
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -72,7 +64,6 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.End
             ) {
-
                 // Expanded FABs
                 AnimatedVisibility(
                     visible = expanded,
@@ -96,7 +87,6 @@ fun HomeScreen(
                         FloatingActionButton(onClick = {
                             expanded = false
                             onNavigateToStatsandImpact()
-
                         }) {
                             Text(
                                 text = "Stats and Impact",
@@ -117,126 +107,165 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
 
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Welcome to OrganIvy User!",
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
 
+            item {
+                var isExpanded by remember { mutableStateOf(false) }
+                val challenges = gameViewModel.uiState.challenges
+                val completedCount = challenges.count { it.isCompleted }
 
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-                    .padding(innerPadding) // 👈 THIS fixes the warning
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start,
-            ){
-
-                item{
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        val photoViewModel = viewModel<PhotoViewModel>()
-                        val gameViewModel = viewModel<GameViewModel>()
-                        Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "  Welcome to OrganIvy User!",
-                            fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onBackground
+                Card(
+                    onClick = { isExpanded = !isExpanded },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = " ✨ Challenge for this week", modifier = Modifier.weight(1f))
+                            Text(text = "Done: $completedCount/${challenges.size}", fontSize = 12.sp)
+                        }
+                        
+                        // Progress Bar for challenges
+                        StatBar(
+                            label = "Progress",
+                            current = completedCount,
+                            max = challenges.size,
+                            color = Color(0xFF9C27B0)
                         )
+
+                        AnimatedVisibility(visible = isExpanded) {
+                            Column(modifier = Modifier.padding(top = 16.dp)) {
+                                challenges.forEach { challenge ->
+                                    ChallengeItem(
+                                        task = "${challenge.description} (${challenge.currentValue}/${challenge.targetValue})",
+                                        isDone = challenge.isCompleted
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
+            }
 
-                item{
-                    Card(
-                        modifier = Modifier
+            item {
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp,30.dp ),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                    ) {
-                        Text(text = "Username", Modifier.padding(15.dp))
-                        Text(text = "Level", Modifier.padding(15.dp))
-                        Text(text = "Progress Bar", Modifier.padding(15.dp))
-                    }
-                }
-
-                item { Spacer(modifier = Modifier.height(100.dp))  }
-
-
-                item{
-
-                    Row(
-                        modifier = Modifier.fillMaxSize()
-                            .padding(20.dp, 20.dp ),
-                        //horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,  // push children to edges
-                        verticalAlignment = Alignment.Top
-                    ){
-
+                        .padding(vertical = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Badges Card - Left Aligned, 75% width
+                    Box(modifier = Modifier.fillMaxWidth()) {
                         Card(
                             modifier = Modifier
-                                .size(130.dp, 200.dp),
+                                .fillMaxWidth(0.75f)
+                                .height(80.dp)
+                                .align(Alignment.CenterStart),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                        ) {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                                Text(text = "Badges Earning", Modifier.padding(start = 20.dp))
+                            }
+                        }
+                    }
+
+                    // Facts Card - Right Aligned, 75% width
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(0.75f)
+                                .height(80.dp)
+                                .align(Alignment.CenterEnd),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                             ),
                             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                         ) {
-                            Text(text = "Badges Earning", Modifier.padding(20.dp))
-                        }
-
-
-
-                            Card(
-                                modifier = Modifier
-                                    .size(130.dp, 200.dp),
-
-
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                ),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                            ) {
-                                Text(text = "Facts Learned", Modifier.padding(20.dp))
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                                Text(text = "Facts Learned", Modifier.padding(start = 20.dp))
                             }
-
-
+                        }
                     }
 
+                    // Photos Deleted Card - Left Aligned, 75% width
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(0.75f)
+                                .height(80.dp)
+                                .align(Alignment.CenterStart),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                        ) {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                                Text(text = "Photos Deleted", Modifier.padding(start = 20.dp))
+                            }
+                        }
+                    }
                 }
-
-                item{
-
-                }
-
-                item{}
-
-                item{}
             }
 
-
-
-
-
-
+            item {
+                // Carbon Footprint Card - Right Aligned, 75% width
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(0.75f)
+                            .height(80.dp)
+                            .align(Alignment.CenterEnd),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                    ) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                            Text(text = "Carbon Footprint ", Modifier.padding(start = 20.dp))
+                        }
+                    }
+                }
+            }
         }
     }
-//}
-
-
+}
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
     HomeScreen(
+        gameViewModel = viewModel(),
         onNavigateToProfile = {},
         onNavigateToBadges = {},
         onNavigateToStatsandImpact = {},

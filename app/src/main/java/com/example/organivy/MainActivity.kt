@@ -34,6 +34,7 @@ import com.example.organivy.ui.pages.SettingsScreen
 import com.example.organivy.ui.pages.BadgePage
 import com.example.organivy.ui.pages.StatsandImpactPage
 import com.example.organivy.ui.pages.ThemeOption
+import com.example.organivy.ui.pages.OnboardingScreen
 import com.example.organivy.ui.subpages.authentication.ForgetPasswordScreen
 import com.example.organivy.ui.subpages.authentication.LoginScreen
 import com.example.organivy.ui.subpages.authentication.SignUpScreen
@@ -212,14 +213,15 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             LoginScreen( onNavigateToProfile = { navController.navigate("profile")},
                 onNavigateToSignUp = { navController.navigate("signup")},
                 onNavigateToForget = { navController.navigate("forget_password")},
-                onNavigateToHome = { navController.navigate("home")}
+                onNavigateToHome = { navController.navigate("app") } // Changed to 'app' to show onboarding
                 )
         }
 
         composable("signup") {
             SignUpScreen( onNavigateToProfile = { navController.navigate("profile") },
                 onNavigateToForget = { navController.navigate("forget_password")},
-                onNavigateToLogin = { navController.navigate("login")}
+                onNavigateToLogin = { navController.navigate("login")},
+                onNavigateToHome = { navController.navigate("app") } // Navigate to 'app' after signup
                 )
         }
 
@@ -241,12 +243,25 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
 ) {
 
     navigation(
-        startDestination = "home",
+        startDestination = "onboarding",
         route = "app"
     ) {
 
+        composable("onboarding") {
+            OnboardingScreen(
+                gameViewModel = gameViewModel,
+                onFinishOnboarding = {
+                    gameViewModel.saveUserDataToFirebase()
+                    navController.navigate("home") {
+                        popUpTo("onboarding") { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable("home") {
             HomeScreen(
+                gameViewModel = gameViewModel,
                 onNavigateToProfile = { navController.navigate("profile") },
                 onNavigateToBadges = { navController.navigate("badges") },
                 onNavigateToStatsandImpact = { navController.navigate("stats") },
@@ -264,7 +279,10 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
             )
         }
         composable("shop") {
-            ShopScreen(onNavigateToProfile = { navController.navigate("profile") })
+            ShopScreen(
+                gameViewModel = gameViewModel,
+                onNavigateToProfile = { navController.navigate("profile") }
+            )
         }
         composable("badges") {
             BadgePage(onNavigateToProfile = { navController.navigate("profile") })

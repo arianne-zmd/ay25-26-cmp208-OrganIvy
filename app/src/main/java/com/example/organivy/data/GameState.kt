@@ -1,5 +1,7 @@
 package com.example.organivy.data
 
+import com.example.organivy.R
+
 data class GameState(
 
     val deleted: Boolean = false,
@@ -17,4 +19,10 @@ data class GameState(
 
     val topCategory: Int = 0,
     val picsPerWeek: Int = 0,
+    val challenges: List<Challenge> = emptyList(),
+
+    // Character customization state
+    val userBase: Int = R.drawable.char_base_shade1,
+    val userHair: Int = R.drawable.char_hair_bob1,
+    val userOutfit: Int? = null
 )

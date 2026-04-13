@@ -2,20 +2,21 @@ package com.example.organivy.data
 
 import android.app.Activity
 import android.content.ContentUris
-import android.content.Context
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,8 +24,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,15 +33,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.organivy.R
+==import com.example.organivy.ui.components.LayeredCharacter
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -60,7 +60,7 @@ TABLE OF CONTENTS
 
 // CHECKBOXES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @Composable
-fun PicCheckbox(photo: Photo,photoViewModel: PhotoViewModel){
+fun PicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
     // Observe ViewModel state
     val uiState = photoViewModel.uiState
@@ -148,11 +148,6 @@ fun GridItem(photo: Photo, photoViewModel: PhotoViewModel) {
 @Composable
 fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
 
-
-
-    val state = photoViewModel.uiState
-    val state2 = gameViewModel.uiState
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,7 +179,14 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            // ONLY Award coins and refresh if user confirmed the deletion
+            val deletedCount = photoViewModel.uiState.deletionList.size
+            gameViewModel.onDeletion(deletedCount)
+            
             photoViewModel.clearDeletionList()
+            photoViewModel.loadPhotos()
+            
+            Toast.makeText(context, "Photos deleted successfully!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -192,13 +194,8 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
 
 
     Button(
-        onClick = { val currentList = photoViewModel.uiState.deletionList
-
-            Log.d("DeleteTest", "Button clicked with ${currentList.size}")
-            Log.d("DeleteTest", "List: ${currentList.map { it.id }}")
-            Log.d("VM_TEST", photoViewModel.toString())
-            Log.d("DeleteTest", "Button  222 clicked with ${photoViewModel.uiState.deletionList.size}")
-
+        onClick = { 
+            val currentList = photoViewModel.uiState.deletionList
 
             if (currentList.isEmpty()) {
                 Toast.makeText(
@@ -207,16 +204,13 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                gameViewModel.onDeletion(state.deletionList.size)
+                // Launch the system deletion dialog
                 photoViewModel.deleteSelectedPhotos(
                     safeDeletion = safeDeletion,
                     launcher = deleteLauncher
                 )
-
-                // im leaving this here but it doesn't really do much
-                photoViewModel.loadPhotos()
-
-            }   },
+            }   
+        },
         modifier = Modifier
             .padding(20.dp)
             .size(200.dp,60.dp)
@@ -237,51 +231,80 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
 @Composable
 fun Header(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
 
-    val state = photoViewModel.uiState
     val state2 = gameViewModel.uiState
 
-    Spacer(modifier = Modifier.height(7.dp))
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        // = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
-
-        Image(
-            modifier = Modifier
-                .size(30.dp)
-                .clip(RoundedCornerShape(20.dp)),
-            painter = painterResource(R.drawable.placeholder_icon),
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = " CO\u2082 Saved",
-            fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
-            modifier = Modifier
-                .padding(0.dp,0.dp ),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-        ){
-            Text(
-                text = "\uD83E\uDE99 ${state2.coins} ",
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+        // Avatar Section
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color(0xFFB2A8FF), RoundedCornerShape(8.dp))
+                    .padding(8.dp)
+            ) {
+                // USES THE CUSTOMIZED CHARACTER STATE
+                LayeredCharacter(
+                    baseId = state2.userBase,
+                    hairId = state2.userHair,
+                    outfitId = state2.userOutfit,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Text(text = "Lvl. 4", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-    }
+        Spacer(modifier = Modifier.width(16.dp))
 
+        // Stats Section
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = "arianne donelly", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            StatBar(label = "Health", current = 50, max = 50, color = Color(0xFFFF5252))
+            StatBar(label = "Experience", current = 16, max = 100, color = Color(0xFFFFD700))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                        painter = painterResource(R.drawable.placeholder_icon),
+                        contentDescription = null
+                    )
+                    Text(text = " CO\u2082 Saved", fontSize = 12.sp)
+                }
+                Text(text = "🪙 ${state2.coins}  💎 20", fontSize = 14.sp)
+            }
+        }
+    }
 }
 // HEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@Composable
+fun StatBar(label: String, current: Int, max: Int, color: Color){
+    Column(modifier = Modifier.padding(vertical = 4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        )
+        {
+            Text(text = "$current/$max",fontSize = 12.sp)
+            Text (text = label, fontSize = 12.sp)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(5.dp))
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(if (max > 0) current.toFloat() / max.toFloat() else 0f)
+                    .fillMaxHeight()
+                    .background(color, RoundedCornerShape(5.dp)),
+            )
+        }
+    }
+}
