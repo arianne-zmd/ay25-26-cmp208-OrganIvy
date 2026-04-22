@@ -27,9 +27,7 @@ fun WorldMapSubscreen(onNavigateToProfile: () -> Unit) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
-        Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
+
 
         Text(
             text = "Map",

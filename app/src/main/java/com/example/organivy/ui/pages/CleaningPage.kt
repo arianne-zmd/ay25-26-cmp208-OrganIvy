@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,37 +32,40 @@ import com.example.organivy.data.Header
 import com.example.organivy.data.PhotoState
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 
 @Composable
-fun CleaningPage(onNavigateToProfile: () -> Unit,
-                 onNavigateToCamera: () -> Unit,
-                 onNavigateToDownloads: () -> Unit,
-                 onNavigateToScreenshots: () -> Unit,
-                 onNavigateToWhatsappImages: () -> Unit,
-                 onNavigateToOld: () -> Unit,
-                 onNavigateToLarge: () -> Unit,
-                 onNavigateToBlurry: () -> Unit,
-                 onNavigateToDuplicated: () -> Unit,
-                 photoViewModel: PhotoViewModel?,
-                 gameViewModel: GameViewModel
+fun CleaningPage (onNavigateToProfile: () -> Unit,
+                  onNavigateToCamera: () -> Unit,
+                  onNavigateToDownloads: () -> Unit,
+                  onNavigateToScreenshots: () -> Unit,
+                  onNavigateToWhatsappImages: () -> Unit,
+                  onNavigateToOld: () -> Unit,
+                  onNavigateToLarge: () -> Unit,
+                  onNavigateToBlurry: () -> Unit,
+                  onNavigateToDuplicated: () -> Unit,
+                  photoViewModel: PhotoViewModel?,
+                  gameViewModel: GameViewModel,
+                  hasPermission: Boolean
 ) {
 
+    //val state by photoViewModel!!.uiState.collectAsState()
     val state = photoViewModel?.uiState// ?: PhotoState()
     val state2 = gameViewModel.uiState
 
 
 
-    if (state?.isLoading == true)  {
-        CircularProgressIndicator(modifier = Modifier.size(100.dp).padding(150.dp,200.dp))
-        return
-    }
 
 
+
+    Box(modifier = Modifier.fillMaxSize()) {
 
         //code in here
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(20.dp,),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
@@ -119,7 +123,16 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
                 Button(
                     onClick = {
                         // boo
-                        photoViewModel?.loadPhotos()
+                        //photoViewModel?.loadPhotos()
+
+
+                        if (hasPermission) {
+                            photoViewModel?.loadPhotos()
+
+
+
+                        }
+
 
                     },
                     modifier = Modifier
@@ -279,6 +292,17 @@ fun CleaningPage(onNavigateToProfile: () -> Unit,
 
 
         }
+
+        if (state?.isLoading == true) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(150.dp, 200.dp)
+            )
+
+        }
+
+    }
 
 
 

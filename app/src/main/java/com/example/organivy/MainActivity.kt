@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 
+
         var hasPermissionState by mutableStateOf(false)
 
         val requestPermissionLauncher =
@@ -95,11 +96,11 @@ class MainActivity : ComponentActivity() {
 
             val photoViewModel: PhotoViewModel = viewModel()
             val gameViewModel: GameViewModel = viewModel()
-            LaunchedEffect(hasPermission) {
-                if (hasPermission) {
-                    photoViewModel.loadPhotos()
-                }
-            }
+//            LaunchedEffect(hasPermission) {
+//                if (hasPermission) {
+//                    photoViewModel.loadPhotos()
+//                }
+//            }
 
             var selectedTheme by remember { mutableStateOf(ThemeOption.SYSTEM) }
 
@@ -121,7 +122,9 @@ class MainActivity : ComponentActivity() {
                     photoViewModel,
                     gameViewModel,
                     selectedTheme,
-                    { newTheme -> selectedTheme = newTheme })
+                    { newTheme -> selectedTheme = newTheme },
+                    hasPermission = hasPermission
+                    )
 
 
 
@@ -150,7 +153,8 @@ fun MainApp(navController: NavHostController,
             photoViewModel: PhotoViewModel,
             gameViewModel: GameViewModel,
             selectedTheme: ThemeOption,
-            onThemeChange: (ThemeOption) -> Unit
+            onThemeChange: (ThemeOption) -> Unit,
+            hasPermission: Boolean
 ) {
     //val navController = rememberNavController()
 
@@ -194,7 +198,9 @@ fun MainApp(navController: NavHostController,
                     photoViewModel,
                     gameViewModel,
                     selectedTheme,
-                    onThemeChange)
+                    onThemeChange,
+                    hasPermission)
+
             }
 
         }
@@ -239,7 +245,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                              photoViewModel: PhotoViewModel,
                              gameViewModel: GameViewModel,
                              selectedTheme: ThemeOption,
-                             onThemeChange: (ThemeOption) -> Unit
+                             onThemeChange: (ThemeOption) -> Unit,
+                             hasPermission: Boolean
 ) {
 
     navigation(
@@ -320,7 +327,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                     onNavigateToBlurry = { navController.navigate("blurry") },
                     onNavigateToDuplicated = { navController.navigate("duplicated") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    hasPermission = hasPermission
                 )
             }
 

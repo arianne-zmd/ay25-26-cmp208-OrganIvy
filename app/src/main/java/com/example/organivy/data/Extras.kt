@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.organivy.R
-==import com.example.organivy.ui.components.LayeredCharacter
+import com.example.organivy.ui.components.LayeredCharacter
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -53,6 +53,8 @@ TABLE OF CONTENTS
 2. grid item
 3. box extras( header, delete button)
 4. header
+5. stats bar
+6. grid header
  */
 
 
@@ -162,7 +164,7 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
+            GridHeader(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
 
             Spacer(modifier = Modifier.height(15.dp))
 
@@ -179,7 +181,7 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // ONLY Award coins and refresh if user confirmed the deletion
+            // ONLY Award coins and refresh if user confirmed the deletion. okkkkkkk
             val deletedCount = photoViewModel.uiState.deletionList.size
             gameViewModel.onDeletion(deletedCount)
             
@@ -282,6 +284,8 @@ fun Header(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
 }
 // HEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+// STATBAR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @Composable
 fun StatBar(label: String, current: Int, max: Int, color: Color){
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
@@ -308,3 +312,42 @@ fun StatBar(label: String, current: Int, max: Int, color: Color){
         }
     }
 }
+// STATBAR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// GRIDHEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@Composable
+fun GridHeader(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
+
+    val state2 = gameViewModel.uiState
+
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Avatar Section
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Text(text = "Lvl. 4", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Image(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                        painter = painterResource(R.drawable.placeholder_icon),
+                        contentDescription = null
+                    )
+                    Text(text = " CO\u2082 Saved", fontSize = 12.sp)
+                }
+                Text(text = "🪙 ${state2.coins}  💎 20", fontSize = 14.sp)
+            }
+
+    }
+}
+// GRIDHEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

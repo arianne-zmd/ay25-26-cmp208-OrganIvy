@@ -108,7 +108,7 @@ fun GardenScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(backgroundLight)
+                    //.background(backgroundLight)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
