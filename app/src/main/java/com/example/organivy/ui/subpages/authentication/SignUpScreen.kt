@@ -24,7 +24,8 @@ import com.example.organivy.ui.subpages.authentication.LoginScreen
 fun SignUpScreen(onNavigateToProfile: () -> Unit,
                  onNavigateToForget: () -> Unit,
                  onNavigateToLogin: () -> Unit,
-                 onNavigateToHome: () -> Unit
+                 onNavigateToOnboarding: () -> Unit,
+                     onNavigateToHome: () -> Unit
 ){
 
     LazyColumn(
@@ -95,7 +96,7 @@ fun SignUpScreen(onNavigateToProfile: () -> Unit,
         item {
 
             Button(
-                onClick = onNavigateToHome,
+                onClick = onNavigateToOnboarding,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -113,5 +114,5 @@ fun SignUpScreen(onNavigateToProfile: () -> Unit,
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSignUpScreen() {
-    SignUpScreen(onNavigateToProfile = {}, onNavigateToForget = {}, onNavigateToLogin = {}, onNavigateToHome = {})
+    SignUpScreen(onNavigateToProfile = {}, onNavigateToForget = {}, onNavigateToLogin = {}, onNavigateToHome = {},  onNavigateToOnboarding = {})
 }

@@ -1,10 +1,12 @@
 package com.example.organivy.ui.pages
 
+import android.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -25,6 +29,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,11 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.util.copy
 import com.example.organivy.data.Header
 import com.example.organivy.data.StatBar
 import com.example.organivy.ui.components.ChallengeItem
@@ -52,7 +60,8 @@ fun HomeScreen(
     onNavigateToBadges: () -> Unit,
     onNavigateToStatsandImpact: () -> Unit,
     onNavigateToShop: () -> Unit,
-    onNavigateToJournal: () -> Unit
+    onNavigateToJournal: () -> Unit,
+    onNavigateToGarden: () -> Unit
 ) {
     val photoViewModel: PhotoViewModel = viewModel()
     var expanded by remember { mutableStateOf(false) }
@@ -107,6 +116,9 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
+        Box {
+
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,6 +127,8 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
         ) {
+
+            // HEADING
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -126,13 +140,41 @@ fun HomeScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Welcome to OrganIvy User!",
-                        fontSize = 20.sp,
+                        text = "Welcome Back!",
+                        fontSize = 26.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
 
+
+            //PLANT PREVIEW(CLICKABLE)
+            item {
+                Card(
+                    onClick = onNavigateToGarden,
+                    modifier = Modifier
+                        .size(250.dp)
+                        .padding(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                ) {
+                    Box(
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(
+                            text = "\uD83C\uDF3F Plant preview",
+                            Modifier.padding(start = 20.dp)
+                        )
+                    }
+                }
+            }
+
+
+            // CHALLENGES FOR THE WEEK
             item {
                 var isExpanded by remember { mutableStateOf(false) }
                 val challenges = gameViewModel.uiState.challenges
@@ -145,10 +187,16 @@ fun HomeScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = " ✨ Challenge for this week", modifier = Modifier.weight(1f))
-                            Text(text = "Done: $completedCount/${challenges.size}", fontSize = 12.sp)
+                            Text(
+                                text = " ✨ Challenge for this week",
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "Done: $completedCount/${challenges.size}",
+                                fontSize = 12.sp
+                            )
                         }
-                        
+
                         // Progress Bar for challenges
                         StatBar(
                             label = "Progress",
@@ -171,6 +219,26 @@ fun HomeScreen(
                 }
             }
 
+
+//            item{
+//                Surface(
+//                    modifier = Modifier.padding(vertical = 16.dp),
+//                    shape = RoundedCornerShape(50),
+//                    color = MaterialTheme.colorScheme.secondaryContainer
+//                ) {
+//                    Text(
+//                        text = "boo",
+//                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+//                        fontSize = 14.sp
+//                    )
+//                }
+//            }
+
+
+            /*
+            item{
+                Spacer(modifier = Modifier.height(40.dp))
+            }
             item {
                 Column(
                     modifier = Modifier
@@ -179,7 +247,11 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     // Badges Card - Left Aligned, 75% width
-                    Box(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+
+
+                    ) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth(0.75f)
@@ -191,7 +263,14 @@ fun HomeScreen(
                             ),
                             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                         ) {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                            Box(
+                                Modifier.fillMaxSize()
+//                                .background(
+//                                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+//                                    shape = RoundedCornerShape(20.dp)
+//                                )
+                                , contentAlignment = Alignment.CenterStart
+                            ) {
                                 Text(text = "Badges Earning", Modifier.padding(start = 20.dp))
                             }
                         }
@@ -247,7 +326,7 @@ fun HomeScreen(
                             .align(Alignment.CenterEnd),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                     ) {
@@ -257,7 +336,96 @@ fun HomeScreen(
                     }
                 }
             }
+
+             */
         }
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 10.dp, top = 250.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+
+                Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))){
+
+                    Surface(
+                        modifier = Modifier.padding(10.dp)
+                            .size(80.dp)
+                        ,
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+                        shape = RoundedCornerShape(20.dp),
+
+
+
+
+                        ){}
+
+                    Surface(
+                        modifier = Modifier.padding(10.dp)
+                            .align(alignment = Alignment.Center)
+                            .size(75.dp)
+                        ,
+                        shape = RoundedCornerShape(30),
+                        color = MaterialTheme.colorScheme.secondaryContainer
+                    ) {
+                        Text(
+                            text = "\uD83C\uDFC5",
+                            modifier = Modifier.padding(14.dp),
+                            textAlign = TextAlign.Center,
+                            fontSize = 40.sp
+                        )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))){
+
+                    Surface(
+                        modifier = Modifier.padding(10.dp)
+                            .size(80.dp)
+                        ,
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+                        shape = RoundedCornerShape(20.dp),
+
+
+                        ){}
+
+                    Surface(
+                        modifier = Modifier.padding(10.dp)
+                            .align(alignment = Alignment.Center)
+                            .size(75.dp)
+                        ,
+                        shape = RoundedCornerShape(30),
+                        color = MaterialTheme.colorScheme.secondaryContainer
+                    ) {
+                        Text(
+                            text = "\uD83D\uDCD6 you ",
+                            modifier = Modifier.padding(14.dp),
+                            textAlign = TextAlign.Center,
+                            fontSize = 40.sp
+                        )
+                    }
+
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+    }
+
     }
 }
 
@@ -270,6 +438,7 @@ fun PreviewHomeScreen() {
         onNavigateToBadges = {},
         onNavigateToStatsandImpact = {},
         onNavigateToShop = {},
-        onNavigateToJournal = {}
+        onNavigateToJournal = {},
+        onNavigateToGarden = {}
     )
 }

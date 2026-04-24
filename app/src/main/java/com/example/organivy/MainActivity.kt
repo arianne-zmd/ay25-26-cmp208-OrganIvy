@@ -193,7 +193,7 @@ fun MainApp(navController: NavHostController,
                 startDestination = "auth"
             ) {
 
-                authGraph(navController)
+                authGraph(navController, gameViewModel)
                 appGraph(navController,
                     photoViewModel,
                     gameViewModel,
@@ -209,7 +209,7 @@ fun MainApp(navController: NavHostController,
 
 
 
-fun NavGraphBuilder.authGraph(navController: NavHostController) {
+fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: GameViewModel) {
     navigation(
         startDestination = "login",
         route = "auth"
@@ -227,7 +227,8 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             SignUpScreen( onNavigateToProfile = { navController.navigate("profile") },
                 onNavigateToForget = { navController.navigate("forget_password")},
                 onNavigateToLogin = { navController.navigate("login")},
-                onNavigateToHome = { navController.navigate("app") } // Navigate to 'app' after signup
+                onNavigateToHome = { navController.navigate("app") }, // Navigate to 'app' after signup
+                onNavigateToOnboarding  = { navController.navigate("onboarding")},
                 )
         }
 
@@ -235,6 +236,18 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             ForgetPasswordScreen( onNavigateToProfile = { navController.navigate("profile") },
                 onNavigateToLogin = { navController.navigate("login")}
                 )
+        }
+
+        composable("onboarding") {
+            OnboardingScreen(
+                gameViewModel = gameViewModel,
+                onFinishOnboarding = {
+                    gameViewModel.saveUserDataToFirebase()
+                    navController.navigate("home") {
+                        popUpTo("onboarding") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
@@ -250,21 +263,11 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
 ) {
 
     navigation(
-        startDestination = "onboarding",
+        startDestination = "home",
         route = "app"
     ) {
 
-        composable("onboarding") {
-            OnboardingScreen(
-                gameViewModel = gameViewModel,
-                onFinishOnboarding = {
-                    gameViewModel.saveUserDataToFirebase()
-                    navController.navigate("home") {
-                        popUpTo("onboarding") { inclusive = true }
-                    }
-                }
-            )
-        }
+
 
         composable("home") {
             HomeScreen(
@@ -273,7 +276,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 onNavigateToBadges = { navController.navigate("badges") },
                 onNavigateToStatsandImpact = { navController.navigate("stats") },
                 onNavigateToShop = { navController.navigate("shop") },
-                onNavigateToJournal = { navController.navigate("journal") }
+                onNavigateToJournal = { navController.navigate("journal") },
+                onNavigateToGarden = { navController.navigate("garden") }
             )
         }
         composable("garden") {

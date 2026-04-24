@@ -1,6 +1,13 @@
 package com.example.organivy.ui.theme
 import androidx.compose.ui.graphics.Color
 
+
+val bohoClay = Color(0xFFD08770)     // warm earthy orange
+val bohoLavender = Color(0xFFB7A7D6) // soft purple
+val bohoBeige = Color(0xFFF3EDE4)    // warm background alt
+
+
+
 val primaryLight = Color(0xFF266A4A)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFACF2C8)

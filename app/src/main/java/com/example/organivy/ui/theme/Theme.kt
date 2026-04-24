@@ -18,6 +18,12 @@ data class ExtendedColorScheme(
 )
 
 private val lightScheme = lightColorScheme(
+
+//    bh = bohoClay,
+//    bl = bohoLavender,
+//    bb = bohoBeige,
+
+
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,
