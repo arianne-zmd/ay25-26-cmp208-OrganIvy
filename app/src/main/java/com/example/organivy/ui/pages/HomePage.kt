@@ -220,124 +220,7 @@ fun HomeScreen(
             }
 
 
-//            item{
-//                Surface(
-//                    modifier = Modifier.padding(vertical = 16.dp),
-//                    shape = RoundedCornerShape(50),
-//                    color = MaterialTheme.colorScheme.secondaryContainer
-//                ) {
-//                    Text(
-//                        text = "boo",
-//                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
-//                        fontSize = 14.sp
-//                    )
-//                }
-//            }
 
-
-            /*
-            item{
-                Spacer(modifier = Modifier.height(40.dp))
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Badges Card - Left Aligned, 75% width
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-
-
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth(0.75f)
-                                .height(80.dp)
-                                .align(Alignment.CenterStart),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                        ) {
-                            Box(
-                                Modifier.fillMaxSize()
-//                                .background(
-//                                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-//                                    shape = RoundedCornerShape(20.dp)
-//                                )
-                                , contentAlignment = Alignment.CenterStart
-                            ) {
-                                Text(text = "Badges Earning", Modifier.padding(start = 20.dp))
-                            }
-                        }
-                    }
-
-                    // Facts Card - Right Aligned, 75% width
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth(0.75f)
-                                .height(80.dp)
-                                .align(Alignment.CenterEnd),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                        ) {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                                Text(text = "Facts Learned", Modifier.padding(start = 20.dp))
-                            }
-                        }
-                    }
-
-                    // Photos Deleted Card - Left Aligned, 75% width
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth(0.75f)
-                                .height(80.dp)
-                                .align(Alignment.CenterStart),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                        ) {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                                Text(text = "Photos Deleted", Modifier.padding(start = 20.dp))
-                            }
-                        }
-                    }
-                }
-            }
-
-            item {
-                // Carbon Footprint Card - Right Aligned, 75% width
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(0.75f)
-                            .height(80.dp)
-                            .align(Alignment.CenterEnd),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                    ) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                            Text(text = "Carbon Footprint ", Modifier.padding(start = 20.dp))
-                        }
-                    }
-                }
-            }
-
-             */
         }
 
 
@@ -357,18 +240,21 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
                         shape = RoundedCornerShape(20.dp),
 
-
-
-
                         ){}
 
-                    Surface(
+                    Card(
+                        onClick =  onNavigateToBadges,
+
                         modifier = Modifier.padding(10.dp)
                             .align(alignment = Alignment.Center)
-                            .size(75.dp)
-                        ,
+                            .size(75.dp),
                         shape = RoundedCornerShape(30),
-                        color = MaterialTheme.colorScheme.secondaryContainer
+
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                     ) {
                         Text(
                             text = "\uD83C\uDFC5",
@@ -378,37 +264,46 @@ fun HomeScreen(
                         )
                     }
 
+
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))){
+                Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))) {
 
                     Surface(
                         modifier = Modifier.padding(10.dp)
-                            .size(80.dp)
-                        ,
+                            .size(80.dp),
                         color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
                         shape = RoundedCornerShape(20.dp),
 
 
-                        ){}
+                        ) {}
 
-                    Surface(
+                    Card(
+                        onClick = onNavigateToJournal,
+
                         modifier = Modifier.padding(10.dp)
                             .align(alignment = Alignment.Center)
-                            .size(75.dp)
-                        ,
+                            .size(75.dp),
                         shape = RoundedCornerShape(30),
-                        color = MaterialTheme.colorScheme.secondaryContainer
+
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                     ) {
                         Text(
-                            text = "\uD83D\uDCD6 you ",
+                            text = "\uD83D\uDCD6 ",
                             modifier = Modifier.padding(14.dp),
                             textAlign = TextAlign.Center,
                             fontSize = 40.sp
                         )
                     }
+
+
+
 
                 }
 

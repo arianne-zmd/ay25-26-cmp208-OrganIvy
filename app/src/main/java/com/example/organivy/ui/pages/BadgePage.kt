@@ -15,6 +15,6 @@ fun BadgePage(onNavigateToProfile: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Settings Page")
+        Text(text = "Badges Page")
     }
 }
