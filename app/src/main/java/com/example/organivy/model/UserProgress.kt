@@ -1,3 +1,4 @@
+/*
 package com.example.organivy.model
 
 data class UserProgress(
@@ -11,3 +12,4 @@ data class UserProgress(
     val activeDecorations: List<String> = emptyList()
 
 )
+*/

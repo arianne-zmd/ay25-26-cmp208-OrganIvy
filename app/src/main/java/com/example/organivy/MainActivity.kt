@@ -266,7 +266,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 onNavigateToBadges = { navController.navigate("badges") },
                 onNavigateToStatsandImpact = { navController.navigate("stats") },
                 onNavigateToShop = { navController.navigate("shop") },
-                onNavigateToJournal = { navController.navigate("journal") }
+                onNavigateToJournal = { navController.navigate("journal") },
+                onNavigateToGarden = { navController.navigate("garden") }
             )
         }
         composable("garden") {

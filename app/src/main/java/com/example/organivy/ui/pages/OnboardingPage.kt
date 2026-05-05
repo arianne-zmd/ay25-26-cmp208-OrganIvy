@@ -29,26 +29,7 @@ fun OnboardingScreen(
 ) {
     val uiState = gameViewModel.uiState
 
-    // Options for customization
-    val baseOptions = listOf(
-        R.drawable.char_base_shade1, R.drawable.char_base_shade2, R.drawable.char_base_shade3,
-        R.drawable.char_base_shade4, R.drawable.char_base_shade5, R.drawable.char_base_shade6,
-        R.drawable.char_base_shade7, R.drawable.char_base_shade8, R.drawable.char_base_shade9,
-        R.drawable.char_base_shade10, R.drawable.char_base_shade11
-    )
 
-    val hairOptions = listOf(
-        R.drawable.char_hair_bob1, R.drawable.char_hair_bob2, R.drawable.char_hair_bob3,
-        R.drawable.char_hair_bob4, R.drawable.char_hair_bob5, R.drawable.char_hair_bob6,
-        R.drawable.char_hair_bob7, R.drawable.char_hair_bob8, R.drawable.char_hair_bob9,
-        R.drawable.char_hair_bob10, R.drawable.char_hair_bob11, R.drawable.char_hair_bob12,
-        R.drawable.char_hair_bob13, R.drawable.char_hair_bob14,
-        R.drawable.char_hair_dap1, R.drawable.char_hair_dap2, R.drawable.char_hair_dap3,
-        R.drawable.char_hair_dap4, R.drawable.char_hair_dap5, R.drawable.char_hair_dap6,
-        R.drawable.char_hair_dap7, R.drawable.char_hair_dap8, R.drawable.char_hair_dap9,
-        R.drawable.char_hair_dap10, R.drawable.char_hair_dap11, R.drawable.char_hair_dap12,
-        R.drawable.char_hair_dap13, R.drawable.char_hair_dap14
-    )
 
     Column(
         modifier = Modifier
@@ -64,7 +45,7 @@ fun OnboardingScreen(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        
+
         Text(
             text = "Customize your look before we start!",
             fontSize = 16.sp,
@@ -80,12 +61,7 @@ fun OnboardingScreen(
                 .padding(20.dp),
             contentAlignment = Alignment.Center
         ) {
-            LayeredCharacter(
-                baseId = uiState.userBase,
-                hairId = uiState.userHair,
-                outfitId = uiState.userOutfit,
-                modifier = Modifier.fillMaxSize()
-            )
+
         }
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -100,53 +76,32 @@ fun OnboardingScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(baseOptions) { resId ->
+            /* items(baseOptions) { resId ->
                 Box(
                     modifier = Modifier
                         .size(60.dp)
                         .clip(CircleShape)
                         .border(
-                            width = if (uiState.userBase == resId) 3.dp else 1.dp,
-                            color = if (uiState.userBase == resId) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.3f),
+                            width = if (uiState.characterSprite == resId) 3.dp else 1.dp,
+                            color = if (uiState.characterSprite== resId) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.3f),
                             shape = CircleShape
                         )
-                        .clickable { gameViewModel.updateBase(resId) }
+                        .clickable { gameViewModel.updateCharacterSprite(resId) }
                         .padding(8.dp)
-                ) {
+                )
+
+                {
+
                     SpriteLayer(drawableId = resId, column = 0)
                 }
             }
+
+             */
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Hair Selector
-        Text(
-            text = "Hair Style",
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.align(Alignment.Start).padding(bottom = 8.dp)
-        )
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(hairOptions) { resId ->
-                Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = if (uiState.userHair == resId) 3.dp else 1.dp,
-                            color = if (uiState.userHair == resId) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                        .clickable { gameViewModel.updateHair(resId) }
-                        .padding(8.dp)
-                ) {
-                    SpriteLayer(drawableId = resId, column = 0)
-                }
-            }
-        }
+
 
         Spacer(modifier = Modifier.weight(1f))
 

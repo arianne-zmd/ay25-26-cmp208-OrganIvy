@@ -52,7 +52,7 @@ fun LayeredCharacter(
     isIdle: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    // Smooth vertical bounce for idle state
+  /*  // Smooth vertical bounce for idle state
     val transition = rememberInfiniteTransition(label = "IdleBounce")
     val bounceOffset by transition.animateFloat(
         initialValue = 0f,
@@ -64,7 +64,9 @@ fun LayeredCharacter(
         label = "Bounce"
     )
 
-    Box(modifier = modifier.offset(y = bounceOffset.dp)) {
+   */
+
+    Box(modifier = modifier.offset(y = 4.dp)) {
         // We use column 0 because Row 0 Frame 0 is the standing pose
         SpriteLayer(drawableId = baseId, row = row, column = 0)
         outfitId?.let { SpriteLayer(drawableId = it, row = row, column = 0) }
@@ -78,7 +80,7 @@ fun SpriteCharacter(
     column: Int = 0,
     modifier: Modifier = Modifier
 ) {
-    SpriteLayer(drawableId = R.drawable.char_base_shade1, row = row, column = column, modifier = modifier)
+    SpriteLayer(drawableId = R.drawable.character_base_single_green, row = row, column = column, modifier = modifier)
 }
 
 @Composable
@@ -88,7 +90,7 @@ fun AnimatedSpriteCharacter(
     modifier: Modifier = Modifier
 ) {
     LayeredCharacter(
-        baseId = R.drawable.char_base_shade1,
+        baseId = R.drawable.character_base_single_green,
         row = row,
         modifier = modifier
     )
