@@ -3,7 +3,7 @@ package com.example.organivy.data
 import com.example.organivy.R
 
 data class GameState(
-
+    val userName: String = "",
     val deleted: Boolean = false,
 
     val coins: Int = 0,
@@ -17,12 +17,14 @@ data class GameState(
     val plantLevel: Int = 0,
     val streak: Int = 0,
 
+    val badgesEarned: String = "",
+    val factsGained: String = "",
+    val characterColour: String = "",
+    val characterSprite: String = "",
+
+
     val topCategory: Int = 0,
-    val picsPerWeek: Int = 0,
+    val picsDelPerWeek: Int = 0,
     val challenges: List<Challenge> = emptyList(),
 
-    // Character customization state
-    val userBase: Int = R.drawable.char_base_shade1,
-    val userHair: Int = R.drawable.char_hair_bob1,
-    val userOutfit: Int? = null
-)
+    )

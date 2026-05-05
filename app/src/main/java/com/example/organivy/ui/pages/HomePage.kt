@@ -1,12 +1,10 @@
 package com.example.organivy.ui.pages
 
-import android.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +43,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.util.copy
 import com.example.organivy.data.Header
 import com.example.organivy.data.StatBar
 import com.example.organivy.ui.components.ChallengeItem
@@ -116,112 +113,129 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
+
         Box {
 
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
-        ) {
-
-            // HEADING
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Welcome Back!",
-                        fontSize = 26.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-            }
 
 
-            //PLANT PREVIEW(CLICKABLE)
-            item {
-                Card(
-                    onClick = onNavigateToGarden,
-                    modifier = Modifier
-                        .size(250.dp)
-                        .padding(20.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-                ) {
-                    Box(
-                        Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.CenterStart
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start,
+            ) {
+
+
+                // HEADING
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.Start
                     ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
+
+
+                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "\uD83C\uDF3F Plant preview",
-                            Modifier.padding(start = 20.dp)
+                            text = "Welcome Back!",
+                            fontSize = 26.sp,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
-            }
 
 
-            // CHALLENGES FOR THE WEEK
-            item {
-                var isExpanded by remember { mutableStateOf(false) }
-                val challenges = gameViewModel.uiState.challenges
-                val completedCount = challenges.count { it.isCompleted }
 
-                Card(
-                    onClick = { isExpanded = !isExpanded },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+
+                //PLANT PREVIEW(CLICKABLE)
+                item {
+                    Card(
+                        onClick = onNavigateToGarden,
+                        modifier = Modifier
+                            .size(250.dp)
+                            .padding(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                    ) {
+                        Box(
+                            Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
                             Text(
-                                text = " ✨ Challenge for this week",
-                                modifier = Modifier.weight(1f)
-                            )
-                            Text(
-                                text = "Done: $completedCount/${challenges.size}",
-                                fontSize = 12.sp
+                                text = "\uD83C\uDF3F Plant preview",
+                                Modifier.padding(start = 20.dp)
                             )
                         }
+                    }
+                }
 
-                        // Progress Bar for challenges
-                        StatBar(
-                            label = "Progress",
-                            current = completedCount,
-                            max = challenges.size,
-                            color = Color(0xFF9C27B0)
-                        )
 
-                        AnimatedVisibility(visible = isExpanded) {
-                            Column(modifier = Modifier.padding(top = 16.dp)) {
-                                challenges.forEach { challenge ->
-                                    ChallengeItem(
-                                        task = "${challenge.description} (${challenge.currentValue}/${challenge.targetValue})",
-                                        isDone = challenge.isCompleted
-                                    )
+
+
+                // CHALLENGES FOR THE WEEK
+                item {
+                    var isExpanded by remember { mutableStateOf(false) }
+                    val challenges = gameViewModel.uiState.challenges
+                    val completedCount = challenges.count { it.isCompleted }
+
+
+                    Card(
+                        onClick = { isExpanded = !isExpanded },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = " ✨ Challenge for this week",
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = "Done: $completedCount/${challenges.size}",
+                                    fontSize = 12.sp
+                                )
+                            }
+
+
+                            // Progress Bar for challenges
+                            StatBar(
+                                label = "Progress",
+                                current = completedCount,
+                                max = challenges.size,
+                                color = Color(0xFF9C27B0)
+                            )
+
+
+                            AnimatedVisibility(visible = isExpanded) {
+                                Column(modifier = Modifier.padding(top = 16.dp)) {
+                                    challenges.forEach { challenge ->
+                                        ChallengeItem(
+                                            task = "${challenge.description} (${challenge.currentValue}/${challenge.targetValue})",
+                                            isDone = challenge.isCompleted
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
+
+
+
+
+
             }
 
 
-
-        }
 
 
             Column(
@@ -231,7 +245,9 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.End
             ) {
 
+
                 Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))){
+
 
                     Surface(
                         modifier = Modifier.padding(10.dp)
@@ -240,15 +256,19 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
                         shape = RoundedCornerShape(20.dp),
 
+
                         ){}
+
 
                     Card(
                         onClick =  onNavigateToBadges,
+
 
                         modifier = Modifier.padding(10.dp)
                             .align(alignment = Alignment.Center)
                             .size(75.dp),
                         shape = RoundedCornerShape(30),
+
 
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -265,11 +285,16 @@ fun HomeScreen(
                     }
 
 
+
+
                 }
+
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+
                 Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))) {
+
 
                     Surface(
                         modifier = Modifier.padding(10.dp)
@@ -278,15 +303,20 @@ fun HomeScreen(
                         shape = RoundedCornerShape(20.dp),
 
 
+
+
                         ) {}
+
 
                     Card(
                         onClick = onNavigateToJournal,
+
 
                         modifier = Modifier.padding(10.dp)
                             .align(alignment = Alignment.Center)
                             .size(75.dp),
                         shape = RoundedCornerShape(30),
+
 
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -305,7 +335,13 @@ fun HomeScreen(
 
 
 
+
+
+
+
                 }
+
+
 
 
             }
@@ -319,10 +355,22 @@ fun HomeScreen(
 
 
 
-    }
+
+
+
+
+
+
+
+
+
+
+        }
+
 
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

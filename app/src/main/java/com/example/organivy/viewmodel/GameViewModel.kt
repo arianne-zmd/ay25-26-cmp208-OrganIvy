@@ -5,20 +5,74 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.organivy.R
 import com.example.organivy.data.Challenge
 import com.example.organivy.data.ChallengeType
 import com.example.organivy.data.GameState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class GameViewModel: ViewModel () {
 
     var uiState by mutableStateOf(GameState())
         private set
 
+    // Connecting to the Users collection on firestore
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
     init {
         generateWeeklyChallenges()
-        loadUserDataFromFirebase()
+        observeUserData()
+    }
+
+    private fun observeUserData() {
+        val userId = auth.currentUser?.uid ?: return
+
+        // 1. Listen for the main "Users" document (Coins, co2, etc.)
+        db.collection("Users").document(userId)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("Firebase", "Listen failed", e)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    // Note: Field names match Firebase exactly (Case-Sensitive)
+                    uiState = uiState.copy(
+                        userName = snapshot.getString("name") ?: "",
+                        coins = (snapshot.getLong("Coins")?.toInt() ?: 0),
+                        co2saved = (snapshot.getLong("co2savedGrams")?.toInt() ?: 0),
+                        streak = (snapshot.getLong("totalDeletedPhotos")?.toInt() ?: 0),
+                        badgesEarned = snapshot.getString("BadgesEarned") ?: "",
+                        factsGained = snapshot.getString("FactsGained") ?: "",
+                        characterSprite = snapshot.getString("CharacterSprite") ?: "R.drawable.character_base_single_green()",
+                    )
+
+                }
+            }
+
+        // 2. Separate listener for the "Photos" sub-collection
+        db.collection("Users").document(userId).collection("Photos")
+            .addSnapshotListener { querySnapshot, e ->
+                if (e != null) {
+                    Log.w("Firebase", "Photos sub-collection listen failed", e)
+                    return@addSnapshotListener
+                }
+                
+                val photoDoc = querySnapshot?.documents?.firstOrNull()
+                if (photoDoc != null) {
+                    val camera = photoDoc.getLong("Camera")?.toInt() ?: 0
+                    val screenshots = photoDoc.getLong("Screenshots")?.toInt() ?: 0
+                    val downloads = photoDoc.getLong("Downloads")?.toInt() ?: 0
+                    val blurry = photoDoc.getLong("Blurry Images")?.toInt() ?: 0
+                    
+                    // Summing categories to show total pics processed
+                    uiState = uiState.copy(
+                        picsDelPerWeek = camera + screenshots + downloads + blurry
+                    )
+                }
+            }
     }
 
     private fun generateWeeklyChallenges() {
@@ -33,8 +87,7 @@ class GameViewModel: ViewModel () {
 
     //coins
     fun onDeletion (photoNum: Int){
-
-        // 1. Update coins
+        // 1. Update local coins (The listener will sync back later, but we push immediately)
         val newCoins = uiState.coins + 20 + (photoNum * 5)
 
         // 2. Update challenge progress
@@ -54,7 +107,6 @@ class GameViewModel: ViewModel () {
             coins = newCoins,
             challenges = updatedChallenges
         )
-        saveUserDataToFirebase()
     }
 
     fun spendCoins(amount: Int) {
@@ -62,60 +114,36 @@ class GameViewModel: ViewModel () {
             uiState = uiState.copy(
                 coins = uiState.coins - amount
             )
-            saveUserDataToFirebase()
         }
     }
 
     // --- Customization Functions ---
-    fun updateBase(resId: Int) {
-        uiState = uiState.copy(userBase = resId)
+   /* fun updateCharacterSprite(resId: Int) {
+        uiState = uiState.copy(characterSprite = resId)
+        saveUserDataToFirebase()
     }
 
-    fun updateHair(resId: Int) {
-        uiState = uiState.copy(userHair = resId)
-    }
 
-    fun updateOutfit(resId: Int?) {
-        uiState = uiState.copy(userOutfit = resId)
-    }
+    */
+
 
     // --- Firebase Integration ---
     fun saveUserDataToFirebase() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val db = FirebaseFirestore.getInstance()
+        val userId = auth.currentUser?.uid ?: return
         
         val userData = mapOf(
-            "coins" to uiState.coins,
-            "userBase" to uiState.userBase,
-            "userHair" to uiState.userHair,
-            "userOutfit" to uiState.userOutfit,
-            "co2saved" to uiState.co2saved,
-            "plantLevel" to uiState.plantLevel
+            "name" to uiState.userName,
+            "Coins" to uiState.coins,
+            "co2savedGrams" to uiState.co2saved,
+            "totalDeletedPhotos" to uiState.streak,
+            "BadgesEarned" to uiState.badgesEarned,
+            "FactsGained" to uiState.factsGained,
+            "CharacterSprite" to uiState.characterSprite
         )
         
-        db.collection("users").document(userId)
-            .set(userData, com.google.firebase.firestore.SetOptions.merge())
+        db.collection("Users").document(userId)
+            .set(userData, SetOptions.merge())
             .addOnSuccessListener { Log.d("Firebase", "User data saved!") }
             .addOnFailureListener { e -> Log.w("Firebase", "Error saving user data", e) }
-    }
-
-    fun loadUserDataFromFirebase() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val db = FirebaseFirestore.getInstance()
-        
-        db.collection("users").document(userId).get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    uiState = uiState.copy(
-                        coins = (document.getLong("coins") ?: 0L).toInt(),
-                        userBase = (document.getLong("userBase") ?: uiState.userBase.toLong()).toInt(),
-                        userHair = (document.getLong("userHair") ?: uiState.userHair.toLong()).toInt(),
-                        userOutfit = document.getLong("userOutfit")?.toInt(),
-                        co2saved = (document.getLong("co2saved") ?: 0L).toInt(),
-                        plantLevel = (document.getLong("plantLevel") ?: 0L).toInt()
-                    )
-                }
-            }
-            .addOnFailureListener { e -> Log.w("Firebase", "Error loading user data", e) }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.organivy.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.organivy.model.UserProgress
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.Firebase
