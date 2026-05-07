@@ -187,18 +187,7 @@ fun GardenScreen(
                     }
                 }
 
-                // Category Buttons Row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CategoryButton(text = "Already Owned", onClick = onNavigateToStats)
-                    Text("|", color = primaryLight.copy(alpha = 0.3f))
-                    CategoryButton(text = "Purchasable", onClick = onNavigateToProfile)
-                }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 

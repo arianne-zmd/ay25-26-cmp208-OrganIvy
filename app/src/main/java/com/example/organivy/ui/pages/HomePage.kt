@@ -5,11 +5,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,13 +39,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.R
 import com.example.organivy.data.Header
 import com.example.organivy.data.StatBar
 import com.example.organivy.ui.components.ChallengeItem
@@ -143,8 +151,9 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = "Welcome Back!",
-                            fontSize = 26.sp,
-                            color = MaterialTheme.colorScheme.onBackground
+                            //fontSize = 26.sp,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.displayLarge
                         )
                     }
                 }
@@ -154,25 +163,44 @@ fun HomeScreen(
 
                 //PLANT PREVIEW(CLICKABLE)
                 item {
-                    Card(
-                        onClick = onNavigateToGarden,
+
+                    Box (
                         modifier = Modifier
-                            .size(250.dp)
-                            .padding(20.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-                    ) {
-                        Box(
-                            Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.CenterStart
+                            .size(280.dp)
+                            .clickable { onNavigateToGarden() }
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.wooden_border),
+                            contentDescription = "Garden Image",
+                            modifier = Modifier.size(280.dp),
+                            contentScale = ContentScale.Fit,
+                            //filterQuality = FilterQuality.None
+
+                        )
+
+
+                        Card(
+                            //onClick = onNavigateToGarden,
+                            modifier = Modifier
+                                .size(250.dp)
+                                .align(alignment = Alignment.Center)
+                                .padding(45.dp),
+
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
                         ) {
-                            Text(
-                                text = "\uD83C\uDF3F Plant preview",
-                                Modifier.padding(start = 20.dp)
-                            )
+                            Box(
+                                Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Text(
+                                    text = "\uD83C\uDF3F Plant preview",
+                                    Modifier.padding(start = 20.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -246,10 +274,28 @@ fun HomeScreen(
             ) {
 
 
-                Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))){
+                // item 1
+                Box(modifier = Modifier.size(100.dp).clickable { onNavigateToBadges() }) {
 
 
-                    Surface(
+                    Image(
+                        painter = painterResource(id = R.drawable.card),
+                        contentDescription = "card",
+                        modifier = Modifier.size(100.dp),
+                        contentScale = ContentScale.Fit,
+                        //filterQuality = FilterQuality.None
+
+                    )
+
+                    Text(
+                        text = "\uD83C\uDFC5 ",
+                        modifier = Modifier.align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        fontSize = 35.sp
+                    )
+
+
+                    /*Surface(
                         modifier = Modifier.padding(10.dp)
                             .size(80.dp)
                         ,
@@ -282,9 +328,7 @@ fun HomeScreen(
                             textAlign = TextAlign.Center,
                             fontSize = 40.sp
                         )
-                    }
-
-
+                    }*/
 
 
                 }
@@ -293,53 +337,32 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-                Box(modifier = Modifier.shadow(50.dp, shape = RoundedCornerShape(30.dp))) {
+                //item 2
+                Box(modifier = Modifier.clickable { onNavigateToBadges() }) {
 
 
-                    Surface(
-                        modifier = Modifier.padding(10.dp)
-                            .size(80.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-                        shape = RoundedCornerShape(20.dp),
+                    Image(
+                        painter = painterResource(id = R.drawable.card),
+                        contentDescription = "Garden Image",
+                        modifier = Modifier.size(100.dp),
+                        contentScale = ContentScale.Fit,
+                        //filterQuality = FilterQuality.None
 
+                    )
 
-
-
-                        ) {}
-
-
-                    Card(
-                        onClick = onNavigateToJournal,
-
-
-                        modifier = Modifier.padding(10.dp)
-                            .align(alignment = Alignment.Center)
-                            .size(75.dp),
-                        shape = RoundedCornerShape(30),
-
-
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                    ) {
-                        Text(
-                            text = "\uD83D\uDCD6 ",
-                            modifier = Modifier.padding(14.dp),
-                            textAlign = TextAlign.Center,
-                            fontSize = 40.sp
-                        )
-                    }
-
-
-
-
-
-
-
-
+                    Text(
+                        text = "\uD83D\uDCD6 ",
+                        modifier = Modifier.align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        fontSize = 35.sp
+                    )
                 }
+
+
+
+
+
+
 
 
 

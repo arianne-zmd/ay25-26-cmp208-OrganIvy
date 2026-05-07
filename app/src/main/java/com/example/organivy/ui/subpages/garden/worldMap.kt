@@ -3,6 +3,7 @@ package com.example.organivy.ui.subpages.garden
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -11,7 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,6 +23,7 @@ import com.example.organivy.R
 import com.example.organivy.data.Header
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
+
 
 @Composable
 fun WorldMapSubscreen(onNavigateToProfile: () -> Unit) {
@@ -35,97 +40,131 @@ fun WorldMapSubscreen(onNavigateToProfile: () -> Unit) {
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        GameCanvas()
+
+        Box {
+            var playerRow by remember { mutableStateOf(10) }
+            var playerCol by remember { mutableStateOf(10) }
+
+
+
+            GameCanvas(
+                playerRow = playerRow,
+                playerCol = playerCol
+            )
+
+            MovementControls(
+                onUp = { playerRow-- },
+                onDown = { playerRow++ },
+                onLeft = { playerCol-- },
+                onRight = { playerCol++ }
+            )
+
+        }
     }
+
 }
 
 @Composable
-fun GameCanvas(modifier: Modifier = Modifier) {
+fun MovementControls(
+    onUp: () -> Unit,
+    onDown: () -> Unit,
+    onLeft: () -> Unit,
+    onRight: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = onUp) { Text("↑") }
+
+        Row {
+            Button(onClick = onLeft) { Text("←") }
+
+            Spacer(Modifier.width(20.dp))
+
+            Button(onClick = onRight) { Text("→") }
+        }
+
+        Button(onClick = onDown) { Text("↓") }
+    }
+}
+
+
+@Composable
+fun GameCanvas(
+    playerRow: Int,
+    playerCol: Int,
+    modifier: Modifier = Modifier
+){
+    //var cameraX by remember { mutableStateOf(0f) }
+    //var cameraY by remember { mutableStateOf(0f) }
+
+
     var cameraX by remember { mutableStateOf(0f) }
     var cameraY by remember { mutableStateOf(0f) }
 
-    // Map data (Your grid logic)
-    val mapData = remember {
-        listOf(
-            List(100) { 1 },
-            listOf(1, 1, 1, 1, 1, 1, 3, 1, 1, 3, 1, 1) + List(88) { 1 },
-            listOf(2, 2, 3, 3, 1, 1, 4, 4, 3, 1, 2, 4) + List(88) { 1 },
-            listOf(3, 3, 1, 1, 2, 2, 3, 5, 5, 5, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 3, 1, 1, 1, 5, 5, 1, 3, 5, 3, 5, 5, 3, 1, 1, 3, 1, 1, 1, 5, 5, 1, 4, 3, 3, 3, 3, 3, 4, 3, 1) + List(43) { 1 },
-            listOf(1, 2, 3, 1, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 1, 1, 3, 5, 1, 3, 1, 1, 5, 5, 1, 1, 1, 5, 5, 5, 5, 3, 5, 5, 5, 1, 1, 1, 1, 1, 1, 5, 5, 5, 2, 3, 2, 3, 3, 3, 3, 3, 1, 3, 1, 1) + List(42) { 1 },
-            listOf(2, 2, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 1, 1, 5, 5, 5, 1, 1, 5, 1, 5, 5, 5, 5, 5, 1, 1, 3, 3, 3, 3, 3, 1, 3, 1, 1, 3) + List(41) { 1 },
-            listOf(3, 3, 1, 5) + List(7) { 5 } + List(3) { 9 } + List(35) { 5 } + List(5) { 3 } + List(10) { 5 } + List(36) { 1 },
-            listOf(1, 2, 3) + List(7) { 5 } + List(3) { 9 } + List(36) { 5 } + List(5) { 3 } + List(20) { 5 } + List(26) { 1 },
-            listOf(1, 2, 3, 1) + List(7) { 5 } + List(3) { 9 } + List(35) { 5 } + List(5) { 3 } + List(20) { 5 } + List(26) { 1 },
-            listOf(1, 2, 3, 1, 2) + List(44) { 5 } + List(5) { 3 } + List(24) { 5 } + List(22) { 1 },
-            listOf(1, 2, 3, 2, 3) + List(44) { 5 } + List(5) { 3 } + List(25) { 5 } + List(21) { 1 },
-            listOf(1, 2, 3, 1, 2) + List(44) { 5 } + List(5) { 3 } + List(26) { 5 } + List(20) { 1 },
-            listOf(1, 2, 3) + List(46) { 5 } + List(5) { 3 } + List(25) { 5 } + List(21) { 1 },
-            listOf(1, 2) + List(47) { 5 } + List(5) { 3 } + List(24) { 5 } + List(22) { 1 },
-            listOf(1, 2, 5) + List(46) { 5 } + List(5) { 3 } + List(26) { 5 } + List(20) { 1 },
-            listOf(2, 2, 3, 5) + List(45) { 5 } + List(5) { 3 } + List(28) { 5 } + List(18) { 1 },
-            listOf(3, 3, 1, 1, 5) + List(44) { 5 } + List(5) { 3 } + List(30) { 5 } + List(16) { 1 },
-            listOf(2, 2, 3, 3, 1, 5) + List(43) { 5 } + List(5) { 3 } + List(32) { 5 } + List(14) { 1 },
-            listOf(3, 3, 1, 1, 2, 2, 5, 5) + List(41) { 5 } + List(5) { 3 } + List(35) { 5 } + List(11) { 1 },
-            listOf(1, 2, 3, 1, 2, 5, 5) + List(42) { 5 } + List(5) { 3 } + List(35) { 5 } + List(11) { 1 },
-            listOf(2, 2, 3, 2, 5) + List(44) { 5 } + List(5) { 3 } + List(34) { 5 } + List(12) { 1 },
-            listOf(2, 2, 3, 5) + List(45) { 5 } + List(5) { 3 } + List(34) { 5 } + List(12) { 1 },
-            listOf(3, 3, 1, 1, 5) + List(44) { 5 } + List(5) { 3 } + List(36) { 5 } + List(10) { 1 },
-            listOf(2, 2, 3, 5) + List(45) { 5 } + List(5) { 3 } + List(36) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1, 3, 2),
-            listOf(3, 3, 1, 5) + List(45) { 5 } + List(5) { 3 } + List(37) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1, 1),
-            listOf(1, 2, 3, 1, 5) + List(44) { 5 } + List(5) { 3 } + List(39) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1),
-            listOf(2, 2, 3, 2, 5) + List(44) { 5 } + List(5) { 3 } + List(40) { 5 } + listOf(2, 2, 3, 1, 2, 4),
-            listOf(2, 2, 3, 5) + List(45) { 5 } + List(5) { 3 } + List(40) { 5 } + listOf(2, 2, 3, 1, 2, 4),
-            listOf(3, 3, 1, 1, 5) + List(44) { 5 } + List(5) { 3 } + List(42) { 5 } + listOf(2, 2, 3, 1),
-            listOf(2, 2, 3, 3, 1, 5) + List(43) { 5 } + List(46) { 3 } + listOf(2, 2, 3, 1, 2),
-            listOf(3, 3, 1, 1, 2, 2, 5) + List(42) { 5 } + List(48) { 3 } + listOf(2, 2, 3),
-            listOf(1, 2, 3, 1, 2, 4, 5) + List(42) { 5 } + List(48) { 3 } + listOf(2, 2, 3),
-            listOf(2, 2, 3, 2, 5, 5) + List(89) { 5 } + listOf(2, 2, 3, 1, 2),
-            listOf(2, 2, 3, 5) + List(88) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1),
-            listOf(3, 3, 1, 1, 5) + List(87) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1),
-            listOf(2, 2, 3, 3, 1, 5) + List(87) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1),
-            listOf(3, 3, 1, 1, 2, 2, 5) + List(87) { 5 } + listOf(2, 2, 3, 1, 2, 4),
-            listOf(1, 2, 3, 1, 2, 5, 5) + List(20) { 5 } + listOf(2, 2, 3, 1, 2, 4) + List(61) { 5 } + listOf(2, 2, 3, 1, 2, 4),
-            listOf(2, 2, 3, 2, 5) + List(20) { 5 } + listOf(2, 2, 3, 1, 2, 4) + List(60) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1, 2),
-            listOf(2, 2, 3, 5) + List(20) { 5 } + listOf(2, 2, 3, 1, 2, 4) + List(60) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1, 2, 3),
-            listOf(3, 3, 1, 1, 5) + List(20) { 5 } + listOf(2, 2, 3, 1, 2, 4) + List(60) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1, 4),
-            listOf(2, 2, 3, 3, 1, 5) + List(86) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1),
-            listOf(3, 3, 1, 1, 5) + List(86) { 5 } + listOf(2, 2, 3, 1, 2, 4, 1, 1, 2),
-            listOf(1, 2, 3, 1, 2, 5, 5) + List(87) { 5 } + listOf(2, 2, 3, 1, 2, 4),
-            listOf(2, 2, 3, 2, 2, 1, 4, 5) + List(80) { 5 } + listOf(5, 4, 2, 2, 3, 1, 2, 2, 4, 1, 1, 4),
-            listOf(3, 3, 1, 1, 4, 2, 2, 1, 5) + List(80) { 5 } + listOf(5, 5, 2, 2, 2, 3, 1, 2, 4, 3, 1),
-            listOf(1, 2, 3, 1, 2, 3, 1, 1, 2, 5, 5) + List(80) { 5 } + listOf(5, 2, 3, 1, 4, 4, 3, 1, 2),
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 5) + List(80) { 5 } + listOf(5, 2, 3, 1, 4, 4, 1, 2),
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 4, 5) + List(80) { 5 } + listOf(5, 1, 2, 2, 1, 4, 3),
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 3, 2, 5, 5) + List(78) { 5 } + listOf(5, 5, 2, 3, 4, 3, 2),
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 3, 2, 2, 3, 5) + List(11) { 5 } + List(66) { 6 } + listOf(5, 5, 4, 4, 3, 1, 2),
-            listOf(3, 3, 1, 1, 4, 2, 2, 1, 4, 2, 1, 1, 2, 3, 4, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10, 5, 4) + List(71) { 1 },
-            listOf(1, 2, 3, 1, 2, 3, 1, 1, 2, 1, 2, 1, 2, 3, 4, 1, 4, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5, 5, 2) + List(71) { 1 },
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 1, 2, 3, 4, 1, 2, 5, 5, 10, 5, 5, 10, 5, 5, 5, 2, 2) + List(72) { 1 },
-            listOf(3, 3, 1, 1, 4, 2, 2, 1, 4, 2, 1, 1, 2, 3, 4, 1, 1, 2, 5, 5, 10, 5, 5, 5, 5, 5, 1, 2, 2) + List(71) { 1 },
-            listOf(1, 2, 3, 1, 2, 3, 1, 1, 2, 1, 2, 1, 2, 3, 4, 1, 4, 2, 2, 5, 5, 5, 5, 5, 5, 3, 1, 2, 2) + List(71) { 1 },
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 1, 2, 3, 4, 1, 2, 2, 2, 3, 5, 5, 5, 5, 4, 3, 1, 2, 2) + List(71) { 1 },
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 1, 2, 3, 4, 1, 2, 2, 2, 3, 2, 5, 5, 4, 4, 3, 1, 2, 2) + List(71) { 1 },
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 1, 2, 3, 4, 1, 2, 2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 2) + List(71) { 1 },
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 2, 2, 1, 2, 3, 4, 1, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 2) + List(71) { 1 },
-            listOf(2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 2, 1, 2, 3, 4, 1, 2, 2, 3, 2, 3, 1, 4, 4, 3, 1, 2, 2) + List(71) { 1 },
-            List(100) { 1 }
+    val tileSize = 73f
+    val context = LocalContext.current
+
+    val player = ImageBitmap.imageResource(R.drawable.character_base_single_blue)
+
+
+    val mapData = listOf(
+
+        listOf(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
+        listOf(1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1),
+        listOf(1,1,1,1,2,2,2,5,5,5,5,5,5,5,5,5,2,2,2,1,1,1,1,1,1),
+        listOf(1,1,1,2,2,5,9,5,5,5,11,11,11,5,5,5,5,5,2,2,1,1,1,1,1),
+        listOf(1,1,2,2,5,5,5,5,5,11,11,11,11,11,5,5,5,5,5,2,2,1,1,1,1),
+        listOf(1,1,2,5,5,5,5,5,11,11,5,5,5,11,11,5,5,5,5,5,2,1,1,1,1),
+        listOf(1,2,2,5,5,5,9,5,11,5,5,5,5,5,5,5,9,5,5,5,2,2,1,1,1),
+        listOf(1,2,5,5,5,5,5,5,11,5,5,10,5,5,5,5,5,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,5,5,5,11,11,5,5,5,5,5,5,5,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,9,5,5,5,11,11,5,5,5,5,5,5,9,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,5,5,5,5,11,10,10,10,5,5,5,5,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,5,5,11,11,11,11,5,5,5,5,5,5,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,5,11,11,5,5,5,5,5,5,11,11,5,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,11,11,5,5,5,9,5,9,5,5,11,11,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,11,11,5,5,5,5,5,5,5,5,5,5,11,11,5,9,5,2,1,1,1),
+        listOf(1,2,5,5,5,11,11,5,5,10,5,5,5,10,5,11,11,5,5,5,5,2,1,1,1),
+        listOf(1,2,5,5,5,5,11,11,5,5,5,5,5,5,11,11,5,5,5,5,5,2,1,1,1),
+        listOf(1,2,2,5,5,5,5,11,11,11,11,11,11,11,11,5,5,5,5,5,2,2,1,1,1),
+        listOf(1,1,2,2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,2,1,1,1,1),
+        listOf(1,1,1,2,2,5,5,5,5,5,5,5,9,5,5,5,5,5,2,2,1,1,1,1,1),
+        listOf(1,1,1,1,2,2,2,5,5,5,5,5,5,5,5,5,2,2,2,1,1,1,1,1,1),
+        listOf(1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1),
+        listOf(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+
+    )
+
+
+    val water = remember {
+        ImageBitmap.imageResource(
+            context.resources,
+            R.drawable.basicwater
         )
     }
+    val water1 = remember {ImageBitmap.imageResource(context.resources,R.drawable.basicwater1)}
+    val water3 = remember {ImageBitmap.imageResource(context.resources,R.drawable.basicwater2)}
+    val water4 = remember {ImageBitmap.imageResource(context.resources,R.drawable.basicwater3)}
+    val bottom_edge = remember {ImageBitmap.imageResource(context.resources,R.drawable.bottom_edge)}
+    val top_edge = remember {ImageBitmap.imageResource(context.resources,R.drawable.top_edge)}
+    val left_edge = remember {ImageBitmap.imageResource(context.resources,R.drawable.left_edge)}
+    val grayrock = remember {ImageBitmap.imageResource(context.resources,R.drawable.grayrock)}
+    val graystone = remember {ImageBitmap.imageResource(context.resources,R.drawable.graystone)}
+    val deflaut_green = remember {ImageBitmap.imageResource(context.resources,R.drawable.deflaut_green)}
+    val brown_path = remember {ImageBitmap.imageResource(context.resources,R.drawable.brown_path)}
 
-    val tileSize = 73f
-
-    // Load Bitmaps
-    val water = ImageBitmap.imageResource(R.drawable.basicwater)
-    val water1 = ImageBitmap.imageResource(R.drawable.basicwater1)
-    val water3 = ImageBitmap.imageResource(R.drawable.basicwater2)
-    val water4 = ImageBitmap.imageResource(R.drawable.basicwater3)
-    val bottom_edge = ImageBitmap.imageResource(R.drawable.bottom_edge)
-    val top_edge = ImageBitmap.imageResource(R.drawable.top_edge)
-    val left_edge = ImageBitmap.imageResource(R.drawable.left_edge)
-    val grayrock = ImageBitmap.imageResource(R.drawable.grayrock)
-    val graystone = ImageBitmap.imageResource(R.drawable.graystone)
-    val deflaut_green = ImageBitmap.imageResource(R.drawable.deflaut_green)
-    val brown_path = ImageBitmap.imageResource(R.drawable.brown_path)
+    /*val water = ImageBitmap.imageResource(id = R.drawable.basicwater)
+    val water1 = ImageBitmap.imageResource(id=R.drawable.basicwater1)
+    val water3 = ImageBitmap.imageResource(id=R.drawable.basicwater2)
+    val water4 = ImageBitmap.imageResource(id=R.drawable.basicwater3)
+    val bottom_edge = ImageBitmap.imageResource(id=R.drawable.bottom_edge)
+    val top_edge = ImageBitmap.imageResource(id=R.drawable.top_edge)
+    val left_edge = ImageBitmap.imageResource(id=R.drawable.left_edge)
+    val grayrock = ImageBitmap.imageResource(id=R.drawable.grayrock)
+    val graystone = ImageBitmap.imageResource(id=R.drawable.graystone)
+    val deflaut_green = ImageBitmap.imageResource(id=R.drawable.deflaut_green)
+    val brown_path = ImageBitmap.imageResource(id=R.drawable.brown_path)*/
 
     Canvas(
         modifier = modifier
@@ -137,12 +176,19 @@ fun GameCanvas(modifier: Modifier = Modifier) {
                     cameraY -= dragAmount.y
                 }
             }
-    ) {
-        // Calculate the range of visible tiles
-        val startCol = (cameraX / tileSize).toInt().coerceIn(0, 99)
-        val endCol = ((cameraX + size.width) / tileSize).toInt().coerceIn(0, 99)
-        val startRow = (cameraY / tileSize).toInt().coerceIn(0, mapData.size - 1)
-        val endRow = ((cameraY + size.height) / tileSize).toInt().coerceIn(0, mapData.size - 1)
+    ){
+        // camera follows player
+        cameraX = playerCol * tileSize - size.width / 2 + tileSize / 2
+        cameraY = playerRow * tileSize - size.height / 2 + tileSize / 2
+
+        val playerX = playerCol * tileSize - cameraX
+        val playerY = playerRow * tileSize - cameraY
+
+        val startCol = (cameraX / tileSize).toInt().coerceAtLeast(0)
+        val startRow = (cameraY / tileSize).toInt().coerceAtLeast(0)
+
+        val endCol = ((cameraX + size.width) / tileSize).toInt().coerceAtMost(mapData[0].size - 1)
+        val endRow = ((cameraY + size.height) / tileSize).toInt().coerceAtMost(mapData.size - 1)
 
         // Only loop over visible tiles
         for (row in startRow..endRow) {
@@ -170,10 +216,20 @@ fun GameCanvas(modifier: Modifier = Modifier) {
 
                     drawImage(
                         image = image,
-                        topLeft = Offset(x, y)
+                        dstOffset = IntOffset(x.toInt(), y.toInt()),
+                        dstSize = IntSize(tileSize.toInt(), tileSize.toInt())
                     )
                 }
             }
         }
+
+
+
+        drawImage(
+            image = player,
+            dstOffset = IntOffset(playerX.toInt(), playerY.toInt()),
+            dstSize = IntSize(tileSize.toInt(), tileSize.toInt())
+        )
+
     }
 }

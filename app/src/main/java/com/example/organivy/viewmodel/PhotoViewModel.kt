@@ -32,9 +32,9 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
 
-//    init {
-//        loadPhotos()
-//    }
+    init {
+        loadPhotos()
+    }
 
      fun loadPhotos() {
         // MOVED WHAT WAS IN MAIN KT HEREEEEEEEEEEE
@@ -52,8 +52,8 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             val oldPics = withContext(Dispatchers.Default) {
                 photo.filter { pic -> pic.dateAdded <= (System.currentTimeMillis() / 1000) - 31_556_952L }
             }
-            val duplicatedPics:  Map<Long, List<Photo>> = withContext(Dispatchers.Default) {
-                photo.groupBy { pic -> pic.size }.filter { pic -> pic.value.size > 1 }
+            val duplicatedPics:  Map<Pair<Long, String>, List<Photo>> = withContext(Dispatchers.Default) {
+                photo.groupBy { pic -> pic.size to pic.name }.filter { pic -> pic.value.size > 1 }
             }
 
 

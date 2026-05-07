@@ -228,7 +228,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
                 onNavigateToForget = { navController.navigate("forget_password")},
                 onNavigateToLogin = { navController.navigate("login")},
                 onNavigateToHome = { navController.navigate("app") }, // Navigate to 'app' after signup
-                onNavigateToOnboarding  = { navController.navigate("onboarding")},
+                //onNavigateToOnboarding  = { navController.navigate("onboarding")}
                 )
         }
 

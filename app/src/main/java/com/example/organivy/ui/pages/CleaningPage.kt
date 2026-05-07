@@ -1,14 +1,17 @@
 package com.example.organivy.ui.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -34,6 +37,9 @@ import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.organivy.R
 
 
 @Composable
@@ -83,14 +89,15 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
             item {
                 Text(
                     text = "Make the World Cleaner One Photo at a Time!",
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    //fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.headlineMedium
                 )
             }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
-            item {
+            /*item {
                 Card(
                     //modifier = Modifier
                     //    .padding(5.dp)
@@ -114,36 +121,100 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
                     Text(text = "Photos deleted this week:", Modifier.padding(15.dp))
 
                 }
+            }*/
+
+            item{
+                Box{
+                    Image(
+                        painter = painterResource(id = R.drawable.long_card),
+                        contentDescription = "Shelf Image",
+                        modifier = Modifier//.height(140.dp).width(100.dp)
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        contentScale = ContentScale.Crop,
+
+
+                    )
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .align(Alignment.Center)){
+                        Text(text = "Top category:", Modifier.padding(horizontal = 20.dp, vertical = 15.dp))
+                        Text(text = "Photos deleted this week:", Modifier.padding(horizontal = 20.dp))
+                    }
+
+                }
+
             }
+
+            item { Spacer(modifier = Modifier.height(5.dp)) }
+
+
+            //ADDDDDDDDDDDDDDDDDDED
+            item { Spacer(modifier = Modifier.height(30.dp)) }
+
+            item {
+                Text(
+                    text = "Categories:",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            // row 1
+            item{
+                Shelves(
+                    name = "Camera" ,
+                    list = "no. of photos: ${state?.cameraPicsList?.size}",
+                    navigate = onNavigateToCamera,
+                    name2 = "Screenshots",
+                    list2 = "no. of photos: ${state?.screenshotsList?.size}",
+                    navigate2 = onNavigateToScreenshots,
+                ) }
+            // row 2
+            item{
+                Shelves(
+                    name = "Downloads" ,
+                    list = "no. of photos: ${state?.downloadsList?.size}",
+                    navigate = onNavigateToDownloads,
+                    name2 = "Whatsapp",
+                    list2 = "no. of photos: ${state?.whatsappPicsList?.size}",
+                    navigate2 = onNavigateToWhatsappImages,
+                ) }
+
 
             item { Spacer(modifier = Modifier.height(35.dp)) }
 
             item {
-
-                Button(
-                    onClick = {
-                        // boo
-                        //photoViewModel?.loadPhotos()
-
-
-                        if (hasPermission) {
-                            photoViewModel?.loadPhotos()
-
-
-
-                        }
-
-
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        "Delete and Grow", Modifier.padding(20.dp),
-                        fontSize = (16.sp)
-                    )
-                }
+                Text(
+                    text = "Types:",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
+            //row1
+            item{
+            Shelves(
+                name = "Old Images" ,
+                list = "no. of photos: ${state?.oldPhotos}",
+                navigate = onNavigateToOld,
+                name2 = "Large Images",
+                list2 = "no. of photos: ${state?.largePhotos}",
+                navigate2 = onNavigateToLarge,
+            ) }
+            //row2
+            item{
+                Shelves(
+                    name = "Blurry Images" ,
+                    list = "no. of photos: ${state?.oldPhotos}",
+                    navigate = onNavigateToOld,
+                    name2 = "Duplicates",
+                    list2 = "no. of photos: ${state?.largePhotos}",
+                    navigate2 = onNavigateToLarge,
+                ) }
+            //addeds endish
+
+
+
             item { Spacer(modifier = Modifier.height(60.dp)) }
 
             item {
@@ -169,7 +240,7 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
             item {
                 LazyRow(
                     modifier = Modifier
-                        .padding(10.dp, 20.dp,)
+                        .padding(10.dp, 20.dp)
                         .height(130.dp),
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
 
@@ -308,16 +379,59 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
 
 
 
-
-
-
-
-
-
-
-
-
     // end on cleaning page
+}
+@Composable
+fun Shelves (name:String, list: String, navigate: () -> Unit, name2:String, list2: String, navigate2: () -> Unit){
+    Row{
+
+        Box( modifier = Modifier.width(160.dp)){
+            TextButton(onClick = navigate) {
+                Text(name, Modifier.padding(15.dp),
+                    style = MaterialTheme.typography. headlineSmall,
+                    fontSize = 15.sp)
+            }
+            Image(
+                painter = painterResource(id = R.drawable.shelf),
+                contentDescription = "Shelf Image",
+                modifier = Modifier.size(140.dp),
+                contentScale = ContentScale.Fit,
+                //filterQuality = FilterQuality.None
+
+            )
+            Text(
+                modifier = Modifier.align(Alignment.BottomStart),
+                text = list,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
+        Spacer(modifier = Modifier.width(15.dp))
+
+        Box( modifier = Modifier.width(180.dp)){
+            TextButton(onClick = navigate2) {
+                Text(name2, Modifier.padding(15.dp,15.dp,5.dp,15.dp),
+                    style = MaterialTheme.typography. headlineSmall,
+                    fontSize = 15.sp)
+            }
+            Image(
+                painter = painterResource(id = R.drawable.shelf),
+                contentDescription = "Shelf Image",
+                modifier = Modifier.size(140.dp),
+                contentScale = ContentScale.Fit,
+                //filterQuality = FilterQuality.None
+
+            )
+            Text(
+                modifier = Modifier.align(Alignment.BottomStart),
+                text = list2,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
+    }
 }
 
 // Preview function goes outside MainActivity class
