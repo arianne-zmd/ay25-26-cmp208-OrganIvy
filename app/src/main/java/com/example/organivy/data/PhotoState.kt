@@ -4,7 +4,7 @@ data class PhotoState(
 
     val isLoading: Boolean = true,
 
-    val totalPhotos: Int = 0,
+    val totalPhotos: List<Photo> = emptyList(),
     val largePhotos: Int = 0,
     val oldPhotos: Int = 0,
     val duplicatePhotos: Int = 0,
@@ -25,7 +25,10 @@ data class PhotoState(
     val whatsappPicsList: List<Photo> = emptyList(),
 
     //deletion list
-    val deletionList: List<Photo> = emptyList()
+    val deletionList: List<Photo> = emptyList(),
+
+    //secure folder list
+    val secureFolderList: List<Photo> = emptyList()
 
 
 )

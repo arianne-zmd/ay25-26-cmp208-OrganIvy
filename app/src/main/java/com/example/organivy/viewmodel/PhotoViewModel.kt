@@ -120,7 +120,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             withContext(Dispatchers.Main) {
                 uiState = PhotoState(
                     isLoading = false,
-                    totalPhotos = photo.size,
+                    totalPhotos = photo,
                     largePhotos = largePics.size,
                     oldPhotos = oldPics.size,
                     duplicatePhotos = duplicatedPics.size,
@@ -138,7 +138,10 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                     whatsappPicsList = wIPics,
 
                     //deletion list
-                    deletionList = emptyList()
+                    deletionList = emptyList(),
+
+                    //deletion list
+                    secureFolderList = emptyList()
 
 
 
@@ -154,6 +157,17 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             uiState.copy(deletionList = uiState.deletionList + photo)
         } else {
             uiState.copy(deletionList = uiState.deletionList - photo)
+        }
+    }
+
+    fun onSecurePhotoChecked(photo: Photo, isChecked: Boolean) {
+        uiState = if (isChecked) {
+            uiState.copy(secureFolderList = uiState.secureFolderList + photo,
+            )
+
+        } else {
+            uiState.copy(secureFolderList = uiState.secureFolderList - photo,
+                )
         }
     }
 

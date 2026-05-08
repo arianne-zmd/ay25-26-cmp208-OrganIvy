@@ -71,7 +71,10 @@ fun LazyGridScreenBP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMode
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
 
-            items(state.blurryPicsList) { photo ->
+            val shownPhotos = state.blurryPicsList.filter{
+                it !in state.secureFolderList
+            }
+            items(shownPhotos) { photo ->
 
                 GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))

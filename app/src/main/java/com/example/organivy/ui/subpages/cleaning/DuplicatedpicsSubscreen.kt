@@ -71,8 +71,10 @@ fun LazyGridScreenDCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMod
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
 
-
-            items(state.duplicatePicsList) { photo ->
+            val shownPhotos = state.duplicatePicsList.filter{
+                it !in state.secureFolderList
+            }
+            items(shownPhotos) { photo ->
 
 
                 GridItem(photo = photo, photoViewModel = photoViewModel)

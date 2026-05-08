@@ -1,9 +1,9 @@
-package com.example.organivy.ui.subpages.cleaning
-
+package com.example.organivy.ui.pages
 
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,27 +17,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
 import com.example.organivy.data.GridItem
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
-fun CameraSubscreen(onNavigateToProfile: () -> Unit,
+fun SecureFolderPage(onNavigateToProfile: () -> Unit,
                     photoViewModel: PhotoViewModel?,
                     gameViewModel: GameViewModel
-                   ){
+){
 
     val state = photoViewModel?.uiState
 
 
 
     if (state != null && state.cameraPicsList.isNotEmpty()) {
-        LazyGridScreenCP(photoViewModel = photoViewModel,  gameViewModel = gameViewModel)
+        LazyGridScreenSecureFP(photoViewModel = photoViewModel,  gameViewModel = gameViewModel)
     } else {
         Text(
             text = "Loading photos...",
@@ -49,7 +47,7 @@ fun CameraSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel, ) {
+fun LazyGridScreenSecureFP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel ) {
     val state = photoViewModel.uiState  //: PhotoState()
 
 
@@ -72,10 +70,7 @@ fun LazyGridScreenCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMode
 
             item{Spacer(modifier = Modifier.height(100.dp))}
 
-            val shownPhotos = state.cameraPicsList.filter{
-                it !in state.secureFolderList
-            }
-            items(shownPhotos) {photo ->
+            items(state.secureFolderList) {photo ->
 
 
                 GridItem(photo = photo, photoViewModel = photoViewModel)
@@ -88,39 +83,26 @@ fun LazyGridScreenCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMode
 
         BoxExtras(photoViewModel, gameViewModel)
 
-        Text(
-            text = "Deleting ${state.deletionList.size} images",
-            fontSize = 18.sp,
-            modifier = Modifier.padding(vertical = 80.dp)
+        Column{
+            Text(
+                text = "Secure Folder has ${state.secureFolderList.size} images",
+                fontSize = 18.sp,
+                modifier = Modifier.padding(top = 80.dp)
 
-        )
+            )
+
+            Text(
+                text = "Deleting ${state.deletionList.size} images",
+                fontSize = 18.sp,
+                modifier = Modifier.padding(vertical = 2.dp)
+
+            )
+        }
 
 
-        android.util.Log.d("DeleteTest","Deleting ${state.deletionList} images" )
 
-        Log.d("DeleteTest", "Deleting ${photoViewModel.uiState.deletionList} images")
     }
 
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Preview function goes outside MainActivity class
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PreviewCameraSubscreen() {
-//    CameraSubscreen(onNavigateToProfile = {}, photoViewModel = null)
-//}

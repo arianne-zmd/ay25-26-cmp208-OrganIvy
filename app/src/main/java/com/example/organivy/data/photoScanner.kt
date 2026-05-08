@@ -34,6 +34,7 @@ class PhotoScanner (private val context: Context) {
 
         val sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC"
 
+        // lowkey a pointer. like -->
         val cursor = context.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
@@ -43,6 +44,7 @@ class PhotoScanner (private val context: Context) {
             )
 
         cursor?.use { cursorObject ->
+            // ^ for security and like memory leaks and stuff
             android.util.Log.d("PHOTO_TEST", "Cursor count: ${cursorObject.count}")
 
             // i deleted code from here

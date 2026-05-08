@@ -23,9 +23,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +50,7 @@ import coil.compose.AsyncImage
 import com.example.organivy.R
 import com.example.organivy.ui.pages.StatBar
 
+
 import com.example.organivy.ui.components.LayeredCharacter
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
@@ -51,16 +58,20 @@ import com.example.organivy.viewmodel.PhotoViewModel
 
 /*
 TABLE OF CONTENTS
-1. checkboxes
+1. checkboxes ( piccheckboxes   & securepiccheckboxes )
 2. grid item
 3. box extras( header, delete button)
 4. header
+5. stat bar
+6. grid header
  */
 
 
 
 
 // CHECKBOXES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// PicCheckbox ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @Composable
 fun PicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
@@ -73,7 +84,7 @@ fun PicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
 
     Row(
-        modifier = Modifier.fillMaxWidth() .padding(4.dp),
+        modifier = Modifier.padding(4.dp),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.Top
     ) {
@@ -94,6 +105,66 @@ fun PicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
 
 }
+// PicCheckbox ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// SecurePicCheckbox ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@Composable
+fun SecurePicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
+
+    // Observe ViewModel state
+    val uiState = photoViewModel.uiState
+
+    // Determine if this photo is selected
+    val isLiked = uiState.secureFolderList.contains(photo)
+
+
+
+    Row(
+        modifier = Modifier.padding(4.dp),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Top
+    ) {
+        IconButton(
+            onClick = {
+
+                val newState = !isLiked
+
+                Log.d("PhotoTest", "Like button CLICKED")
+
+                photoViewModel.onSecurePhotoChecked(photo, newState)
+
+                Log.d("PhotoTest", "Photo: ${photo.id}")
+                Log.d(
+                    "PhotoTest",
+                    "List: ${photoViewModel.uiState.secureFolderList.map { it.id }}"
+                )
+            }
+        ) {
+
+            Icon(
+                imageVector =
+                    if (isLiked)
+                        Icons.Filled.Favorite
+                    else
+                        Icons.Outlined.FavoriteBorder,
+
+                contentDescription = "Secure Photo",
+
+                tint =
+                    if (isLiked)
+                        Color.Red
+                    else
+                        Color.Gray
+            )
+        }
+
+    }
+
+
+}
+// SecurePicCheckbox ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 //CHECKBOXES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // GRID ITEM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,9 +185,14 @@ fun GridItem(photo: Photo, photoViewModel: PhotoViewModel) {
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             photo.id)
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            PicCheckbox(photo = photo, photoViewModel = photoViewModel )
+            SecurePicCheckbox(photo = photo, photoViewModel = photoViewModel )
+        }
 
-
-        PicCheckbox(photo = photo, photoViewModel = photoViewModel )
 
         Spacer(modifier = Modifier.height(8.dp))
 

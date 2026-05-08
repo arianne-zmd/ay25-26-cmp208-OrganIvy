@@ -1,6 +1,7 @@
 package com.example.organivy.ui.pages
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,20 +26,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.Header
-import com.example.organivy.data.PhotoState
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import com.example.organivy.R
 
 
@@ -54,7 +54,8 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
                   onNavigateToDuplicated: () -> Unit,
                   photoViewModel: PhotoViewModel?,
                   gameViewModel: GameViewModel,
-                  hasPermission: Boolean
+                  hasPermission: Boolean,
+                  onNavigateToSecureFolder: () -> Unit
 ) {
 
     //val state by photoViewModel!!.uiState.collectAsState()
@@ -97,31 +98,6 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
-            /*item {
-                Card(
-                    //modifier = Modifier
-                    //    .padding(5.dp)
-                    //    .wrapContentHeight(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(110.dp),
-
-
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 5.dp
-                    ),
-
-                    ) {
-                    Text(text = "Top category:", Modifier.padding(15.dp))
-                    Text(text = "Photos deleted this week:", Modifier.padding(15.dp))
-
-                }
-            }*/
 
             item{
                 Box{
@@ -205,164 +181,48 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
             item{
                 Shelves(
                     name = "Blurry Images" ,
-                    list = "no. of photos: ${state?.oldPhotos}",
-                    navigate = onNavigateToOld,
+                    list = "no. of photos: ${state?.blurryPhotos}",
+                    navigate = onNavigateToBlurry,
                     name2 = "Duplicates",
-                    list2 = "no. of photos: ${state?.largePhotos}",
-                    navigate2 = onNavigateToLarge,
+                    list2 = "no. of photos: ${state?.duplicatePhotos}",
+                    navigate2 = onNavigateToDuplicated,
                 ) }
             //addeds endish
 
 
 
-            item { Spacer(modifier = Modifier.height(60.dp)) }
-
-            item {
-                Text(
-                    text = "Categories:",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            val catergories = listOf(
-                "Camera   " to onNavigateToCamera,
-                "Screenshots" to onNavigateToScreenshots,
-                "Downloads" to onNavigateToDownloads,
-                "WhatsApp Images" to onNavigateToWhatsappImages
-            )
-            val temp2 = listOf(
-                "${state?.cameraPicsList?.size}",
-                "${state?.screenshotsList?.size}",
-                "${state?.downloadsList?.size}",
-                "${state?.whatsappPicsList?.size}"
-            )
-            item {
-                LazyRow(
-                    modifier = Modifier
-                        .padding(10.dp, 20.dp)
-                        .height(130.dp),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp)
-
-                ) {
-                    itemsIndexed(catergories) { index, (name, action) ->
-
-                        Column(
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp)
-                                .height(120.dp)
-
-                        ) {
-
-                            Card(
-                                modifier = Modifier,
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                ),
-                                elevation = CardDefaults.cardElevation(
-                                    defaultElevation = 5.dp
-                                ),
-                            ) {
-
-                                TextButton(onClick = action) {
-                                    Text(name, Modifier.padding(15.dp))
-                                }
-
-                            }
-
-                            Spacer(modifier = Modifier.height(20.dp))
-
-                            Text(
-                                text = "no. of photos: " + temp2[index],
-                                fontSize = 15.sp,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-
-
-                    } // <-- end of types
-                }
-            }
-
-            item {
-                Text(
-                    text = "Types:",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-
-            val storageTypes = listOf(
-                "Old Images" to onNavigateToOld,
-                "Large Images" to onNavigateToLarge,
-                "Blurry Images" to onNavigateToBlurry,
-                "Duplicated Images" to onNavigateToDuplicated
-            )
-            val temp = listOf(
-                "${state?.oldPhotos}",
-                "${state?.largePhotos}",
-                "${state?.blurryPhotos}",
-                "${state?.duplicatePhotos}"
-            )
-
             android.util.Log.d("PHOTO_TEST", "Large photos: ${state?.largePhotos}")
             android.util.Log.d("PHOTO_TEST", "Old photos: ${state?.oldPhotos}")
             android.util.Log.d("PHOTO_TEST", "Duplicate groups: ${state?.duplicatePhotos}")
-//        android.util.Log.d("PHOTO_TEST", "Blurry photos: ${MainActivity.PhotoStats.blurryPhotos}")
-            item {
-                LazyRow(
-                    modifier = Modifier
-                        .padding(10.dp, 20.dp)
-                        .height(130.dp),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp)
 
-                ) {
-
-                    itemsIndexed(storageTypes) { index, (name, action) ->
-
-                        Column(
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp)
-                                .height(120.dp)
-
-                        ) {
-
-                            Card(
-                                modifier = Modifier,
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                ),
-                                elevation = CardDefaults.cardElevation(
-                                    defaultElevation = 5.dp
-                                ),
-                            ) {
-                                TextButton(onClick = action) {
-                                    Text(name, Modifier.padding(15.dp))
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(20.dp))
-
-                            Text(
-                                text = "no. of photos: " + temp[index],
-                                fontSize = 15.sp,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-
-
-                    } // <-- end of types
-
-
-                }
-
-            }
-
+            item { Spacer(modifier = Modifier.height(60.dp)) }
 
         }
+
+
+        Box(modifier = Modifier.clickable { onNavigateToSecureFolder() }.align(alignment = Alignment.BottomEnd)) {
+
+
+            Image(
+                painter = painterResource(id = R.drawable.card),
+                contentDescription = "Game card",
+                modifier = Modifier.size(100.dp),
+                contentScale = ContentScale.Fit,
+                //filterQuality = FilterQuality.None
+
+            )
+
+            Text(
+                text = "\uD83D\uDD12 ",
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center,
+                fontSize = 35.sp
+            )
+        }
+
+
+
+
 
         if (state?.isLoading == true) {
             CircularProgressIndicator(

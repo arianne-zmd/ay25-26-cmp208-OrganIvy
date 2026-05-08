@@ -52,6 +52,7 @@ import com.example.organivy.viewmodel.PhotoViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import com.example.organivy.ui.pages.SecureFolderPage
 import com.example.organivy.viewmodel.GameViewModel
 
 
@@ -332,7 +333,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                     onNavigateToDuplicated = { navController.navigate("duplicated") },
                     photoViewModel = photoViewModel,
                     gameViewModel = gameViewModel,
-                    hasPermission = hasPermission
+                    hasPermission = hasPermission,
+                    onNavigateToSecureFolder = { navController.navigate("secure") }
                 )
             }
 
@@ -396,6 +398,14 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
 
             composable("duplicated") {
                 DuplicatedPicsSubscreen(
+                    onNavigateToProfile = { navController.navigate("profile") },
+                    photoViewModel = photoViewModel,
+                    gameViewModel = gameViewModel
+                )
+            }
+
+            composable("secure") {
+                SecureFolderPage(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
                     gameViewModel = gameViewModel

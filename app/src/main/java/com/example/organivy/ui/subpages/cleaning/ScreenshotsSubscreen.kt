@@ -65,7 +65,10 @@ fun LazyGridScreenSSP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMod
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
 
-            items(state.screenshotsList) { photo ->
+            val shownPhotos = state.screenshotsList.filter{
+                it !in state.secureFolderList
+            }
+            items(shownPhotos) { photo ->
 
                 GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))

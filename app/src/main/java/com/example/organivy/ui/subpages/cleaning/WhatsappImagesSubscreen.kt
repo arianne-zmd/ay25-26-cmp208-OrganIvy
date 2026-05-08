@@ -66,7 +66,10 @@ fun LazyGridScreenWAP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMod
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
 
-            items(state.whatsappPicsList) { photo ->
+            val shownPhotos = state.whatsappPicsList.filter{
+                it !in state.secureFolderList
+            }
+            items(shownPhotos) { photo ->
 
                 GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))

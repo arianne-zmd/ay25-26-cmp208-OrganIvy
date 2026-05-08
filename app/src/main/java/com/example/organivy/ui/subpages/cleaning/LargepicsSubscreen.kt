@@ -65,7 +65,10 @@ fun LazyGridScreenLP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMode
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
 
-            items(state.largePicsList) { photo ->
+            val shownPhotos = state.largePicsList.filter{
+                it !in state.secureFolderList
+            }
+            items(shownPhotos) { photo ->
 
                 GridItem(photo = photo, photoViewModel = photoViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
