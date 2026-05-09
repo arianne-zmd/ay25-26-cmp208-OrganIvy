@@ -34,6 +34,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadPhotos()
+
     }
 
      fun loadPhotos() {
@@ -142,21 +143,13 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
                     //secure list
                     //secureFolderList = emptyList()
-                    secureFolderList = uiState.secureFolderList
+                    //secureFolderList = uiState.secureFolderList
 
 
 
                 )
 
-                // load secure pics from firebase
-                val firebaseViewModel = FirebaseViewModel(getApplication())
 
-                firebaseViewModel.loadSecurePhotos { photos ->
-
-                    uiState = uiState.copy(
-                        secureFolderList = photos
-                    )
-                }
             }
         }
 
@@ -235,6 +228,13 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         uiState.secureFolderList.forEach { photo ->
 
             firebaseViewModel.uploadPhoto(photo)
+        }
+    }
+
+//good
+    fun loadSecurePhotos(firebaseViewModel: FirebaseViewModel) {
+        firebaseViewModel.loadSecurePhotos { photos ->
+            uiState = uiState.copy(secureFolderList = photos)
         }
     }
 

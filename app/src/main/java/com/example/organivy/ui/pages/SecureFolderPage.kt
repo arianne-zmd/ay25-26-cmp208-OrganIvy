@@ -34,6 +34,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,11 +55,15 @@ fun SecureFolderPage(onNavigateToProfile: () -> Unit,
                      firebaseViewModel: FirebaseViewModel
 ){
 
+    LaunchedEffect(Unit) {
+        photoViewModel?.loadSecurePhotos(firebaseViewModel)
+    }
+
     val state = photoViewModel?.uiState
 
 
 
-    if (state != null && state.cameraPicsList.isNotEmpty()) {
+    if (state != null && state.secureFolderList.isNotEmpty()) {
         LazyGridScreenSecureFP(photoViewModel = photoViewModel,  gameViewModel = gameViewModel, firebaseViewModel = firebaseViewModel)
     } else {
         Text(
@@ -147,9 +152,9 @@ fun LazyGridScreenSecureFP(photoViewModel: PhotoViewModel, gameViewModel: GameVi
                 gameViewModel.onDeletion(deletedCount)
 
                 photoViewModel.removeDeletedPhotosFromSecureFolder()
-
                 photoViewModel.clearDeletionList()
-                photoViewModel.loadPhotos()
+
+                photoViewModel.loadSecurePhotos(firebaseViewModel)
 
                 Toast.makeText(context, "Photos deleted successfully!", Toast.LENGTH_SHORT).show()
             }
