@@ -28,6 +28,7 @@ data class PhotoState(
     val deletionList: List<Photo> = emptyList(),
 
     //secure folder list
+    // remove this so it can be updated  / i guess not
     val secureFolderList: List<Photo> = emptyList()
 
 

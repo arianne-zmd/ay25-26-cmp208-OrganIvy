@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
 import com.example.organivy.data.GridItem
+import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -27,14 +28,15 @@ import com.example.organivy.viewmodel.PhotoViewModel
 @Composable
 fun WhatsappImagesSubscreen(onNavigateToProfile: () -> Unit,
                             photoViewModel: PhotoViewModel?,
-                            gameViewModel: GameViewModel
+                            gameViewModel: GameViewModel,
+                            firebaseViewModel: FirebaseViewModel
 ){
 
     val state =photoViewModel?.uiState
 
 
     if (state != null && state.whatsappPicsList.isNotEmpty()) {
-        LazyGridScreenWAP(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
+        LazyGridScreenWAP(photoViewModel = photoViewModel, gameViewModel = gameViewModel, firebaseViewModel = firebaseViewModel)
     } else {
         Text(
             text = "Loading photos...",
@@ -46,7 +48,7 @@ fun WhatsappImagesSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenWAP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel) {
+fun LazyGridScreenWAP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel, firebaseViewModel: FirebaseViewModel) {
     val state = photoViewModel.uiState  //: PhotoState()
 
 
@@ -71,7 +73,7 @@ fun LazyGridScreenWAP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMod
             }
             items(shownPhotos) { photo ->
 
-                GridItem(photo = photo, photoViewModel = photoViewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel, firebaseViewModel = firebaseViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }

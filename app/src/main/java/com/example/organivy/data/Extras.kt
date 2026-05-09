@@ -1,6 +1,7 @@
 package com.example.organivy.data
 
 import android.app.Activity
+import android.app.Application
 import android.content.ContentUris
 import android.provider.MediaStore
 import android.util.Log
@@ -52,6 +53,7 @@ import com.example.organivy.ui.pages.StatBar
 
 
 import com.example.organivy.ui.components.LayeredCharacter
+import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -110,7 +112,7 @@ fun PicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
 // SecurePicCheckbox ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @Composable
-fun SecurePicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
+fun SecurePicCheckbox(photo: Photo, photoViewModel: PhotoViewModel, firebaseViewModel: FirebaseViewModel){
 
     // Observe ViewModel state
     val uiState = photoViewModel.uiState
@@ -132,7 +134,7 @@ fun SecurePicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
                 Log.d("PhotoTest", "Like button CLICKED")
 
-                photoViewModel.onSecurePhotoChecked(photo, newState)
+                photoViewModel.onSecurePhotoChecked(photo, newState, firebaseViewModel)
 
                 Log.d("PhotoTest", "Photo: ${photo.id}")
                 Log.d(
@@ -169,7 +171,7 @@ fun SecurePicCheckbox(photo: Photo, photoViewModel: PhotoViewModel){
 
 // GRID ITEM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @Composable
-fun GridItem(photo: Photo, photoViewModel: PhotoViewModel) {
+fun GridItem(photo: Photo, photoViewModel: PhotoViewModel, firebaseViewModel: FirebaseViewModel) {
 
     Column(
         modifier = Modifier
@@ -190,7 +192,7 @@ fun GridItem(photo: Photo, photoViewModel: PhotoViewModel) {
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             PicCheckbox(photo = photo, photoViewModel = photoViewModel )
-            SecurePicCheckbox(photo = photo, photoViewModel = photoViewModel )
+            SecurePicCheckbox(photo = photo, photoViewModel = photoViewModel , firebaseViewModel = firebaseViewModel)
         }
 
 

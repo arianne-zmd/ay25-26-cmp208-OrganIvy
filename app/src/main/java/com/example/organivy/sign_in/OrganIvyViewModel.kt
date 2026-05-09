@@ -3,12 +3,14 @@ package com.example.organivy.sign_in
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.organivy.SignInState
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+
 
 class OrganIvyViewModel : ViewModel() {
     private val _state = MutableStateFlow(SignInState())
@@ -60,4 +62,38 @@ class OrganIvyViewModel : ViewModel() {
             }
         }
     }
+
+
+
+    fun verifyPassword(
+        password: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+
+        val user = auth.currentUser
+
+        if (user == null || user.email == null) {
+            onError("No authenticated user")
+            return
+        }
+
+        val credential = EmailAuthProvider.getCredential(
+            user.email!!,
+            password
+        )
+
+        user.reauthenticate(credential)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onError(it.message ?: "Authentication failed")
+            }
+    }
+
+
+
 }
+
+

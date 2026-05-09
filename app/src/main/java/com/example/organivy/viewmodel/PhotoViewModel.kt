@@ -140,12 +140,23 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                     //deletion list
                     deletionList = emptyList(),
 
-                    //deletion list
-                    secureFolderList = emptyList()
+                    //secure list
+                    //secureFolderList = emptyList()
+                    secureFolderList = uiState.secureFolderList
 
 
 
                 )
+
+                // load secure pics from firebase
+                val firebaseViewModel = FirebaseViewModel(getApplication())
+
+                firebaseViewModel.loadSecurePhotos { photos ->
+
+                    uiState = uiState.copy(
+                        secureFolderList = photos
+                    )
+                }
             }
         }
 
@@ -160,16 +171,34 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun onSecurePhotoChecked(photo: Photo, isChecked: Boolean) {
+    fun onSecurePhotoChecked(photo: Photo, isChecked: Boolean, firebaseViewModel: FirebaseViewModel) {
         uiState = if (isChecked) {
-            uiState.copy(secureFolderList = uiState.secureFolderList + photo,
-            )
+            val updated = uiState.secureFolderList + photo
+
+            // upload to Firebase
+            firebaseViewModel.uploadPhoto(photo)
+
+            uiState.copy(secureFolderList = updated)
 
         } else {
-            uiState.copy(secureFolderList = uiState.secureFolderList - photo,
-                )
+            val updated = uiState.secureFolderList - photo
+
+            firebaseViewModel.deletePhoto(photo)
+
+            uiState.copy(secureFolderList = updated)
         }
     }
+
+    fun removeDeletedPhotosFromSecureFolder() {
+
+        val deletedPhotos = uiState.deletionList
+
+        uiState = uiState.copy(
+            secureFolderList =
+                uiState.secureFolderList - deletedPhotos.toSet()
+        )
+    }
+
 
     //idk
     fun deleteSelectedPhotos(
@@ -201,5 +230,12 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         uiState = uiState.copy(deletionList = emptyList())
     }
 
+    fun uploadSecureFolderToFirebase(firebaseViewModel: FirebaseViewModel) {
+
+        uiState.secureFolderList.forEach { photo ->
+
+            firebaseViewModel.uploadPhoto(photo)
+        }
+    }
 
 }

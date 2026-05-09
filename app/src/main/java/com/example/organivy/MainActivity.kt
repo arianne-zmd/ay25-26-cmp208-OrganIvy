@@ -53,6 +53,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.example.organivy.ui.pages.SecureFolderPage
+import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 
 
@@ -97,6 +98,7 @@ class MainActivity : ComponentActivity() {
 
             val photoViewModel: PhotoViewModel = viewModel()
             val gameViewModel: GameViewModel = viewModel()
+            val firebaseViewModel: FirebaseViewModel = viewModel()
 //            LaunchedEffect(hasPermission) {
 //                if (hasPermission) {
 //                    photoViewModel.loadPhotos()
@@ -124,7 +126,8 @@ class MainActivity : ComponentActivity() {
                     gameViewModel,
                     selectedTheme,
                     { newTheme -> selectedTheme = newTheme },
-                    hasPermission = hasPermission
+                    hasPermission = hasPermission,
+                    firebaseViewModel
                     )
 
 
@@ -155,7 +158,8 @@ fun MainApp(navController: NavHostController,
             gameViewModel: GameViewModel,
             selectedTheme: ThemeOption,
             onThemeChange: (ThemeOption) -> Unit,
-            hasPermission: Boolean
+            hasPermission: Boolean,
+            firebaseViewModel: FirebaseViewModel
 ) {
     //val navController = rememberNavController()
 
@@ -200,7 +204,8 @@ fun MainApp(navController: NavHostController,
                     gameViewModel,
                     selectedTheme,
                     onThemeChange,
-                    hasPermission)
+                    hasPermission,
+                    firebaseViewModel)
 
             }
 
@@ -260,7 +265,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                              gameViewModel: GameViewModel,
                              selectedTheme: ThemeOption,
                              onThemeChange: (ThemeOption) -> Unit,
-                             hasPermission: Boolean
+                             hasPermission: Boolean,
+                             firebaseViewModel: FirebaseViewModel
 ) {
 
     navigation(
@@ -342,7 +348,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 CameraSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -350,7 +357,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 DownloadsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -358,7 +366,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 WhatsappImagesSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -366,7 +375,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 ScreenshotsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -375,7 +385,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 OldPicsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -383,7 +394,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 LargePicsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -392,7 +404,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 BlurryPicsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile")},
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -400,7 +413,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 DuplicatedPicsSubscreen(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 
@@ -408,7 +422,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 SecureFolderPage(
                     onNavigateToProfile = { navController.navigate("profile") },
                     photoViewModel = photoViewModel,
-                    gameViewModel = gameViewModel
+                    gameViewModel = gameViewModel,
+                    firebaseViewModel = firebaseViewModel
                 )
             }
 

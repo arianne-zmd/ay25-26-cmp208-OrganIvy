@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
 import com.example.organivy.data.GridItem
+import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 import com.google.android.play.core.integrity.g
@@ -27,7 +28,8 @@ import com.google.android.play.core.integrity.g
 @Composable
 fun OldPicsSubscreen(onNavigateToProfile: () -> Unit,
                      photoViewModel: PhotoViewModel?,
-                     gameViewModel: GameViewModel
+                     gameViewModel: GameViewModel,
+                     firebaseViewModel: FirebaseViewModel
 
 ){
 
@@ -38,7 +40,7 @@ fun OldPicsSubscreen(onNavigateToProfile: () -> Unit,
 
 
     if (state != null && state.oldPicsList.isNotEmpty()) {
-            LazyGridScreen(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
+            LazyGridScreen(photoViewModel = photoViewModel, gameViewModel = gameViewModel, firebaseViewModel = firebaseViewModel)
         } else {
             Text(
                 text = "Loading photos...",
@@ -50,7 +52,7 @@ fun OldPicsSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreen(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel ) {
+fun LazyGridScreen(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel, firebaseViewModel: FirebaseViewModel ) {
     val state = photoViewModel.uiState  //: PhotoState()
 
 
@@ -75,7 +77,7 @@ fun LazyGridScreen(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel 
             }
             items(shownPhotos) { photo ->
 
-                GridItem(photo = photo, photoViewModel = photoViewModel)
+                GridItem(photo = photo, photoViewModel = photoViewModel, firebaseViewModel = firebaseViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
 
             }
