@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +48,6 @@ import com.example.organivy.ui.subpages.cleaning.WhatsappImagesSubscreen
 import com.example.organivy.ui.subpages.garden.WorldMapSubscreen
 import com.example.organivy.ui.theme.AppTheme
 import com.example.organivy.viewmodel.PhotoViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.example.organivy.ui.pages.SecureFolderPage
@@ -303,14 +301,17 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
             )
         }
         composable("badges") {
-            BadgePage(onNavigateToProfile = { navController.navigate("profile") })
+            BadgePage(onNavigateToProfile = { navController.navigate("profile") },
+                photoViewModel = photoViewModel,
+                gameViewModel = gameViewModel,
+
+            )
         }
         composable("stats") {
-            StatsandImpactPage(onNavigateToProfile = {
-                navController.navigate(
-                    "profile"
-                )
-            })
+            StatsandImpactPage(onNavigateToProfile = { navController.navigate("profile") },
+                photoViewModel = photoViewModel,
+                gameViewModel = gameViewModel,
+            )
         }
         composable("map") {
             WorldMapSubscreen(onNavigateToProfile = {

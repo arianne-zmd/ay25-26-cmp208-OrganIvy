@@ -2,6 +2,7 @@ package com.example.organivy.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.provider.Settings
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -18,6 +19,9 @@ import com.example.organivy.data.Photo
 import com.example.organivy.data.PhotoScanner
 import com.example.organivy.data.PhotoState
 import com.example.organivy.data.SafeDeletion
+import com.example.organivy.ui.components.BottomNavItem
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -140,6 +144,8 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
                     //deletion list
                     deletionList = emptyList(),
+                    totalDeletedPics = 0,
+                    totalDeletedBytes = 0
 
                     //secure list
                     //secureFolderList = emptyList()
@@ -220,7 +226,20 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     fun clearDeletionList() {
-        uiState = uiState.copy(deletionList = emptyList())
+
+        val deletedPhotosCount = uiState.deletionList.size
+        val deletedPhotosBytes = uiState.deletionList.sumOf { it.size }
+
+
+        uiState = uiState.copy(
+
+            //total  deleted amount
+            totalDeletedPics =
+                uiState.totalDeletedPics + deletedPhotosCount,
+            // total deleted bytes amount
+            totalDeletedBytes = uiState.totalDeletedBytes + deletedPhotosBytes,
+
+        deletionList = emptyList())
     }
 
     fun uploadSecureFolderToFirebase(firebaseViewModel: FirebaseViewModel) {
@@ -237,5 +256,39 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             uiState = uiState.copy(secureFolderList = photos)
         }
     }
+
+
+
+    // UPLOAD TO FIREBASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    fun saveDeletedCountToFirebase() {
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val deviceId = Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
+
+        val db = FirebaseFirestore.getInstance()
+
+       /* db.collection("Users")
+            .document(userId)
+            .update(
+                "totalDeletedPhotos",
+                uiState.totalDeletedPics
+            )
+*/
+
+        db.collection("Users")
+            .document(userId)
+            .collection("devices")
+            .document(deviceId)
+            .update(
+                "localDeletedPhotos", uiState.totalDeletedPics,
+                "localDeletedPhotoBytes", uiState.totalDeletedBytes
+            )
+    }
+
+
 
 }

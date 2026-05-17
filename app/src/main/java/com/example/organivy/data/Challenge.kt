@@ -3,7 +3,8 @@ package com.example.organivy.data
 enum class ChallengeType {
     DELETE_PHOTOS,
     CLEAN_BLURRY,
-    CLEAN_LARGE
+    CLEAN_LARGE,
+    CLEAN_OLD
 }
 
 data class Challenge(

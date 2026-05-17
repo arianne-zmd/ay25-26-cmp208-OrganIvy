@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
 import com.example.organivy.data.Header
+import com.example.organivy.ui.subpages.garden.SpriteAnimation
 import com.example.organivy.ui.theme.*
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
@@ -108,18 +109,17 @@ fun GardenScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    //.background(backgroundLight)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val photoViewModel = viewModel<PhotoViewModel>()
-                val gameViewModel = viewModel<GameViewModel>()
-                Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
+                //val photoViewModel = viewModel<PhotoViewModel>()
+                //val gameViewModel = viewModel<GameViewModel>()
+                //Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Garden Title pill
+                // Garden Title
                 Surface(
                     shape = CircleShape,
                     color = primaryContainerLight,
@@ -127,7 +127,6 @@ fun GardenScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
-
                     Text(
                         text = "Garden",
                         modifier = Modifier.padding(12.dp),
@@ -138,7 +137,7 @@ fun GardenScreen(
                     )
                 }
 
-                // Garden Name pill
+                // Garden Name
                 Surface(
                     shape = CircleShape,
                     color = secondaryContainerLight,
@@ -154,50 +153,42 @@ fun GardenScreen(
                     )
                 }
 
-                // Image & Stats Row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+
+                Box{
                     Image(
-                        painter = painterResource(id = R.drawable.base_garden),
-                        contentDescription = "Garden Image",
-                        modifier = Modifier
-                            .weight(1.5f)
-                            .aspectRatio(1.5f)
-                            .shadow(8.dp, RoundedCornerShape(8.dp))
-                            .clip(RoundedCornerShape(8.dp)),
+                        painter = painterResource(id = R.drawable.garden_temp),
+                        contentDescription = "Garden",
+                        modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop
                     )
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    // Stats Column
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Stats",
-                            fontWeight = FontWeight.Bold,
-                            color = primaryLight,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        StatBar(icon = Icons.Filled.WaterDrop, progress = 0.7f)
-                        StatBar(icon = Icons.Filled.WbSunny, progress = 0.4f)
+                    Box(modifier = Modifier.fillMaxWidth()
+                        .align(alignment = Alignment.BottomCenter)
+                        .padding(0.dp, 20.dp),
+                        ){
+                        SpriteAnimation()
                     }
+
                 }
 
 
+                Spacer(modifier = Modifier.width(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+
+
 
                 // Plant Grid
                 //PlantGrid()
 
-                Spacer(modifier = Modifier.height(50.dp))
+                /*
                 Button(onClick = onNavigateToMap ) {
                     Text(" OrganIvy World Map")
-                }
+                }*/
+
+                //SpriteAnimation()
             }
         } // all of thing can be in a lazy colunm ^
 

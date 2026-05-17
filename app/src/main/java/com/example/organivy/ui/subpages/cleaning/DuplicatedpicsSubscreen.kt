@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
+import com.example.organivy.data.ChallengeType
 import com.example.organivy.data.GridItem
 import com.example.organivy.data.Header
 import com.example.organivy.viewmodel.FirebaseViewModel
@@ -52,7 +53,10 @@ fun DuplicatedPicsSubscreen(onNavigateToProfile: () -> Unit,
 }
 
 @Composable
-fun LazyGridScreenDCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel, firebaseViewModel: FirebaseViewModel) {
+fun LazyGridScreenDCP(photoViewModel: PhotoViewModel,
+                      gameViewModel: GameViewModel,
+                      firebaseViewModel: FirebaseViewModel) {
+
     val state = photoViewModel.uiState  //: PhotoState()
 
 
@@ -86,9 +90,8 @@ fun LazyGridScreenDCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMod
         }
         // under grid
 
-        //val photoViewModel = viewModel<PhotoViewModel>()
-        val gameViewModel = viewModel<GameViewModel>()
-        BoxExtras(photoViewModel, gameViewModel)
+
+        BoxExtras(photoViewModel, gameViewModel,  ChallengeType.DELETE_PHOTOS)
 
         Text(
             text = "Deleting ${state.deletionList.size} images",

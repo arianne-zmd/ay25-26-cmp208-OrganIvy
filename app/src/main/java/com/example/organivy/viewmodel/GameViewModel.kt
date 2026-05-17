@@ -1,5 +1,6 @@
 package com.example.organivy.viewmodel
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,9 +13,12 @@ import com.example.organivy.data.GameState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import android.provider.Settings
+import androidx.lifecycle.AndroidViewModel
 
-class GameViewModel: ViewModel () {
+class GameViewModel(application: Application) : AndroidViewModel(application){
 
+    val context = getApplication<Application>()
     var uiState by mutableStateOf(GameState())
         private set
 
@@ -24,11 +28,15 @@ class GameViewModel: ViewModel () {
 
     init {
         generateWeeklyChallenges()
-        observeUserData()
+        observeUserData(context)
     }
 
-    private fun observeUserData() {
+    private fun observeUserData(context: android.content.Context) {
         val userId = auth.currentUser?.uid ?: return
+        val deviceId = Settings.Secure.getString(
+            getApplication<Application>().contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
 
         // 1. Listen for the main "Users" document (Coins, co2, etc.)
         db.collection("Users").document(userId)
@@ -38,7 +46,7 @@ class GameViewModel: ViewModel () {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && snapshot.exists()) {
-                    // Note: Field names match Firebase exactly (Case-Sensitive)
+                    // Field names match Firebase exactly
                     uiState = uiState.copy(
                         userName = snapshot.getString("name") ?: "",
                         coins = (snapshot.getLong("Coins")?.toInt() ?: 0),
@@ -52,7 +60,7 @@ class GameViewModel: ViewModel () {
                 }
             }
 
-        // 2. Separate listener for the "Photos" sub-collection
+        // Separate listener for the "Photos" sub-collection
         db.collection("Users").document(userId).collection("Photos")
             .addSnapshotListener { querySnapshot, e ->
                 if (e != null) {
@@ -73,39 +81,119 @@ class GameViewModel: ViewModel () {
                     )
                 }
             }
+
+        db.collection("Users").document(userId).collection("devices")
+            .document(deviceId).addSnapshotListener { snapshot, e ->
+
+                if (e != null) {
+                    Log.w("Firebase", "Device listen failed", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+
+                    val localDeletedPhotos =
+                        snapshot.getLong("localDeletedPhotos")?.toInt() ?: 0
+                    val localDeletedPhotoBytes =
+                        snapshot.getLong("localDeletedPhotoBytes")?.toLong() ?: 0
+
+                    uiState = uiState.copy(
+                        localDeletedPhotos = localDeletedPhotos,
+                        localDeletedPhotoBytes = localDeletedPhotoBytes
+                    )
+                }
+            }
+
+
     }
 
     private fun generateWeeklyChallenges() {
         val pool = listOf(
+            //Delete Photos Challenge
             Challenge("1", "Delete 5 photos", 5, 0, ChallengeType.DELETE_PHOTOS, 50),
             Challenge("2", "Clear 10 photos", 10, 0, ChallengeType.DELETE_PHOTOS, 100),
-            Challenge("3", "Delete 20 photos", 20, 0, ChallengeType.DELETE_PHOTOS, 150)
-        )
-        // Pick 3 random challenges from the pool
+            Challenge("3", "Delete 15 photos", 15, 0, ChallengeType.DELETE_PHOTOS, 125),
+            Challenge("4", "Delete 20 photos", 20, 0, ChallengeType.DELETE_PHOTOS, 150),
+
+            //Blurry Images Challenges
+            Challenge("5", "Clean 5 blurry images", 5, 0, ChallengeType.CLEAN_BLURRY, 50),
+            Challenge("6", "Clean 10 blurry images", 10, 0, ChallengeType.CLEAN_BLURRY, 100),
+            Challenge("7", "Clean 15 blurry images", 15, 0, ChallengeType.CLEAN_BLURRY, 125),
+            Challenge("8", "Clean 20 blurry images", 20, 0, ChallengeType.CLEAN_BLURRY, 150),
+
+            //Large Images Challenges
+            Challenge("9", "Clean 5 large images", 5, 0, ChallengeType.CLEAN_LARGE, 75),
+            Challenge("10", "Clean 10 large images", 10, 0, ChallengeType.CLEAN_LARGE, 125),
+            Challenge("11", "Clean 15 large images", 15, 0, ChallengeType.CLEAN_LARGE, 175),
+            Challenge("12", "Clean 20 large images", 20, 0, ChallengeType.CLEAN_LARGE, 225),
+
+            //Old Images Challenges
+            Challenge("13", "Delete 5 old images", 5, 0, ChallengeType.CLEAN_OLD, 50),
+            Challenge("14", "Clear 10 old images", 10, 0, ChallengeType.CLEAN_OLD, 100),
+            Challenge("15", "Delete 20 old images", 20, 0, ChallengeType.CLEAN_OLD, 150),
+
+
+            )
+
         uiState = uiState.copy(challenges = pool.shuffled().take(3))
     }
 
-    //coins
-    fun onDeletion (photoNum: Int){
-        // 1. Update local coins (The listener will sync back later, but we push immediately)
-        val newCoins = uiState.coins + 20 + (photoNum * 5)
+    // Update challenge progress
 
-        // 2. Update challenge progress
+    fun updateChallengeProgress(
+        type: ChallengeType,
+        amount: Int
+    ) {
+
+        var rewardCoins = 0
+
         val updatedChallenges = uiState.challenges.map { challenge ->
-            if (challenge.type == ChallengeType.DELETE_PHOTOS && !challenge.isCompleted) {
-                val newProgress = (challenge.currentValue + photoNum).coerceAtMost(challenge.targetValue)
+
+            if (
+                challenge.type == type &&
+                !challenge.isCompleted
+            ) {
+
+                val newProgress =
+                    (challenge.currentValue + amount)
+                        .coerceAtMost(challenge.targetValue)
+
+                val completedNow =
+                    newProgress >= challenge.targetValue
+
+                // reward once
+                if (completedNow) {
+                    rewardCoins += challenge.reward
+                }
+
                 challenge.copy(
                     currentValue = newProgress,
-                    isCompleted = newProgress >= challenge.targetValue
+                    isCompleted = completedNow
                 )
+
             } else {
                 challenge
             }
         }
 
         uiState = uiState.copy(
-            coins = newCoins,
-            challenges = updatedChallenges
+            challenges = updatedChallenges,
+
+            // reward coins here
+            coins = uiState.coins + rewardCoins
+        )
+    }
+
+
+
+    //coins
+    fun onDeletion (photoNum: Int){
+        // 1. Update local coins (The listener will sync back later, but we push immediately)
+        val newCoins = uiState.coins + 20 + (photoNum * 5)
+
+
+        uiState = uiState.copy(
+            coins = newCoins
         )
     }
 

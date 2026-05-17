@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
+import com.example.organivy.data.ChallengeType
 import com.example.organivy.data.GridItem
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
@@ -80,9 +81,8 @@ fun LazyGridScreenWAP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMod
         }
         // under grid
 
-        //val photoViewModel = viewModel<PhotoViewModel>()
-        //val gameViewModel = viewModel<GameViewModel>()
-        BoxExtras(photoViewModel, gameViewModel)
+
+        BoxExtras(photoViewModel, gameViewModel,  ChallengeType.DELETE_PHOTOS)
 
         Text(
             text = "Deleting ${state.deletionList.size} images",

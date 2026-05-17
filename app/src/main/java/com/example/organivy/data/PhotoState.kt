@@ -26,6 +26,9 @@ data class PhotoState(
 
     //deletion list
     val deletionList: List<Photo> = emptyList(),
+    // no. of pics deleted
+    val totalDeletedPics: Int = 0,
+    val totalDeletedBytes: Long = 0,
 
     //secure folder list
     // remove this so it can be updated  / i guess not

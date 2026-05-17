@@ -27,4 +27,7 @@ data class GameState(
     val picsDelPerWeek: Int = 0,
     val challenges: List<Challenge> = emptyList(),
 
+    val localDeletedPhotos: Int = 0,
+    val localDeletedPhotoBytes: Long = 0
+
     )

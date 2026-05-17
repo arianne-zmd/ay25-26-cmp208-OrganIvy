@@ -226,7 +226,7 @@ fun GridItem(photo: Photo, photoViewModel: PhotoViewModel, firebaseViewModel: Fi
 
 // BOX EXTRAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @Composable
-fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
+fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameViewModel, challengeType: ChallengeType){
 
     Surface(
         modifier = Modifier
@@ -259,11 +259,17 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // ONLY Award coins and refresh if user confirmed the deletion
+
+            // award coins and refresh if user confirmed the deletion
             val deletedCount = photoViewModel.uiState.deletionList.size
             gameViewModel.onDeletion(deletedCount)
+            gameViewModel.updateChallengeProgress(
+                challengeType,
+                deletedCount
+            )
             
             photoViewModel.clearDeletionList()
+            photoViewModel.saveDeletedCountToFirebase()
             photoViewModel.loadPhotos()
             
             Toast.makeText(context, "Photos deleted successfully!", Toast.LENGTH_SHORT).show()
