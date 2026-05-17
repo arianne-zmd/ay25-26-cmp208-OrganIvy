@@ -28,6 +28,10 @@ data class GameState(
     val challenges: List<Challenge> = emptyList(),
 
     val localDeletedPhotos: Int = 0,
-    val localDeletedPhotoBytes: Long = 0
+    val localDeletedPhotoBytes: Long = 0,
+
+    val unlockedEcoFacts: List<EcoFact> = emptyList(),
+    val newlyUnlockedFact: EcoFact? = null,
+
 
     )

@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -267,7 +269,8 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
                 challengeType,
                 deletedCount
             )
-            
+
+            gameViewModel.unlockRandomEcoFact()
             photoViewModel.clearDeletionList()
             photoViewModel.saveDeletedCountToFirebase()
             photoViewModel.loadPhotos()
@@ -442,3 +445,54 @@ fun GridHeader(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
     }
 }
 // GRIDHEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ECOPOPUP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@Composable
+fun EcoPopUp(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
+    val unlockedFact = gameViewModel.uiState.newlyUnlockedFact
+
+    if (unlockedFact != null) {
+
+        AlertDialog(
+
+            onDismissRequest = {
+                gameViewModel.clearUnlockedFactPopup()
+            },
+
+            confirmButton = {
+
+                TextButton(
+                    onClick = {
+                        gameViewModel.clearUnlockedFactPopup()
+                    }
+                ) {
+                    Text("Nice!")
+                }
+            },
+
+            title = {
+                Text("🌱 New Eco Fact Unlocked!")
+            },
+
+            text = {
+
+                Column {
+
+                    Text(
+                        text = unlockedFact.title
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
+
+                    Text(
+                        text = unlockedFact.fact
+                    )
+                }
+            }
+        )
+    }
+}
+// ECOPOPUP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

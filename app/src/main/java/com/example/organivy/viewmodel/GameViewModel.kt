@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
+import com.example.organivy.data.allEcoFacts
 
 class GameViewModel(application: Application) : AndroidViewModel(application){
 
@@ -46,6 +47,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                     return@addSnapshotListener
                 }
                 if (snapshot != null && snapshot.exists()) {
+
+                    // load eco fact ids
+                    val unlockedIds = snapshot.get("FactsGained") as? List<String> ?: emptyList()
+                    // ids to EcoFacts
+                    val unlockedFacts = allEcoFacts.filter { it.id in unlockedIds }
+
                     // Field names match Firebase exactly
                     uiState = uiState.copy(
                         userName = snapshot.getString("name") ?: "",
@@ -53,11 +60,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                         co2saved = (snapshot.getLong("co2savedGrams")?.toInt() ?: 0),
                         streak = (snapshot.getLong("totalDeletedPhotos")?.toInt() ?: 0),
                         badgesEarned = snapshot.getString("BadgesEarned") ?: "",
-                        factsGained = snapshot.getString("FactsGained") ?: "",
+                        //factsGained = snapshot.getString("FactsGained") ?: "",
                         characterSprite = snapshot.getString("CharacterSprite") ?: "R.drawable.character_base_single_green()",
+                        unlockedEcoFacts = unlockedFacts
                     )
 
                 }
+
+
             }
 
         // Separate listener for the "Photos" sub-collection
@@ -107,6 +117,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
 
     }
 
+
+
+    //CHALLENGESSSSSSSSS
     private fun generateWeeklyChallenges() {
         val pool = listOf(
             //Delete Photos Challenge
@@ -138,8 +151,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         uiState = uiState.copy(challenges = pool.shuffled().take(3))
     }
 
-    // Update challenge progress
 
+    // Update challenge progress
     fun updateChallengeProgress(
         type: ChallengeType,
         amount: Int
@@ -184,13 +197,49 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         )
     }
 
+    //ECO FACTSSSSS
+    fun unlockRandomEcoFact() {
+
+            // facts not unlocked yet
+            val lockedFacts = allEcoFacts.filter {
+                it !in uiState.unlockedEcoFacts
+            }
+
+            if (lockedFacts.isEmpty()) return
+
+            // 30% chance
+            val shouldUnlock = (1..100).random() <= 100
+
+            if (shouldUnlock) {
+
+                val randomFact = lockedFacts.random()
+
+                uiState = uiState.copy(
+
+                    unlockedEcoFacts =
+                        uiState.unlockedEcoFacts + randomFact,
+
+                    newlyUnlockedFact = randomFact
+                )
+
+                //saveEcoFactsToFirebase()
+            }
+
+    }
+    // hide pop up
+    fun clearUnlockedFactPopup() {
+
+        uiState = uiState.copy(
+            newlyUnlockedFact = null
+        )
+    }
 
 
+    // ON DELETEEEEEEEEEEEEEEEE
     //coins
     fun onDeletion (photoNum: Int){
         // 1. Update local coins (The listener will sync back later, but we push immediately)
         val newCoins = uiState.coins + 20 + (photoNum * 5)
-
 
         uiState = uiState.copy(
             coins = newCoins
@@ -233,5 +282,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             .set(userData, SetOptions.merge())
             .addOnSuccessListener { Log.d("Firebase", "User data saved!") }
             .addOnFailureListener { e -> Log.w("Firebase", "Error saving user data", e) }
+    }
+
+    fun saveEcoFactsToFirebase() {
+
+        val userId =
+            auth.currentUser?.uid ?: return
+
+        val factIds =
+            uiState.unlockedEcoFacts.map { it.id }
+
+        db.collection("Users")
+            .document(userId)
+            .update(
+                "FactsGained",
+                factIds
+            )
     }
 }

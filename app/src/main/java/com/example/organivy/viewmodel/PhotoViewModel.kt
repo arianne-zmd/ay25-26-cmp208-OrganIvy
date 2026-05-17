@@ -98,7 +98,15 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                 photo.chunked(50).forEachIndexed { index, batch ->
 
                     val blurryBatch = batch.filter {
-                        blurDetector.isImageBlurry(it)
+                        //blurDetector.isImageBlurry(it)
+                        try {
+                            blurDetector.isImageBlurry(it)
+                        } catch (e: Exception) {
+
+                            Log.e("BlurCrash", "Failed to process image", e)
+
+                            false
+                        }
                     }
 
                     result.addAll(blurryBatch)
@@ -123,7 +131,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
 
             withContext(Dispatchers.Main) {
-                uiState = PhotoState(
+                uiState = uiState.copy(//PhotoState(
                     isLoading = false,
                     totalPhotos = photo,
                     largePhotos = largePics.size,
@@ -144,8 +152,8 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
                     //deletion list
                     deletionList = emptyList(),
-                    totalDeletedPics = 0,
-                    totalDeletedBytes = 0
+                    //totalDeletedPics = 0,
+                    //totalDeletedBytes = 0
 
                     //secure list
                     //secureFolderList = emptyList()

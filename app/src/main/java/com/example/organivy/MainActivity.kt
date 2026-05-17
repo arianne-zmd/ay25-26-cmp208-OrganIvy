@@ -438,11 +438,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 onThemeChange = { newTheme -> onThemeChange(newTheme) })
         }
         composable("journal") {
-            GreenJournalScreen(onNavigateToProfile = {
-                navController.navigate(
-                    "profile"
-                )
-            })
+            GreenJournalScreen(onNavigateToProfile = { navController.navigate("profile") },
+                gameViewModel = gameViewModel,)
         }
 
         // Temporary profile route to prevent crash

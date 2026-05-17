@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
 import com.example.organivy.data.ChallengeType
+import com.example.organivy.data.EcoPopUp
 import com.example.organivy.data.GridItem
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
@@ -90,6 +91,8 @@ fun LazyGridScreenCP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMode
 
 
         BoxExtras(photoViewModel, gameViewModel, ChallengeType.DELETE_PHOTOS)
+
+        EcoPopUp(photoViewModel = photoViewModel,gameViewModel = gameViewModel)
 
         Text(
             text = "Deleting ${state.deletionList.size} images",

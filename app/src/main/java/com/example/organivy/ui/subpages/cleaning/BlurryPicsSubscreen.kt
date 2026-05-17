@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.BoxExtras
 import com.example.organivy.data.ChallengeType
+import com.example.organivy.data.EcoPopUp
 import com.example.organivy.data.GridItem
 import com.example.organivy.data.Header
 import com.example.organivy.viewmodel.FirebaseViewModel
@@ -40,7 +41,7 @@ fun BlurryPicsSubscreen(onNavigateToProfile: () -> Unit,
     val state = photoViewModel?.uiState
 
 
-    if (state != null && state.downloadsList.isNotEmpty()) {
+    if (state != null && state.blurryPicsList.isNotEmpty()) {
         LazyGridScreenBP(photoViewModel = photoViewModel, gameViewModel = gameViewModel, firebaseViewModel = firebaseViewModel)
     } else {
         Text(
@@ -88,6 +89,7 @@ fun LazyGridScreenBP(photoViewModel: PhotoViewModel, gameViewModel: GameViewMode
 
 
         BoxExtras(photoViewModel, gameViewModel,  ChallengeType.CLEAN_BLURRY)
+        EcoPopUp(photoViewModel = photoViewModel,gameViewModel = gameViewModel)
 
         Text(
             text = "Deleting ${state.deletionList.size} images",

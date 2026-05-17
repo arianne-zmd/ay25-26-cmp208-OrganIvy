@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
@@ -69,7 +70,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//sprout_keeper,
+            R.drawable.sprout_keeper,
             "Sprout Keeper",
             "Delete 200 photos",
             200,
@@ -77,7 +78,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//bloom_bringer,
+            R.drawable.bloom_bringer,
             "Bloom Bringer",
             "Delete 500 photos",
             500,
@@ -85,7 +86,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//forest_guardian,
+            R.drawable.forest_guardian,
             "Forest Guardian",
             "Delete 1,500 photos",
             1500,
@@ -93,7 +94,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//digital_earth_saver,
+            R.drawable.digital_earth_saver,
             "Digital Earth Saver",
             "Delete 5,000+ photos",
             5000,
@@ -102,7 +103,7 @@ fun BadgePage(
 
         // Storage cleanup badges
         BadgeItem(
-            R.drawable.daisy_1,//light_cleaner,
+            R.drawable.light_cleaner,
             "Light Cleaner",
             "Free 100MB",
             (1000000*100),
@@ -110,7 +111,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//space_saver,
+            R.drawable.space_saver,
             "Space Saver",
             "Free 1GB",
             (1000000*1000),
@@ -118,7 +119,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//storage_hero,
+            R.drawable.storage_hero,
             "Storage Hero",
             "Free 5GB",
             (1000000*1000*5),
@@ -126,7 +127,7 @@ fun BadgePage(
         ),
 
         BadgeItem(
-            R.drawable.daisy_1,//device_liberator,
+            R.drawable.device_liberator,
             "Device Liberator",
             "Free 10GB",
             (1000000*1000*10),
@@ -173,7 +174,7 @@ fun BadgePage(
                 modifier = Modifier.clip(RectangleShape)
                     .size(200.dp)
                     .fillMaxWidth(0.5f)
-                    .padding(20.dp, 20.dp, 1.dp, 0.dp),
+                    .padding(20.dp, 30.dp, 1.dp, 0.dp),
                 shape = RectangleShape,
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -193,7 +194,7 @@ fun BadgePage(
                 modifier = Modifier.clip(RectangleShape)
                     .size(200.dp)
                     .fillMaxWidth(0.5f)
-                    .padding(1.dp, 20.dp, 20.dp, 0.dp),
+                    .padding(1.dp, 30.dp, 20.dp, 0.dp),
                 shape = RectangleShape,
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -219,7 +220,7 @@ fun BadgePage(
             Card(
                 modifier = Modifier.clip(RectangleShape)
                     .fillMaxSize()
-                    .padding(20.dp).padding(vertical = 50.dp),
+                    .padding(20.dp).padding(vertical = 60.dp),
                 shape = RectangleShape,
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -227,32 +228,38 @@ fun BadgePage(
                 )
 
             ){
-                Column {
+                LazyColumn{
+                        item {
+                            Column {
 
-                    earnedBadges.forEach { badge ->
+                                earnedBadges.forEach { badge ->
 
-                        Row(
-                            modifier = Modifier.padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                                    Row(
+                                        modifier = Modifier.padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
 
-                            Image(
-                                painter = painterResource(badge.imageRes),
-                                contentDescription = badge.name,
-                                modifier = Modifier.size(60.dp)
-                            )
+                                        Image(
+                                            painter = painterResource(badge.imageRes),
+                                            contentDescription = badge.name,
+                                            modifier = Modifier.size(60.dp)
+                                        )
 
-                            Column(
-                                modifier = Modifier.padding(start = 12.dp)
-                            ) {
+                                        Column(
+                                            modifier = Modifier.padding(start = 12.dp)
+                                        ) {
 
-                                Text(text = badge.name)
+                                            Text(text = badge.name)
 
-                                Text(text = badge.description)
+                                            Text(text = badge.description)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
 
@@ -268,7 +275,7 @@ fun BadgePage(
         }
     }
 
-}
+
 
 @Composable
 fun AllBadges(onBack: () -> Unit,
@@ -280,7 +287,7 @@ fun AllBadges(onBack: () -> Unit,
         Card(modifier = Modifier.clip(RectangleShape)
             .fillMaxWidth(0.5f)
             . size(200.dp)
-            .padding(20.dp, 20.dp, 1.dp, 0.dp),
+            .padding(20.dp, 30.dp, 1.dp, 0.dp),
             shape = RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -297,7 +304,7 @@ fun AllBadges(onBack: () -> Unit,
         Card(modifier = Modifier.clip(RectangleShape)
             . size(200.dp)
             .fillMaxWidth(0.5f)
-            .padding(1.dp, 20.dp, 20.dp, 0.dp),
+            .padding(1.dp, 30.dp, 20.dp, 0.dp),
             shape = RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -311,12 +318,16 @@ fun AllBadges(onBack: () -> Unit,
         )}
     }
 
+
+
+
     Box{
+
         Card(modifier = Modifier.clip(RectangleShape)
             .fillMaxSize()
             //.align(alignment = Alignment.Center)
             //.offset(x = 15.dp, y = 5.dp)
-            .padding(20.dp) .padding(vertical = 50.dp),
+            .padding(20.dp) .padding(vertical = 60.dp),
             shape = RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -324,68 +335,74 @@ fun AllBadges(onBack: () -> Unit,
             )
 
         ) {
-            Column {
 
-                allBadges.forEach { badge ->
+            LazyColumn{
+                item{
+                    Column {
 
-                    val isEarned = badge in earnedBadges
+                        allBadges.forEach { badge ->
 
-                    Row(
-                        modifier = Modifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                            val isEarned = badge in earnedBadges
 
-                        Image(
-                            painter = painterResource(badge.imageRes),
-                            contentDescription = badge.name,
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            modifier = Modifier
-                                .size(60.dp)
-                                .alpha(
-                                    if (isEarned) 1f else 0.3f
-                                ),
+                                Image(
+                                    painter = painterResource(badge.imageRes),
+                                    contentDescription = badge.name,
 
-                            colorFilter =
-                                if (isEarned) null
-                                else ColorFilter.tint(Color.Gray)
-                        )
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .alpha(
+                                            if (isEarned) 1f else 0.3f
+                                        ),
 
-                        Column(
-                            modifier = Modifier.padding(start = 12.dp)
-                        ) {
+                                    colorFilter =
+                                        if (isEarned) null
+                                        else ColorFilter.tint(Color.Gray)
+                                )
 
-                            Text(
-                                text = badge.name,
+                                Column(
+                                    modifier = Modifier.padding(start = 12.dp)
+                                ) {
 
-                                color =
-                                    if (isEarned)
-                                        MaterialTheme.colorScheme.onBackground
-                                    else
-                                        Color.Gray
-                            )
+                                    Text(
+                                        text = badge.name,
 
-                            Text(
-                                text = badge.description,
+                                        color =
+                                            if (isEarned)
+                                                MaterialTheme.colorScheme.onBackground
+                                            else
+                                                Color.Gray
+                                    )
 
-                                color =
-                                    if (isEarned)
-                                        MaterialTheme.colorScheme.onBackground
-                                    else
-                                        Color.Gray
-                            )
-                        }
+                                    Text(
+                                        text = badge.description,
 
-                        if (!isEarned) {
+                                        color =
+                                            if (isEarned)
+                                                MaterialTheme.colorScheme.onBackground
+                                            else
+                                                Color.Gray
+                                    )
+                                }
 
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = null,
-                                tint = Color.Gray
-                            )
+                                if (!isEarned) {
+
+                                    Icon(
+                                        imageVector = Icons.Default.Lock,
+                                        contentDescription = null,
+                                        tint = Color.Gray
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
+
         }
 
 

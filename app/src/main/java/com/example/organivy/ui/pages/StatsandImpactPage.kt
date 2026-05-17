@@ -22,17 +22,20 @@ fun StatsandImpactPage(onNavigateToProfile: () -> Unit,
     val state = photoViewModel.uiState
     val state2 = gameViewModel.uiState
 
-    Text("User ")
+    Column{
+        Text("User ")
 
-    Text("User ")
-    Spacer(modifier = Modifier.height(20.dp))
-    Text("Total deleted images across devices ")
-    Spacer(modifier = Modifier.height(20.dp))
-    Text("Total estimated co2 saved across devices ")
-    Spacer(modifier = Modifier.height(20.dp))
-    Text("Total delete images : ${state.totalDeletedPics}")
-    Spacer(modifier = Modifier.height(20.dp))
-    Text("Total estimated co2 saved ")
+        Text("User ")
+        Spacer(modifier = Modifier.height(20.dp))
+        Text("Total deleted images across devices ")
+        Spacer(modifier = Modifier.height(20.dp))
+        Text("Total estimated co2 saved across devices ")
+        Spacer(modifier = Modifier.height(20.dp))
+        Text("Total delete images : ${state.totalDeletedPics}")
+        Spacer(modifier = Modifier.height(20.dp))
+        Text("Total estimated co2 saved ")
+    }
+
 
 
     Column(
