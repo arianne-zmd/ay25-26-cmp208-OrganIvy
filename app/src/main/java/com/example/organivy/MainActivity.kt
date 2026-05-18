@@ -51,6 +51,11 @@ import com.example.organivy.viewmodel.PhotoViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.example.organivy.ui.pages.SecureFolderPage
+import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding1
+import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding2
+import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding3
+import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding4
+import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding5
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 
@@ -215,9 +220,49 @@ fun MainApp(navController: NavHostController,
 
 fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: GameViewModel) {
     navigation(
-        startDestination = "login",
+        startDestination = "onboarding1",
         route = "auth"
     ) {
+        composable("onboarding1") {
+
+            OnStartOnboarding1(onNavigateToNext = { navController.navigate("onboarding2") })
+        }
+
+        composable("onboarding2") {
+
+            OnStartOnboarding2(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToNext = { navController.navigate("onboarding3") }
+            )
+        }
+
+        composable("onboarding3") {
+
+            OnStartOnboarding3(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToNext = { navController.navigate("onboarding4") }
+            )
+        }
+
+        composable("onboarding4") {
+
+            OnStartOnboarding4(
+
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToNext = { navController.navigate("onboarding5") }
+
+            )
+        }
+
+        composable("onboarding5") {
+
+            OnStartOnboarding5(
+
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToLogin = { navController.navigate("login")},
+
+            )
+        }
 
         composable("login") {
             LoginScreen( onNavigateToProfile = { navController.navigate("profile")},
@@ -276,13 +321,14 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
 
         composable("home") {
             HomeScreen(
-                gameViewModel = gameViewModel,
                 onNavigateToProfile = { navController.navigate("profile") },
                 onNavigateToBadges = { navController.navigate("badges") },
                 onNavigateToStatsandImpact = { navController.navigate("stats") },
                 onNavigateToShop = { navController.navigate("shop") },
                 onNavigateToJournal = { navController.navigate("journal") },
-                onNavigateToGarden = { navController.navigate("garden") }
+                onNavigateToGarden = { navController.navigate("garden") },
+                photoViewModel = photoViewModel,
+                gameViewModel = gameViewModel,
             )
         }
         composable("garden") {

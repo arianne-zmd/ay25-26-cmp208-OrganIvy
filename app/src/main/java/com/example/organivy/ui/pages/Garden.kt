@@ -52,43 +52,6 @@ fun GardenScreen(
 
     val state2 = gameViewModel.uiState
 
-    fun getPlantImage(level: Int): Int {
-        return when(level) {
-
-            0 -> R.drawable.seeds_falling_single
-
-            1 -> R.drawable.plant_budding_photo
-
-            2 -> R.drawable.daisy_blooming_part_three
-
-            3 -> R.drawable.daisy_blooming_final_part_three
-
-            else -> R.drawable.seeds_falling
-        }
-    }
-
-    @Composable
-    fun PlantSection(
-        uiState: GameState
-    ) {
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Image(
-                painter = painterResource(
-                    id = getPlantImage(uiState.plantLevel)
-                ),
-                contentDescription = "Plant",
-                modifier = Modifier.size(220.dp)
-            )
-
-            Text(
-                text = "Plant Level ${uiState.plantLevel}"
-            )
-        }
-    }
 
 
     var expanded by remember { mutableStateOf(false) }
@@ -201,6 +164,7 @@ fun GardenScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
 
+                //plant
                 Box{
                     Image(
                         painter = painterResource(id = R.drawable.garden_temp),
@@ -246,7 +210,46 @@ fun GardenScreen(
 
 }
 
-//@Composable
+// under garden
+fun getPlantImage(level: Int): Int {
+    return when(level) {
+
+        0 -> R.drawable.seeds_falling_single
+
+        1 -> R.drawable.plant_budding_photo
+
+        2 -> R.drawable.daisy_blooming_part_three
+
+        3 -> R.drawable.daisy_blooming_final_part_three
+
+        else -> R.drawable.seeds_falling
+    }
+}
+
+@Composable
+fun PlantSection(
+    uiState: GameState
+) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Image(
+            painter = painterResource(
+                id = getPlantImage(uiState.plantLevel)
+            ),
+            contentDescription = "Plant",
+            modifier = Modifier.size(220.dp)
+        )
+
+        Text(
+            text = "Plant Level ${uiState.plantLevel}"
+        )
+    }
+}
+
+
 
 
 @Composable

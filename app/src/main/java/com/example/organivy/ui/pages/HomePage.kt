@@ -60,15 +60,21 @@ import com.example.organivy.viewmodel.PhotoViewModel
 
 @Composable
 fun HomeScreen(
-    gameViewModel: GameViewModel,
     onNavigateToProfile: () -> Unit,
     onNavigateToBadges: () -> Unit,
     onNavigateToStatsandImpact: () -> Unit,
     onNavigateToShop: () -> Unit,
     onNavigateToJournal: () -> Unit,
-    onNavigateToGarden: () -> Unit
+    onNavigateToGarden: () -> Unit,
+    photoViewModel: PhotoViewModel,
+    gameViewModel: GameViewModel,
 ) {
-    val photoViewModel: PhotoViewModel = viewModel()
+
+    val state = photoViewModel.uiState
+    val state2 = gameViewModel.uiState
+
+
+    //val photoViewModel: PhotoViewModel = viewModel()
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -169,22 +175,22 @@ fun HomeScreen(
                             .size(280.dp)
                             .clickable { onNavigateToGarden() }
                     ){
-                        Image(
+                       /* Image(
                             painter = painterResource(id = R.drawable.wooden_border),
                             contentDescription = "Garden Image",
                             modifier = Modifier.size(280.dp),
                             contentScale = ContentScale.Fit,
                             //filterQuality = FilterQuality.None
 
-                        )
+                        )*/
 
 
                         Card(
                             //onClick = onNavigateToGarden,
                             modifier = Modifier
-                                .size(250.dp)
+                                .size(270.dp)
                                 .align(alignment = Alignment.Center)
-                                .padding(45.dp),
+                                .padding(25.dp),
 
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -196,10 +202,24 @@ fun HomeScreen(
                                 Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                Text(
-                                    text = "\uD83C\uDF3F Plant preview",
-                                    Modifier.padding(start = 20.dp)
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.garden_temp),
+                                    contentDescription = "Garden",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentScale = ContentScale.Crop
                                 )
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(alignment = Alignment.BottomCenter)
+                                        .padding(0.dp, 10.dp),
+                                ) {
+                                    PlantSection(uiState = state2)
+                                }
+
+
                             }
                         }
                     }
@@ -217,7 +237,9 @@ fun HomeScreen(
 
                     Card(
                         onClick = { isExpanded = !isExpanded },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -275,7 +297,9 @@ fun HomeScreen(
 
 
                 // item 1
-                Box(modifier = Modifier.size(100.dp).clickable { onNavigateToBadges() }) {
+                Box(modifier = Modifier
+                    .size(100.dp)
+                    .clickable { onNavigateToBadges() }) {
 
 
                     Image(
@@ -293,43 +317,6 @@ fun HomeScreen(
                         textAlign = TextAlign.Center,
                         fontSize = 35.sp
                     )
-
-
-                    /*Surface(
-                        modifier = Modifier.padding(10.dp)
-                            .size(80.dp)
-                        ,
-                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-                        shape = RoundedCornerShape(20.dp),
-
-
-                        ){}
-
-
-                    Card(
-                        onClick =  onNavigateToBadges,
-
-
-                        modifier = Modifier.padding(10.dp)
-                            .align(alignment = Alignment.Center)
-                            .size(75.dp),
-                        shape = RoundedCornerShape(30),
-
-
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                    ) {
-                        Text(
-                            text = "\uD83C\uDFC5",
-                            modifier = Modifier.padding(14.dp),
-                            textAlign = TextAlign.Center,
-                            fontSize = 40.sp
-                        )
-                    }*/
-
 
                 }
 
@@ -394,7 +381,7 @@ fun HomeScreen(
     }
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
@@ -408,3 +395,4 @@ fun PreviewHomeScreen() {
         onNavigateToGarden = {}
     )
 }
+*/
