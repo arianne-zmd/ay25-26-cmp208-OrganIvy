@@ -39,7 +39,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             Settings.Secure.ANDROID_ID
         )
 
-        // 1. Listen for the main "Users" document (Coins, co2, etc.)
+        //Listen for the main "Users" document (Coins, co2, etc.)
         db.collection("Users").document(userId)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
@@ -152,6 +152,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     }
 
 
+
+
     // Update challenge progress
     fun updateChallengeProgress(
         type: ChallengeType,
@@ -159,6 +161,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     ) {
 
         var rewardCoins = 0
+        var completedCountIncrease = 0
 
         val updatedChallenges = uiState.challenges.map { challenge ->
 
@@ -174,9 +177,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                 val completedNow =
                     newProgress >= challenge.targetValue
 
-                // reward once
-                if (completedNow) {
+                // reward only once
+                if (completedNow && !challenge.isCompleted) {
                     rewardCoins += challenge.reward
+                    completedCountIncrease++
                 }
 
                 challenge.copy(
@@ -189,13 +193,50 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             }
         }
 
+        // total completed challenges
+        val newCompletedChallenges =
+            uiState.completedChallenges + completedCountIncrease
+
+        // calculate plant level
+        val newPlantLevel =
+            calculatePlantLevel(newCompletedChallenges)
+
         uiState = uiState.copy(
             challenges = updatedChallenges,
 
-            // reward coins here
-            coins = uiState.coins + rewardCoins
+            // reward coins
+            coins = uiState.coins + rewardCoins,
+
+            // plant progression
+            completedChallenges = newCompletedChallenges,
+            plantLevel = newPlantLevel
         )
     }
+
+    // PLANT LEVEL THRESHOLDS TO LEVEL UP
+    val plantThresholds = listOf(
+        3,
+        8,
+        15,
+        24,
+        35
+    )
+
+    private fun calculatePlantLevel(completedChallenges: Int): Int {
+
+        var level = 0
+
+        for (threshold in plantThresholds) {
+            if (completedChallenges >= threshold) {
+                level++
+            }
+        }
+
+        return level
+    }
+
+
+
 
     //ECO FACTSSSSS
     fun unlockRandomEcoFact() {
@@ -208,7 +249,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             if (lockedFacts.isEmpty()) return
 
             // 30% chance
-            val shouldUnlock = (1..100).random() <= 100
+            val shouldUnlock = (1..100).random() <= 30
 
             if (shouldUnlock) {
 

@@ -14,7 +14,6 @@ data class GameState(
     val co2saved: Int = 0,
     //Fertilizer = weekly maybe. rare reward
     val fertilizer: Int = 0,
-    val plantLevel: Int = 0,
     val streak: Int = 0,
 
     val badgesEarned: String = "",
@@ -33,5 +32,7 @@ data class GameState(
     val unlockedEcoFacts: List<EcoFact> = emptyList(),
     val newlyUnlockedFact: EcoFact? = null,
 
+    val completedChallenges: Int = 0,
+    val plantLevel: Int = 0
 
     )

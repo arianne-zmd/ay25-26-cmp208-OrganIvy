@@ -291,7 +291,8 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 onNavigateToShop = { navController.navigate("shop") },
                 onNavigateToJournal = { navController.navigate("journal") },
                 onNavigateToStats = { navController.navigate("stats") },
-                onNavigateToMap = { navController.navigate("map") }
+                onNavigateToMap = { navController.navigate("map") },
+                gameViewModel = gameViewModel,
             )
         }
         composable("shop") {
