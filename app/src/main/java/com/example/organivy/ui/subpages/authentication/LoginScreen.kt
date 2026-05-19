@@ -16,6 +16,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.sign_in.OrganIvyViewModel
 
+/**
+ * Email/password login UI.
+ *
+ * WHY LaunchedEffect on isSignInSuccessful:
+ * - Navigation must not run inside the Button onClick (race with Toast, back stack issues).
+ * - When OrganIvyViewModel finishes Firebase signIn, state flips to success and we navigate
+ *   once to "app", then resetState() so returning to login does not auto-redirect again.
+ *
+ * WHY OrganIvyViewModel instead of FirebaseAuth in this file:
+ * - Keeps composable dumb: only collects email/password and shows errors via Toast.
+ */
 @Composable
 fun LoginScreen(
     onNavigateToProfile: () -> Unit,
@@ -29,6 +40,7 @@ fun LoginScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
 
+    // React to auth success from ViewModel (see class KDoc above)
     LaunchedEffect(key1 = state.isSignInSuccessful) {
         if (state.isSignInSuccessful) {
             onNavigateToHome()

@@ -22,7 +22,6 @@ import com.example.organivy.data.SafeDeletion
 import com.example.organivy.ui.components.BottomNavItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +41,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-     fun loadPhotos() {
+    fun loadPhotos() {
         // MOVED WHAT WAS IN MAIN KT HEREEEEEEEEEEE
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -179,11 +178,14 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Toggles secure-folder membership locally and mirrors to Firestore via FirebaseViewModel.
+     * WHY immediate upload: cloud backup matches user's checkbox; unchecked removes cloud doc.
+     */
     fun onSecurePhotoChecked(photo: Photo, isChecked: Boolean, firebaseViewModel: FirebaseViewModel) {
         uiState = if (isChecked) {
             val updated = uiState.secureFolderList + photo
 
-            // upload to Firebase
             firebaseViewModel.uploadPhoto(photo)
 
             uiState.copy(secureFolderList = updated)
@@ -248,28 +250,32 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             // total deleted bytes amount
             totalDeletedBytes = uiState.totalDeletedBytes + deletedPhotosBytes,
 
-        deletionList = emptyList())
+            deletionList = emptyList())
     }
 
-    fun uploadSecureFolderToFirebase(firebaseViewModel: FirebaseViewModel) {
+    /*fun uploadSecureFolderToFirebase(firebaseViewModel: FirebaseViewModel) {
 
         uiState.secureFolderList.forEach { photo ->
 
             firebaseViewModel.uploadPhoto(photo)
         }
-    }
+    }*/
 
 //good
+    /** Pulls secure-folder list from Firestore when SecureFolderPage opens. */
     fun loadSecurePhotos(firebaseViewModel: FirebaseViewModel) {
         firebaseViewModel.loadSecurePhotos { photos ->
             uiState = uiState.copy(secureFolderList = photos)
         }
     }
 
-
-
-    // UPLOAD TO FIREBASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    /**
+     * Persists deletion totals under Users/{uid}/devices/{androidId}.
+     *
+     * WHY per-device subcollection (not only on Users/{uid}):
+     * - GameViewModel.listen on devices/{deviceId} shows stats for THIS phone.
+     * - Global totalDeletedPhotos on the parent doc can stay for cross-device badges.
+     */
     fun saveDeletedCountToFirebase() {
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -280,24 +286,21 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
         val db = FirebaseFirestore.getInstance()
 
-       /* db.collection("Users")
-            .document(userId)
-            .update(
-                "totalDeletedPhotos",
-                uiState.totalDeletedPics
-            )
-*/
+        /* db.collection("Users")
+             .document(userId)
+             .update(
+                 "totalDeletedPhotos",
+                 uiState.totalDeletedPics
+             )
+ */
 
         db.collection("Users")
             .document(userId)
             .collection("devices")
             .document(deviceId)
-            .set(
-                mapOf(
-                    "localDeletedPhotos" to uiState.totalDeletedPics,
-                    "localDeletedPhotoBytes" to uiState.totalDeletedBytes
-                ),
-                SetOptions.merge()
+            .update(
+                "localDeletedPhotos", uiState.totalDeletedPics,
+                "localDeletedPhotoBytes", uiState.totalDeletedBytes
             )
     }
 

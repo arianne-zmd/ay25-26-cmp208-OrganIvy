@@ -6,6 +6,16 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions
 
+/**
+ * Garden plant stats stored on the same Firestore doc as game profile: Users/{uid}.
+ *
+ * WHY runTransaction (not a simple set):
+ * - Reads current points/levels, applies rewards, writes back atomically.
+ * - Avoids lost updates if two deletes happen close together.
+ *
+ * Field names (points, waterLevel, plantLevel) differ from GameViewModel (Coins, etc.)
+ * but both use merge(), so they coexist on one document without overwriting each other.
+ */
 class GardenViewModel : ViewModel() {
     private val db = Firebase.firestore
     private val auth = Firebase.auth
@@ -20,9 +30,9 @@ class GardenViewModel : ViewModel() {
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
-            
+
             // Get current values
-            val currentPoints = snapshot.getLong("Coins") ?: 0
+            val currentPoints = snapshot.getLong("points") ?: 0
             val currentDeleted = snapshot.getLong("totalDeletedPhotos") ?: 0
             val currentLevel = snapshot.getLong("plantLevel") ?: 1
             val currentWater = snapshot.getDouble("waterLevel") ?: 1.0
@@ -41,20 +51,20 @@ class GardenViewModel : ViewModel() {
 
             // 3. Update Firestore with new stats
             val updates = mapOf(
-                "Coins" to newPoints,
+                "points" to newPoints,
                 "totalDeletedPhotos" to newDeleted,
-                "co2savedGrams" to co2Saved,
+                "co2SavedGrams" to co2Saved,
                 "waterLevel" to newWater,
                 "sunLightLevel" to newSunlight
             )
-            
+
             transaction.set(userRef, updates, SetOptions.merge())
 
             // 4. Level Up Logic: Every 1000 points, the plant grows!
             if (newPoints >= currentLevel * 1000) {
                 transaction.update(userRef, "plantLevel", currentLevel + 1)
             }
-        }.addOnSuccessListener { 
+        }.addOnSuccessListener {
             // Handle success (e.g., trigger a UI animation)
         }.addOnFailureListener { e ->
             e.printStackTrace()
@@ -70,15 +80,15 @@ class GardenViewModel : ViewModel() {
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
-            val currentPoints = snapshot.getLong("Coins") ?: 0
+            val currentPoints = snapshot.getLong("points") ?: 0
             val ownedItems = snapshot.get("ownedDecorations") as? List<String> ?: emptyList()
 
             // Ensure user has enough points and doesn't already own the item
             if (currentPoints >= price && !ownedItems.contains(itemId)) {
                 val newPoints = currentPoints - price
                 val newOwnedItems = ownedItems + itemId
-                
-                transaction.update(userRef, "Coins", newPoints)
+
+                transaction.update(userRef, "points", newPoints)
                 transaction.update(userRef, "ownedDecorations", newOwnedItems)
             }
         }
@@ -101,7 +111,7 @@ class GardenViewModel : ViewModel() {
             } else {
                 active + itemId
             }
-            
+
             transaction.update(userRef, "activeDecorations", newActive)
         }
     }

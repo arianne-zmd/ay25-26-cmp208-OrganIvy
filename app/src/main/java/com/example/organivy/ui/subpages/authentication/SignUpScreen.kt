@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.sign_in.OrganIvyViewModel
 
+/** Same auth flow as LoginScreen — createUserWithEmailAndPassword then navigate to "app". */
 @Composable
 fun SignUpScreen(
     onNavigateToProfile: () -> Unit,

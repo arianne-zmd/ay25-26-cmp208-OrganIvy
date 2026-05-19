@@ -17,29 +17,53 @@ import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import com.example.organivy.data.allEcoFacts
 
+/**
+ * Game progression state + **live sync** with Firestore collection "Users".
+ *
+ * WHY REAL-TIME LISTENERS (addSnapshotListener):
+ * - Coins, CO₂, badges can change from this device or after reinstall; listeners push
+ *   updates to uiState so Home/Garden screens stay in sync without manual refresh.
+ *
+ * WHY auth listener in init:
+ * - ViewModel is created in MainActivity before the user finishes login. At that moment
+ *   currentUser is often null, so observeUserData() would no-op. When login succeeds,
+ *   FirebaseAuth notifies us and we attach listeners once uid exists.
+ *
+ * WHY isObservingFirebase flag:
+ * - Prevents registering duplicate listeners if auth state fires multiple times.
+ */
 class GameViewModel(application: Application) : AndroidViewModel(application){
 
     val context = getApplication<Application>()
     var uiState by mutableStateOf(GameState())
         private set
 
-    // Connecting to the Users collection on firestore
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+    private var isObservingFirebase = false
 
     init {
         generateWeeklyChallenges()
-        // Use an auth state listener to start observing when user signs in
+
+        // Start Firestore sync when user signs in; tear down flag on sign out
         auth.addAuthStateListener { firebaseAuth ->
-            val user = firebaseAuth.currentUser
-            if (user != null) {
+            if (firebaseAuth.currentUser != null) {
                 observeUserData(context)
+            } else {
+                isObservingFirebase = false
             }
+        }
+        // Cold start: user already logged in from previous session
+        if (auth.currentUser != null) {
+            observeUserData(context)
         }
     }
 
+    /** Attaches three snapshot listeners: profile doc, Photos subcollection, this device doc. */
     private fun observeUserData(context: android.content.Context) {
+        if (isObservingFirebase) return
         val userId = auth.currentUser?.uid ?: return
+        isObservingFirebase = true
         val deviceId = Settings.Secure.getString(
             getApplication<Application>().contentResolver,
             Settings.Secure.ANDROID_ID
@@ -68,11 +92,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                         badgesEarned = snapshot.getString("BadgesEarned") ?: "",
                         //factsGained = snapshot.getString("FactsGained") ?: "",
                         characterColour = snapshot.getString("CharacterColour") ?: "",
-                        characterSprite = snapshot.getString("CharacterSprite") ?: R.drawable.character_base_single_green.toString(),
-                        unlockedEcoFacts = unlockedFacts,
-                        plantLevel = (snapshot.getLong("plantLevel")?.toInt() ?: 0),
-                        completedChallenges = (snapshot.getLong("completedChallenges")?.toInt() ?: 0) ,
-                        grownPlants = (snapshot.getLong("grownPlants")?.toInt() ?: 0)
+                        characterSprite = snapshot.getString("CharacterSprite") ?: "R.drawable.character_base_single_green()",
+                        unlockedEcoFacts = unlockedFacts
+
                     )
 
                 }
@@ -87,14 +109,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                     Log.w("Firebase", "Photos sub-collection listen failed", e)
                     return@addSnapshotListener
                 }
-                
+
                 val photoDoc = querySnapshot?.documents?.firstOrNull()
                 if (photoDoc != null) {
                     val camera = photoDoc.getLong("Camera")?.toInt() ?: 0
                     val screenshots = photoDoc.getLong("Screenshots")?.toInt() ?: 0
                     val downloads = photoDoc.getLong("Downloads")?.toInt() ?: 0
                     val blurry = photoDoc.getLong("Blurry Images")?.toInt() ?: 0
-                    
+
                     // Summing categories to show total pics processed
                     uiState = uiState.copy(
                         picsDelPerWeek = camera + screenshots + downloads + blurry
@@ -204,24 +226,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         }
 
         // total completed challenges
-        val totalCompletedForCurrentPlant =
+        val newCompletedChallenges =
             uiState.completedChallenges + completedCountIncrease
-
-        var finalCompleted = totalCompletedForCurrentPlant
-        var finalGrownPlants = uiState.grownPlants
-
-        // Threshold for level 3 is plantThresholds[2] (15)
-        val maxChallengesPerPlant = plantThresholds[2]
-
-        if (totalCompletedForCurrentPlant >= maxChallengesPerPlant) {
-            finalGrownPlants += 1
-            // Reset and carry over any extra progress to the new plant
-            finalCompleted = totalCompletedForCurrentPlant - maxChallengesPerPlant
-        }
 
         // calculate plant level
         val newPlantLevel =
-            calculatePlantLevel(finalCompleted)
+            calculatePlantLevel(newCompletedChallenges)
 
         uiState = uiState.copy(
             challenges = updatedChallenges,
@@ -230,11 +240,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             coins = uiState.coins + rewardCoins,
 
             // plant progression
-            completedChallenges = finalCompleted,
-            plantLevel = newPlantLevel,
-            grownPlants = finalGrownPlants
+            completedChallenges = newCompletedChallenges,
+            plantLevel = newPlantLevel
         )
-        saveUserDataToFirebase()
     }
 
     // PLANT LEVEL THRESHOLDS TO LEVEL UP
@@ -265,30 +273,30 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     //ECO FACTSSSSS
     fun unlockRandomEcoFact() {
 
-            // facts not unlocked yet
-            val lockedFacts = allEcoFacts.filter {
-                it !in uiState.unlockedEcoFacts
-            }
+        // facts not unlocked yet
+        val lockedFacts = allEcoFacts.filter {
+            it !in uiState.unlockedEcoFacts
+        }
 
-            if (lockedFacts.isEmpty()) return
+        if (lockedFacts.isEmpty()) return
 
-            // 30% chance
-            val shouldUnlock = (1..100).random() <= 30
+        // 30% chance
+        val shouldUnlock = (1..100).random() <= 30
 
-            if (shouldUnlock) {
+        if (shouldUnlock) {
 
-                val randomFact = lockedFacts.random()
+            val randomFact = lockedFacts.random()
 
-                uiState = uiState.copy(
+            uiState = uiState.copy(
 
-                    unlockedEcoFacts =
-                        uiState.unlockedEcoFacts + randomFact,
+                unlockedEcoFacts =
+                    uiState.unlockedEcoFacts + randomFact,
 
-                    newlyUnlockedFact = randomFact
-                )
+                newlyUnlockedFact = randomFact
+            )
 
-                saveUserDataToFirebase()
-            }
+            //saveEcoFactsToFirebase()
+        }
 
     }
     // hide pop up
@@ -305,13 +313,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     fun onDeletion (photoNum: Int){
         // 1. Update local coins (The listener will sync back later, but we push immediately)
         val newCoins = uiState.coins + 20 + (photoNum * 5)
-        val newTotalDeleted = uiState.streak + photoNum
 
         uiState = uiState.copy(
-            coins = newCoins,
-            streak = newTotalDeleted
+            coins = newCoins
         )
-        saveUserDataToFirebase()
     }
 
     fun spendCoins(amount: Int) {
@@ -319,44 +324,56 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             uiState = uiState.copy(
                 coins = uiState.coins - amount
             )
-            saveUserDataToFirebase()
         }
     }
 
     // --- Customization Functions ---
+    /* fun updateCharacterSprite(resId: Int) {
+         uiState = uiState.copy(characterSprite = resId)
+         saveUserDataToFirebase()
+     }
+
+
+     */
+
+
     fun updateCharacterColour(colour: String, sprite: String) {
         uiState = uiState.copy(
             characterColour = colour,
             characterSprite = sprite
         )
-        saveUserDataToFirebase()
     }
 
+    // --- Firebase write paths (push local state → cloud) ---
 
-    // --- Firebase Integration ---
+    /**
+     * Persists onboarding / profile choices to Users/{uid}.
+     *
+     * WHY SetOptions.merge():
+     * Only updates fields we send; does not wipe garden stats (points, waterLevel) that
+     * GardenViewModel may have written to the same document.
+     */
     fun saveUserDataToFirebase() {
         val userId = auth.currentUser?.uid ?: return
-        
+
         val userData = mapOf(
             "name" to uiState.userName,
             "Coins" to uiState.coins,
             "co2savedGrams" to uiState.co2saved,
             "totalDeletedPhotos" to uiState.streak,
             "BadgesEarned" to uiState.badgesEarned,
-            "FactsGained" to uiState.unlockedEcoFacts.map { it.id },
+            "FactsGained" to uiState.factsGained,
             "CharacterColour" to uiState.characterColour,
-            "CharacterSprite" to uiState.characterSprite,
-            "plantLevel" to uiState.plantLevel,
-            "completedChallenges" to uiState.completedChallenges,
-            "grownPlants" to uiState.grownPlants
+            "CharacterSprite" to uiState.characterSprite
         )
-        
+
         db.collection("Users").document(userId)
             .set(userData, SetOptions.merge())
             .addOnSuccessListener { Log.d("Firebase", "User data saved!") }
             .addOnFailureListener { e -> Log.w("Firebase", "Error saving user data", e) }
     }
 
+    /** Updates only FactsGained array when user unlocks eco facts in the journal. */
     fun saveEcoFactsToFirebase() {
 
         val userId =

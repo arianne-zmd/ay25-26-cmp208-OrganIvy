@@ -58,6 +58,7 @@ import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding4
 import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding5
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : ComponentActivity() {
@@ -130,7 +131,7 @@ class MainActivity : ComponentActivity() {
                     selectedTheme,
                     { newTheme -> selectedTheme = newTheme },
                     hasPermission = hasPermission,
-                    firebaseViewModel
+                    firebaseViewModel = firebaseViewModel
                     )
 
 
@@ -195,6 +196,11 @@ fun MainApp(navController: NavHostController,
                 .padding(innerPadding),
             color = MaterialTheme.colorScheme.background
         ) {
+
+            // Skip onboarding/login if Firebase still has a valid session from last launch.
+            // "auth" graph = onboarding + login; "app" graph = home, garden, cleaning, etc.
+            val startDestination =
+                if (FirebaseAuth.getInstance().currentUser != null) "app" else "auth"
 
             NavHost(
                 navController = navController,

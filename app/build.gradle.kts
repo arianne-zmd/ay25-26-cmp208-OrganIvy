@@ -46,12 +46,11 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose)
     // Added for WaterDrop and WbSunny icons
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.google.fonts)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
-    implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.compose.ui.text)
@@ -64,17 +63,20 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    // Setting Up firebase
+    // ── Firebase dependencies ─────────────────────────────────────────────────
+    // BOM (Bill of Materials): pins compatible versions for all firebase-* libraries.
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
+    implementation(libs.firebase.analytics)          // optional usage/events in console
+    implementation("com.google.firebase:firebase-auth")       // email login, session uid
+    implementation("com.google.firebase:firebase-firestore")  // Users, devices, securePhotos
+    implementation("com.google.firebase:firebase-storage")    // reserved for future image upload
+    // Google Sign-In helper (auth_backup/); enable when adding Google button to login
     implementation("com.google.android.gms:play-services-auth:21.5.1")
-    implementation(libs.androidx.navigation.compose)
-
+    // Bridges Firebase Task.await() used in OrganIvyViewModel signIn/signUp/reset
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
     //coil
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-gif:2.7.0")
 
 
 }
