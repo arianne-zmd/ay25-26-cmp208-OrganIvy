@@ -155,7 +155,7 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Welcome Back!",
+                            text = if (state2.userName.isNotEmpty()) "Welcome, ${state2.userName}!" else "Welcome!",
                             //fontSize = 26.sp,
                             color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.displayLarge

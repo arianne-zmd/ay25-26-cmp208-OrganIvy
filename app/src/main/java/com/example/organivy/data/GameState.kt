@@ -4,6 +4,7 @@ import com.example.organivy.R
 
 data class GameState(
     val userName: String = "",
+    val gardenName: String = "My Garden",
     val deleted: Boolean = false,
 
     val coins: Int = 0,
@@ -16,24 +17,32 @@ data class GameState(
     val fertilizer: Int = 0,
     val streak: Int = 0,
 
+
     val badgesEarned: String = "",
     val factsGained: String = "",
     val characterColour: String = "",
     val characterSprite: String = "",
 
 
+
+
     val topCategory: Int = 0,
     val picsDelPerWeek: Int = 0,
     val challenges: List<Challenge> = emptyList(),
 
+
     val localDeletedPhotos: Int = 0,
     val localDeletedPhotoBytes: Long = 0,
+    val localco2saved: Double = 0.0,
+
 
     val unlockedEcoFacts: List<EcoFact> = emptyList(),
     val newlyUnlockedFact: EcoFact? = null,
+
 
     val completedChallenges: Int = 0,
     val plantLevel: Int = 0,
     val grownPlants: Int = 0
 
-    )
+
+)

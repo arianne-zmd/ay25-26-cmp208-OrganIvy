@@ -1,21 +1,6 @@
 package com.example.organivy.ui.pages
 
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-
-
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -27,55 +12,98 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.organivy.R
 import com.example.organivy.data.ShopItem
 import com.example.organivy.ui.components.SpriteCharacter
 import com.example.organivy.viewmodel.GameViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.ui.res.imageResource
-import com.example.organivy.R
-
-
-
-
-
 
 @Composable
 fun ShopScreen(
     gameViewModel: GameViewModel = viewModel(),
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit = {}
 ) {
-    val currentColor = gameViewModel.uiState.characterColour
+    val uiState = gameViewModel.uiState
+    val currentColor = uiState.characterColour
+    val coins = uiState.coins
+
     var showPlantPots by remember { mutableStateOf(false) }
     var showFlowers by remember { mutableStateOf(false) }
     var showAccessories by remember { mutableStateOf(false) }
-
 
     var selectedPot by remember { mutableStateOf<Int?>(null) }
     var selectedFlower by remember { mutableStateOf<Int?>(null) }
     var selectedAccessory by remember { mutableStateOf<Int?>(null) }
 
+    val baseCharacterResource = when (currentColor) {
+        "Blue" -> R.drawable.character_base_single_blue
+        "Pink" -> R.drawable.character_base_single_pink
+        "Orange" -> R.drawable.character_base_single_orange
+        "Purple" -> R.drawable.character_base_single_purple
+        "Yellow" -> R.drawable.character_base_single_yellow
+        else -> R.drawable.character_base_single_green
+    }
 
-    val uiState = gameViewModel.uiState
-    val coins = uiState.coins
-
+    fun getComposedSprite(item: ShopItem, color: String): Int {
+        return when (item.name) {
+            "Pink Bow" -> when (color) {
+                "Blue" -> R.drawable.character_bow_still_blue
+                "Pink" -> R.drawable.character_bow_still_pink
+                "Yellow" -> R.drawable.character_bow_still_yellow
+                "Purple" -> R.drawable.character_bow_still_purple
+                "Orange" -> R.drawable.character_bow_still_orange
+                else -> R.drawable.character_bow_still_green
+            }
+            "Cowboy Hat" -> when (color) {
+                "Blue" -> R.drawable.character_cowboy_single_blue
+                "Pink" -> R.drawable.character_cowboy_single_pink
+                "Yellow" -> R.drawable.character_cowboy_single_yellow
+                "Purple" -> R.drawable.character_cowboy_single_purp
+                "Orange" -> R.drawable.character_cowboy_single_orange
+                else -> R.drawable.character_cowboy_single_green
+            }
+            "Duck" -> when (color) {
+                "Blue" -> R.drawable.character_duck_still_blue
+                "Pink" -> R.drawable.character_duck_still_pink
+                "Yellow" -> R.drawable.character_duck_still_yellow
+                "Purple" -> R.drawable.character_duck_still_purple
+                "Orange" -> R.drawable.character_duck_still_orange
+                else -> R.drawable.character_duck_still_green
+            }
+            "Headphones" -> when (color) {
+                "Blue" -> R.drawable.base_headphone_still_blue
+                "Pink" -> R.drawable.base_headphone_still_pink
+                "Yellow" -> R.drawable.base_headphone_still_yellow
+                "Purple" -> R.drawable.base_headphone_still_purple
+                "Orange" -> R.drawable.base_headphone_still_orange
+                else -> R.drawable.base_headphone_still_green
+            }
+            "Mushroom" -> when (color) {
+                "Blue" -> R.drawable.character_mush_still_blue
+                "Pink" -> R.drawable.character_mush_still_pink
+                "Yellow" -> R.drawable.character_mush_still_yellow
+                "Purple" -> R.drawable.character_mush_still_purple
+                "Orange" -> R.drawable.character_mush_still_orange
+                else -> R.drawable.character_mush_still_green
+            }
+            "Plant Hat" -> when (color) {
+                "Blue" -> R.drawable.character_plant_still_blue
+                "Pink" -> R.drawable.character_plant_still_pink
+                "Yellow" -> R.drawable.character_plant_still_yellow
+                "Purple" -> R.drawable.character_plant_still_purple
+                "Orange" -> R.drawable.character_plant_still_orange
+                else -> R.drawable.character_plant_still_green
+            }
+            else -> baseCharacterResource
+        }
+    }
 
     val potImages = listOf(
         ShopItem(R.drawable.pot_1, 50, "Standard Pot")
     )
-
 
     val flowerImages = listOf(
         ShopItem(R.drawable.daisy_1, 20, "Daisy"),
@@ -86,7 +114,6 @@ fun ShopScreen(
         ShopItem(R.drawable.tulip_1, 20, "Tulip")
     )
 
-
     val accessoryImages = listOf(
         ShopItem(R.drawable.bow_accessories, 100, "Pink Bow"),
         ShopItem(R.drawable.cowboy_hat, 159, "Cowboy Hat"),
@@ -95,83 +122,7 @@ fun ShopScreen(
         ShopItem(R.drawable.mushroomt, 100, "Mushroom"),
         ShopItem(R.drawable.plant_hat, 200, "Plant Hat")
     )
-    val bowResource = when(currentColor) {
-        "Green" -> R.drawable.character_bow_still_green
-        "Blue" -> R.drawable.character_bow_still_blue
-        "Pink" -> R.drawable.character_bow_still_pink
-        "Orange" -> R.drawable.character_bow_still_orange
-        "Purple" -> R.drawable.character_bow_still_purple
-        "Yellow" -> R.drawable.character_bow_still_yellow
-        else -> R.drawable.character_bow_still_green
-    }
-    val headphoneResource = when(currentColor) {
-        "Green" -> R.drawable.base_headphone_still_green
-        "Blue" -> R.drawable.base_headphone_still_blue
-        "Pink" -> R.drawable.base_headphone_still_pink
-        "Orange" -> R.drawable.base_headphone_still_orange
-        "Purple" -> R.drawable.base_headphone_still_purple
-        "Yellow" -> R.drawable.base_headphone_still_yellow
-        else -> R.drawable.base_headphone_still_green
 
-
-    }
-
-
-    val cowboyhatResource = when(currentColor) {
-        "Green" -> R.drawable.character_cowboy_single_green
-        "Blue" -> R.drawable.character_cowboy_single_blue
-        "Pink" -> R.drawable.character_cowboy_single_pink
-        "Orange" -> R.drawable.character_cowboy_single_orange
-        "Purple" -> R.drawable.character_cowboy_single_purp
-        "Yellow" -> R.drawable.character_cowboy_single_yellow
-        else -> R.drawable.character_cowboy_single_green
-
-
-    }
-    val duckheadResource = when(currentColor) {
-        "Green" -> R.drawable.character_duck_still_green
-        "Blue" -> R.drawable.character_duck_still_blue
-        "Pink" -> R.drawable.character_duck_still_pink
-        "Orange" -> R.drawable.character_duck_still_orange
-        "Purple" -> R.drawable.character_duck_still_purple
-        "Yellow" -> R.drawable.character_duck_still_yellow
-        else -> R.drawable.character_duck_still_green
-
-
-    }
-    val frogheadResource = when(currentColor) {
-        "Green" -> R.drawable.character_frog_still_green
-        "Blue" -> R.drawable.character_frog_still_blue
-        "Pink" -> R.drawable.character_frog_still_pink
-        "Orange" -> R.drawable.character_frog_still_orange
-        "Purple" -> R.drawable.character_frog_still_purple
-        "Yellow" -> R.drawable.character_frog_still_yellow
-        else -> R.drawable.character_frog_still_green
-    }
-
-
-    val plantHatResource = when(currentColor) {
-        "Green" -> R.drawable.character_plant_still_green
-        "Blue" -> R.drawable.character_plant_still_blue
-        "Pink" -> R.drawable.character_plant_still_pink
-        "Orange" -> R.drawable.character_plant_still_orange
-        "Purple" -> R.drawable.character_plant_still_purple
-        "Yellow" -> R.drawable.character_plant_still_yellow
-        else -> R.drawable.character_plant_still_green
-    }
-
-
-    val mushroomResource = when(currentColor) {
-        "Green" -> R.drawable.character_mush_still_green
-        "Blue" -> R.drawable.character_mush_still_blue
-        "Pink" -> R.drawable.character_mush_still_pink
-        "Orange" -> R.drawable.character_mush_still_orange
-        "Purple" -> R.drawable.character_mush_still_purple
-        "Yellow" -> R.drawable.character_mush_still_yellow
-        else -> R.drawable.character_mush_still_green
-
-
-    }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -191,27 +142,13 @@ fun ShopScreen(
             ) {
                 if (showAccessories) {
                     // --- CHARACTER VIEW ---
-                    // 1. Base layer
                     SpriteCharacter(
+                        drawableId = selectedAccessory ?: baseCharacterResource,
                         column = 0,
                         modifier = Modifier.fillMaxSize()
                     )
-
-
-                    // 2. Accessory layer (on top of character head)
-                    selectedAccessory?.let { accessoryRes ->
-                        AsyncImage(
-                            model = accessoryRes,
-                            contentDescription = "Selected Accessory",
-                            modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .align(Alignment.BottomCenter)
-                                .offset(y = (-110).dp)
-                        )
-                    }
                 } else {
                     // --- PLANT VIEW ---
-                    // 1. Pot layer
                     selectedPot?.let { potRes ->
                         AsyncImage(
                             model = potRes,
@@ -221,14 +158,11 @@ fun ShopScreen(
                         )
                     }
 
-
-                    // 2. Flower layer (on top of pot)
                     selectedFlower?.let { flowerRes ->
                         val (xOffset, yOffset) = when (flowerRes) {
                             R.drawable.mushroom_1 -> (-5).dp to (-70).dp
                             else -> 0.dp to (-92).dp
                         }
-
 
                         AsyncImage(
                             model = flowerRes,
@@ -242,7 +176,6 @@ fun ShopScreen(
                 }
             }
         }
-
 
         // Control buttons
         Row(
@@ -265,9 +198,7 @@ fun ShopScreen(
                 Text(text = "Pots", fontSize = 12.sp)
             }
 
-
             Spacer(modifier = Modifier.width(8.dp))
-
 
             Button(
                 onClick = {
@@ -282,9 +213,7 @@ fun ShopScreen(
                 Text(text = "Flowers", fontSize = 12.sp)
             }
 
-
             Spacer(modifier = Modifier.width(8.dp))
-
 
             Button(
                 onClick = {
@@ -300,7 +229,6 @@ fun ShopScreen(
             }
         }
 
-
         // Grid area at the bottom
         Box(modifier = Modifier.height(300.dp)) {
             val currentList = when {
@@ -309,7 +237,6 @@ fun ShopScreen(
                 showAccessories -> accessoryImages
                 else -> emptyList()
             }
-
 
             if (currentList.isNotEmpty()) {
                 LazyVerticalGrid(
@@ -324,11 +251,21 @@ fun ShopScreen(
                             item = item,
                             userCoins = coins,
                             onBuy = {
-                                gameViewModel.spendCoins(item.price)
                                 when {
-                                    showPlantPots -> selectedPot = item.imageRes
-                                    showFlowers -> selectedFlower = item.imageRes
-                                    showAccessories -> selectedAccessory = item.imageRes
+                                    showPlantPots -> {
+                                        gameViewModel.spendCoins(item.price)
+                                        selectedPot = item.imageRes
+                                    }
+                                    showFlowers -> {
+                                        gameViewModel.spendCoins(item.price)
+                                        selectedFlower = item.imageRes
+                                    }
+                                    showAccessories -> {
+                                        val correctSprite = getComposedSprite(item, currentColor)
+                                        gameViewModel.spendCoins(item.price)
+                                        gameViewModel.updateCharacterSprite(correctSprite)
+                                        selectedAccessory = correctSprite
+                                    }
                                 }
                             }
                         )
@@ -342,7 +279,6 @@ fun ShopScreen(
         }
     }
 }
-
 
 @Composable
 fun ShopGridItem(item: ShopItem, userCoins: Int, onBuy: () -> Unit) {
@@ -362,7 +298,6 @@ fun ShopGridItem(item: ShopItem, userCoins: Int, onBuy: () -> Unit) {
             )
             Text(text = item.name, fontSize = 10.sp, maxLines = 1)
             Text(text = "🪙 ${item.price}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-
 
             Button(
                 onClick = onBuy,

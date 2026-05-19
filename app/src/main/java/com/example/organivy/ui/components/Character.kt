@@ -124,12 +124,13 @@ fun JumpingCharacter(
 
 @Composable
 fun SpriteCharacter(
+    drawableId: Int = R.drawable.character_base_single_green,
     row: Int = 0,
     column: Int = 0,
     modifier: Modifier = Modifier
 ) {
     SpriteLayer(
-        drawableId = R.drawable.character_base_single_green, 
+        drawableId = drawableId, 
         row = row, 
         column = column, 
         columnsCount = 1, 
@@ -140,12 +141,13 @@ fun SpriteCharacter(
 
 @Composable
 fun AnimatedSpriteCharacter(
+    drawableId: Int = R.drawable.character_base_single_green,
     row: Int = 0,
     frameCount: Int = 4,
     modifier: Modifier = Modifier
 ) {
     LayeredCharacter(
-        baseId = R.drawable.character_base_single_green,
+        baseId = drawableId,
         row = row,
         columnsCount = 1,
         rowsCount = 1,

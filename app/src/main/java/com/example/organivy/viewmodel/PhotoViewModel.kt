@@ -238,11 +238,19 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun clearDeletionList() {
 
+
         val deletedPhotosCount = uiState.deletionList.size
         val deletedPhotosBytes = uiState.deletionList.sumOf { it.size }
 
 
+        val co2Saved =
+            (deletedPhotosBytes/ 1_000_000) * 0.00294
+
+
+
+
         uiState = uiState.copy(
+
 
             //total  deleted amount
             totalDeletedPics =
@@ -250,16 +258,25 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             // total deleted bytes amount
             totalDeletedBytes = uiState.totalDeletedBytes + deletedPhotosBytes,
 
+
+            // co2 saved
+            totalCO2Saved = co2Saved,
+
+
             deletionList = emptyList())
     }
 
+
     /*fun uploadSecureFolderToFirebase(firebaseViewModel: FirebaseViewModel) {
 
+
         uiState.secureFolderList.forEach { photo ->
+
 
             firebaseViewModel.uploadPhoto(photo)
         }
     }*/
+
 
 //good
     /** Pulls secure-folder list from Firestore when SecureFolderPage opens. */
@@ -268,6 +285,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             uiState = uiState.copy(secureFolderList = photos)
         }
     }
+
 
     /**
      * Persists deletion totals under Users/{uid}/devices/{androidId}.
@@ -278,13 +296,16 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun saveDeletedCountToFirebase() {
 
+
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val deviceId = Settings.Secure.getString(
             context.contentResolver,
             Settings.Secure.ANDROID_ID
         )
 
+
         val db = FirebaseFirestore.getInstance()
+
 
         /* db.collection("Users")
              .document(userId)
@@ -294,15 +315,20 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
              )
  */
 
+
         db.collection("Users")
             .document(userId)
             .collection("devices")
             .document(deviceId)
             .update(
                 "localDeletedPhotos", uiState.totalDeletedPics,
-                "localDeletedPhotoBytes", uiState.totalDeletedBytes
+                "localDeletedPhotoBytes", uiState.totalDeletedBytes,
+                "totalCO2Saved", uiState.totalCO2Saved,
             )
     }
+
+
+
 
 
 

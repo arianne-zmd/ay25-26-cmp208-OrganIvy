@@ -86,14 +86,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                     // Field names match Firebase exactly
                     uiState = uiState.copy(
                         userName = snapshot.getString("name") ?: "",
+                        // added this 
+                        gardenName = snapshot.getString("gardenName") ?: "My Garden",
                         coins = (snapshot.getLong("Coins")?.toInt() ?: 0),
                         co2saved = (snapshot.getLong("co2savedGrams")?.toInt() ?: 0),
                         streak = (snapshot.getLong("totalDeletedPhotos")?.toInt() ?: 0),
                         badgesEarned = snapshot.getString("BadgesEarned") ?: "",
                         //factsGained = snapshot.getString("FactsGained") ?: "",
                         characterColour = snapshot.getString("CharacterColour") ?: "",
-                        characterSprite = snapshot.getString("CharacterSprite") ?: "R.drawable.character_base_single_green()",
-                        unlockedEcoFacts = unlockedFacts
+                        characterSprite = snapshot.getString("CharacterSprite") ?: R.drawable.character_base_single_green.toString(),
+                        unlockedEcoFacts = unlockedFacts,
+                        completedChallenges = (snapshot.getLong("completedChallenges")?.toInt() ?: 0),
+                        plantLevel = (snapshot.getLong("plantLevel")?.toInt() ?: 0),
+                        grownPlants = (snapshot.getLong("grownPlants")?.toInt() ?: 0)
 
                     )
 
@@ -138,11 +143,18 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                         snapshot.getLong("localDeletedPhotos")?.toInt() ?: 0
                     val localDeletedPhotoBytes =
                         snapshot.getLong("localDeletedPhotoBytes")?.toLong() ?: 0
+                    val totalCO2Saved: Double =
+                        (snapshot.getDouble("totalCO2Saved")?.toDouble() ?: 0) as Double
+
+
+
 
                     uiState = uiState.copy(
                         localDeletedPhotos = localDeletedPhotos,
-                        localDeletedPhotoBytes = localDeletedPhotoBytes
+                        localDeletedPhotoBytes = localDeletedPhotoBytes,
+                        localco2saved = totalCO2Saved
                     )
+
                 }
             }
 
@@ -243,6 +255,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             completedChallenges = newCompletedChallenges,
             plantLevel = newPlantLevel
         )
+        saveUserDataToFirebase()
     }
 
     // PLANT LEVEL THRESHOLDS TO LEVEL UP
@@ -341,7 +354,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         uiState = uiState.copy(
             characterColour = colour,
             characterSprite = sprite
+        ) //ADDED THIS
+        saveUserDataToFirebase()
+    }
+
+    fun updateCharacterSprite(spriteResId: Int) {// SOMETHING OPR ANOYTHER
+        uiState = uiState.copy(
+            characterSprite = spriteResId.toString()
         )
+        saveUserDataToFirebase()
+    }
+
+//added this 
+    fun updateGardenName(newName: String) {
+        uiState = uiState.copy(gardenName = newName)
+        saveUserDataToFirebase()
     }
 
     // --- Firebase write paths (push local state → cloud) ---
@@ -358,13 +385,18 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
 
         val userData = mapOf(
             "name" to uiState.userName,
+            //and this
+            "gardenName" to uiState.gardenName,
             "Coins" to uiState.coins,
             "co2savedGrams" to uiState.co2saved,
             "totalDeletedPhotos" to uiState.streak,
             "BadgesEarned" to uiState.badgesEarned,
             "FactsGained" to uiState.factsGained,
             "CharacterColour" to uiState.characterColour,
-            "CharacterSprite" to uiState.characterSprite
+            "CharacterSprite" to uiState.characterSprite,
+            "completedChallenges" to uiState.completedChallenges,
+            "plantLevel" to uiState.plantLevel,
+            "grownPlants" to uiState.grownPlants
         )
 
         db.collection("Users").document(userId)

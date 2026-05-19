@@ -1,5 +1,6 @@
 package com.example.organivy.ui.subpages.onboarding
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,37 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.ui.platform.LocalContext
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-
-@Composable
-fun AnimatedGifImage(
-    drawableResId: Int,
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context)
-        .components {
-            if (SDK_INT >= 28) {
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                add(GifDecoder.Factory())
-            }
-        }
-    .build()
-
-    AsyncImage(
-        model = drawableResId,
-        contentDescription = null,
-        imageLoader = imageLoader,
-        modifier = modifier
-    )
-}
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.organivy.R
 
 //Screen 1
 @Composable
@@ -83,11 +57,13 @@ fun OnStartOnboarding1 (onNavigateToNext: () -> Unit){
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.steps, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.foot_path),
+                        contentDescription = "Foot Print",
+                        modifier = Modifier.size(120.dp),
+                        contentScale = ContentScale.Fit
                     )
+
                 }
             }
 
@@ -104,13 +80,26 @@ fun OnStartOnboarding1 (onNavigateToNext: () -> Unit){
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.data_center, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.co2),
+                            contentDescription = "CO2 omage",
+                            modifier = Modifier.weight(1f).height(120.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.energy),
+                            contentDescription = "Energy Given",
+                            modifier = Modifier.weight(1f).height(120.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
             }
+
 
         }
 
@@ -178,11 +167,6 @@ fun OnStartOnboarding2 (onNavigateBack: () -> Unit,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
                 }
             }
 
@@ -199,10 +183,11 @@ fun OnStartOnboarding2 (onNavigateBack: () -> Unit,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.photos),
+                        contentDescription = "Photos",
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -264,41 +249,40 @@ fun OnStartOnboarding3 (onNavigateBack: () -> Unit,
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Grow Your Digital Garden",
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
-                }
-            }
-
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Every cleanup challenge helps your plant " +
-                                "grow healthier and stronger.",
-                        fontSize = 18.sp,
+                        text = "Every cleanup challenge helps your plant grow healthier and stronger.",
+                        fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.flower_blooming),
+                            contentDescription = "Garden",
+                            modifier = Modifier.weight(1f).height(120.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.muscles),
+                            contentDescription = "Muscles",
+                            modifier = Modifier.weight(1f).height(120.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
             }
 
@@ -359,45 +343,44 @@ fun OnStartOnboarding4 (onNavigateBack: () -> Unit,
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Turn Cleanup Into Progress",
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
-                }
-            }
-
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Earn badges, complete challenges, build streaks, " +
-                                "and track your impact over time.",
-                        fontSize = 18.sp,
+                        text = "Earn badges, complete challenges, build streaks, and track your impact over time.",
+                        fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.progress),
+                            contentDescription = "progess Bar",
+                            modifier = Modifier.weight(1f).height(120.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.trophies),
+                            contentDescription = "Trophy",
+                            modifier = Modifier.weight(1f).height(120.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
             }
-
         }
+
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -463,11 +446,6 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
-                    )
                 }
             }
 
@@ -483,11 +461,6 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AnimatedGifImage(
-                        drawableResId = com.example.organivy.R.drawable.character_base_single_yellow, // Replace with your GIF
-                        modifier = Modifier.fillMaxWidth().height(150.dp)
                     )
                 }
             }

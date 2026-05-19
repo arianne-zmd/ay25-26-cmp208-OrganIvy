@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 /**
  * Central ViewModel for Firebase Authentication (email/password).
@@ -77,10 +80,43 @@ class OrganIvyViewModel : ViewModel() {
      */
 
 
-    fun signUp(email: String, password: String, onResult: (String?) -> Unit) {
+    fun signUp(email: String, password: String, username: String, onResult: (String?) -> Unit) {
         viewModelScope.launch {
             try {
+                // 1. Check if username is already taken in Firestore
+                val existing = FirebaseFirestore.getInstance()
+                    .collection("Users")
+                    .whereEqualTo("name", username)
+                    .get()
+                    .await()
+
+                if (!existing.isEmpty) {
+                    onResult("Username is already taken")
+                    return@launch
+                }
+
+                // 2. Create Firebase Auth user
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
+                val user = result.user
+
+                // 3. Set display name (username) in Auth profile
+                user?.updateProfile(userProfileChangeRequest {
+                    displayName = username
+                })?.await()
+
+                // 4. Create initial User document in Firestore so we can look up email by username later
+                user?.uid?.let { uid ->
+                    val initialData = mapOf(
+                        "name" to username,
+                        "email" to email,
+                        "gardenName" to "$username's Garden",
+                        "Coins" to 0,
+                        "co2savedGrams" to 0
+                    )
+                    FirebaseFirestore.getInstance().collection("Users").document(uid)
+                        .set(initialData, SetOptions.merge()).await()
+                }
+
                 val userData = result.user?.let {
                     UserData(it.uid, it.displayName, it.photoUrl?.toString())
                 }
@@ -95,10 +131,29 @@ class OrganIvyViewModel : ViewModel() {
 
     /** Same pattern as signUp — Firebase validates credentials server-side. */
 
-    fun signIn(email: String, password: String, onResult: (String?) -> Unit) {
+    fun signIn(usernameOrEmail: String, password: String, onResult: (String?) -> Unit) {
         viewModelScope.launch {
             try {
-                val result = auth.signInWithEmailAndPassword(email, password).await()
+                // 1. Determine if input is email or username
+                val emailToUse = if (usernameOrEmail.contains("@")) {
+                    usernameOrEmail
+                } else {
+                    // It's a username, look up the email in Firestore
+                    val snapshot = FirebaseFirestore.getInstance()
+                        .collection("Users")
+                        .whereEqualTo("name", usernameOrEmail)
+                        .get()
+                        .await()
+
+                    if (snapshot.isEmpty) {
+                        throw Exception("Username not found")
+                    }
+                    snapshot.documents.first().getString("email")
+                        ?: throw Exception("User email not found")
+                }
+
+                // 2. Sign in with the resolved email
+                val result = auth.signInWithEmailAndPassword(emailToUse, password).await()
                 val userData = result.user?.let {
                     UserData(it.uid, it.displayName, it.photoUrl?.toString())
                 }

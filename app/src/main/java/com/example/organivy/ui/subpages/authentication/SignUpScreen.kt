@@ -28,6 +28,7 @@ fun SignUpScreen(
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+    var username by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = state.isSignInSuccessful) {
         if (state.isSignInSuccessful) {
@@ -53,6 +54,15 @@ fun SignUpScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it},
+                label = { Text("Username") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
         }
 
@@ -90,10 +100,10 @@ fun SignUpScreen(
         item {
             Button(
                 onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
-                        viewModel.signUp(email, password) { error ->
+                    if (email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty()) {
+                        viewModel.signUp(email, password, username) { error ->
                             if (error != null) {
-                                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {

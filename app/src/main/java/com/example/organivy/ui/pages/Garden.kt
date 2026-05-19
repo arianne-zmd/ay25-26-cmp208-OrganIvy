@@ -5,8 +5,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -14,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.WbSunny
@@ -40,6 +44,7 @@ import com.example.organivy.ui.theme.*
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GardenScreen(
     onNavigateToProfile: () -> Unit,
@@ -51,8 +56,15 @@ fun GardenScreen(
 ) {
 
     val state2 = gameViewModel.uiState
+    var isEditingName by remember { mutableStateOf(false) }
+    var tempName by remember { mutableStateOf(state2.gardenName) }
 
-
+    // Update tempName if state2.gardenName changes externally (e.g. from Firebase)
+    LaunchedEffect(state2.gardenName) {
+        if (!isEditingName) {
+            tempName = state2.gardenName
+        }
+    }
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -145,19 +157,49 @@ fun GardenScreen(
                 }
 
                 // Garden Name
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text(
-                        text = "Garden Name",
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary
+                if (isEditingName) {
+                    OutlinedTextField(
+                        value = tempName,
+                        onValueChange = { tempName = it },
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        singleLine = true,
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                if (tempName.isNotBlank()) {
+                                    gameViewModel.updateGardenName(tempName)
+                                }
+                                isEditingName = false
+                            }) {
+                                Icon(Icons.Default.Check, contentDescription = "Save Garden Name")
+                            }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
+                        shape = CircleShape
                     )
+                } else {
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .combinedClickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { },
+                                onDoubleClick = { isEditingName = true }
+                            )
+                    ) {
+                        Text(
+                            text = state2.gardenName,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
 
 

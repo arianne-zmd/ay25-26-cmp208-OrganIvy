@@ -35,7 +35,7 @@ fun LoginScreen(
     onNavigateToHome: () -> Unit,
     viewModel: OrganIvyViewModel = viewModel()
 ) {
-    var email by remember { mutableStateOf("") }
+    var usernameOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -72,9 +72,9 @@ fun LoginScreen(
 
         item {
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
+                value = usernameOrEmail,
+                onValueChange = { usernameOrEmail = it },
+                label = { Text("Username or Email") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -102,8 +102,8 @@ fun LoginScreen(
         item {
             Button(
                 onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
-                        viewModel.signIn(email, password) { error ->
+                    if (usernameOrEmail.isNotEmpty() && password.isNotEmpty()) {
+                        viewModel.signIn(usernameOrEmail, password) { error ->
                             if (error != null) {
                                 Toast.makeText(context, "Login Failed: $error", Toast.LENGTH_LONG).show()
                             } else {
