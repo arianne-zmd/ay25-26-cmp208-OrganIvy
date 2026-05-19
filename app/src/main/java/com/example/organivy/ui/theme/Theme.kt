@@ -1,4 +1,5 @@
 package com.example.organivy.ui.theme
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -6,24 +7,14 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 
-@Immutable
-data class ExtendedColorScheme(
-    val text: ColorFamily,
-    val customText: ColorFamily,
-)
-
 private val lightScheme = lightColorScheme(
-
-//    bh = bohoClay,
-//    bl = bohoLavender,
-//    bb = bohoBeige,
-
-
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,
@@ -251,96 +242,6 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
-val extendedLight = ExtendedColorScheme(
-  text = ColorFamily(
-  textLight,
-  onTextLight,
-  textContainerLight,
-  onTextContainerLight,
-  ),
-  customText = ColorFamily(
-  customTextLight,
-  onCustomTextLight,
-  customTextContainerLight,
-  onCustomTextContainerLight,
-  ),
-)
-
-val extendedDark = ExtendedColorScheme(
-  text = ColorFamily(
-  textDark,
-  onTextDark,
-  textContainerDark,
-  onTextContainerDark,
-  ),
-  customText = ColorFamily(
-  customTextDark,
-  onCustomTextDark,
-  customTextContainerDark,
-  onCustomTextContainerDark,
-  ),
-)
-
-val extendedLightMediumContrast = ExtendedColorScheme(
-  text = ColorFamily(
-  textLightMediumContrast,
-  onTextLightMediumContrast,
-  textContainerLightMediumContrast,
-  onTextContainerLightMediumContrast,
-  ),
-  customText = ColorFamily(
-  customTextLight,
-  onCustomTextLight,
-  customTextContainerLight,
-  onCustomTextContainerLight,
-  ),
-)
-
-val extendedLightHighContrast = ExtendedColorScheme(
-  text = ColorFamily(
-  textLightHighContrast,
-  onTextLightHighContrast,
-  textContainerLightHighContrast,
-  onTextContainerLightHighContrast,
-  ),
-  customText = ColorFamily(
-  customTextLight,
-  onCustomTextLight,
-  customTextContainerLight,
-  onCustomTextContainerLight,
-  ),
-)
-
-val extendedDarkMediumContrast = ExtendedColorScheme(
-  text = ColorFamily(
-  textDarkMediumContrast,
-  onTextDarkMediumContrast,
-  textContainerDarkMediumContrast,
-  onTextContainerDarkMediumContrast,
-  ),
-  customText = ColorFamily(
-  customTextDark,
-  onCustomTextDark,
-  customTextContainerDark,
-  onCustomTextContainerDark,
-  ),
-)
-
-val extendedDarkHighContrast = ExtendedColorScheme(
-  text = ColorFamily(
-  textDarkHighContrast,
-  onTextDarkHighContrast,
-  textContainerDarkHighContrast,
-  onTextContainerDarkHighContrast,
-  ),
-  customText = ColorFamily(
-  customTextDark,
-  onCustomTextDark,
-  customTextContainerDark,
-  onCustomTextContainerDark,
-  ),
-)
-
 @Immutable
 data class ColorFamily(
     val color: Color,
@@ -376,8 +277,4 @@ fun AppTheme(
     content = content
   )
 }
-
-
-
-
 

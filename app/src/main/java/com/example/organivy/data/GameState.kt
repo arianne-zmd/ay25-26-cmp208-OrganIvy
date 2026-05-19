@@ -33,6 +33,7 @@ data class GameState(
     val newlyUnlockedFact: EcoFact? = null,
 
     val completedChallenges: Int = 0,
-    val plantLevel: Int = 0
+    val plantLevel: Int = 0,
+    val grownPlants: Int = 0
 
     )

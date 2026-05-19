@@ -16,13 +16,13 @@ class GardenViewModel : ViewModel() {
      */
     fun onPhotosDeleted(count: Int, sizeMb: Double) {
         val user = auth.currentUser ?: return
-        val userRef = db.collection("users").document(user.uid)
+        val userRef = db.collection("Users").document(user.uid)
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
             
             // Get current values
-            val currentPoints = snapshot.getLong("points") ?: 0
+            val currentPoints = snapshot.getLong("Coins") ?: 0
             val currentDeleted = snapshot.getLong("totalDeletedPhotos") ?: 0
             val currentLevel = snapshot.getLong("plantLevel") ?: 1
             val currentWater = snapshot.getDouble("waterLevel") ?: 1.0
@@ -41,9 +41,9 @@ class GardenViewModel : ViewModel() {
 
             // 3. Update Firestore with new stats
             val updates = mapOf(
-                "points" to newPoints,
+                "Coins" to newPoints,
                 "totalDeletedPhotos" to newDeleted,
-                "co2SavedGrams" to co2Saved,
+                "co2savedGrams" to co2Saved,
                 "waterLevel" to newWater,
                 "sunLightLevel" to newSunlight
             )
@@ -66,11 +66,11 @@ class GardenViewModel : ViewModel() {
      */
     fun buyDecoration(itemId: String, price: Int) {
         val user = auth.currentUser ?: return
-        val userRef = db.collection("users").document(user.uid)
+        val userRef = db.collection("Users").document(user.uid)
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
-            val currentPoints = snapshot.getLong("points") ?: 0
+            val currentPoints = snapshot.getLong("Coins") ?: 0
             val ownedItems = snapshot.get("ownedDecorations") as? List<String> ?: emptyList()
 
             // Ensure user has enough points and doesn't already own the item
@@ -78,7 +78,7 @@ class GardenViewModel : ViewModel() {
                 val newPoints = currentPoints - price
                 val newOwnedItems = ownedItems + itemId
                 
-                transaction.update(userRef, "points", newPoints)
+                transaction.update(userRef, "Coins", newPoints)
                 transaction.update(userRef, "ownedDecorations", newOwnedItems)
             }
         }
@@ -89,7 +89,7 @@ class GardenViewModel : ViewModel() {
      */
     fun toggleDecoration(itemId: String) {
         val user = auth.currentUser ?: return
-        val userRef = db.collection("users").document(user.uid)
+        val userRef = db.collection("Users").document(user.uid)
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)

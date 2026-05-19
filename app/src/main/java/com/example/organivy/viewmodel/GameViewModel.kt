@@ -29,7 +29,13 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
 
     init {
         generateWeeklyChallenges()
-        observeUserData(context)
+        // Use an auth state listener to start observing when user signs in
+        auth.addAuthStateListener { firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                observeUserData(context)
+            }
+        }
     }
 
     private fun observeUserData(context: android.content.Context) {
@@ -61,8 +67,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                         streak = (snapshot.getLong("totalDeletedPhotos")?.toInt() ?: 0),
                         badgesEarned = snapshot.getString("BadgesEarned") ?: "",
                         //factsGained = snapshot.getString("FactsGained") ?: "",
-                        characterSprite = snapshot.getString("CharacterSprite") ?: "R.drawable.character_base_single_green()",
-                        unlockedEcoFacts = unlockedFacts
+                        characterColour = snapshot.getString("CharacterColour") ?: "",
+                        characterSprite = snapshot.getString("CharacterSprite") ?: R.drawable.character_base_single_green.toString(),
+                        unlockedEcoFacts = unlockedFacts,
+                        plantLevel = (snapshot.getLong("plantLevel")?.toInt() ?: 0),
+                        completedChallenges = (snapshot.getLong("completedChallenges")?.toInt() ?: 0) ,
+                        grownPlants = (snapshot.getLong("grownPlants")?.toInt() ?: 0)
                     )
 
                 }
@@ -194,12 +204,24 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         }
 
         // total completed challenges
-        val newCompletedChallenges =
+        val totalCompletedForCurrentPlant =
             uiState.completedChallenges + completedCountIncrease
+
+        var finalCompleted = totalCompletedForCurrentPlant
+        var finalGrownPlants = uiState.grownPlants
+
+        // Threshold for level 3 is plantThresholds[2] (15)
+        val maxChallengesPerPlant = plantThresholds[2]
+
+        if (totalCompletedForCurrentPlant >= maxChallengesPerPlant) {
+            finalGrownPlants += 1
+            // Reset and carry over any extra progress to the new plant
+            finalCompleted = totalCompletedForCurrentPlant - maxChallengesPerPlant
+        }
 
         // calculate plant level
         val newPlantLevel =
-            calculatePlantLevel(newCompletedChallenges)
+            calculatePlantLevel(finalCompleted)
 
         uiState = uiState.copy(
             challenges = updatedChallenges,
@@ -208,9 +230,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             coins = uiState.coins + rewardCoins,
 
             // plant progression
-            completedChallenges = newCompletedChallenges,
-            plantLevel = newPlantLevel
+            completedChallenges = finalCompleted,
+            plantLevel = newPlantLevel,
+            grownPlants = finalGrownPlants
         )
+        saveUserDataToFirebase()
     }
 
     // PLANT LEVEL THRESHOLDS TO LEVEL UP
@@ -263,7 +287,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                     newlyUnlockedFact = randomFact
                 )
 
-                //saveEcoFactsToFirebase()
+                saveUserDataToFirebase()
             }
 
     }
@@ -281,10 +305,13 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     fun onDeletion (photoNum: Int){
         // 1. Update local coins (The listener will sync back later, but we push immediately)
         val newCoins = uiState.coins + 20 + (photoNum * 5)
+        val newTotalDeleted = uiState.streak + photoNum
 
         uiState = uiState.copy(
-            coins = newCoins
+            coins = newCoins,
+            streak = newTotalDeleted
         )
+        saveUserDataToFirebase()
     }
 
     fun spendCoins(amount: Int) {
@@ -292,17 +319,18 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             uiState = uiState.copy(
                 coins = uiState.coins - amount
             )
+            saveUserDataToFirebase()
         }
     }
 
     // --- Customization Functions ---
-   /* fun updateCharacterSprite(resId: Int) {
-        uiState = uiState.copy(characterSprite = resId)
+    fun updateCharacterColour(colour: String, sprite: String) {
+        uiState = uiState.copy(
+            characterColour = colour,
+            characterSprite = sprite
+        )
         saveUserDataToFirebase()
     }
-
-
-    */
 
 
     // --- Firebase Integration ---
@@ -315,8 +343,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             "co2savedGrams" to uiState.co2saved,
             "totalDeletedPhotos" to uiState.streak,
             "BadgesEarned" to uiState.badgesEarned,
-            "FactsGained" to uiState.factsGained,
-            "CharacterSprite" to uiState.characterSprite
+            "FactsGained" to uiState.unlockedEcoFacts.map { it.id },
+            "CharacterColour" to uiState.characterColour,
+            "CharacterSprite" to uiState.characterSprite,
+            "plantLevel" to uiState.plantLevel,
+            "completedChallenges" to uiState.completedChallenges,
+            "grownPlants" to uiState.grownPlants
         )
         
         db.collection("Users").document(userId)

@@ -54,7 +54,6 @@ import com.example.organivy.R
 import com.example.organivy.data.Header
 import com.example.organivy.data.StatBar
 import com.example.organivy.ui.components.ChallengeItem
-import com.example.organivy.ui.theme.textLight
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
 
@@ -100,7 +99,7 @@ fun HomeScreen(
                         }) {
                             Text(
                                 text = "Badges",
-                                color = textLight,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
                         }
@@ -110,7 +109,7 @@ fun HomeScreen(
                         }) {
                             Text(
                                 text = "Stats and Impact",
-                                color = textLight,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
                         }

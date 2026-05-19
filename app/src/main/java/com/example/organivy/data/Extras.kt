@@ -55,6 +55,7 @@ import com.example.organivy.ui.pages.StatBar
 
 
 import com.example.organivy.ui.components.LayeredCharacter
+import com.example.organivy.ui.components.JumpingCharacter
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
@@ -324,48 +325,77 @@ fun Header(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(10.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         // Avatar Section
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
                 modifier = Modifier
                     .size(80.dp)
-                    .background(Color(0xFFB2A8FF), RoundedCornerShape(8.dp))
+                    .background(Color(0xFFB2A8FF), RoundedCornerShape(12.dp))
                     .padding(8.dp)
             ) {
-                // Character section placeholder
-                Image(
-                    painter = painterResource(id = R.drawable.placeholder_icon),
-                    contentDescription = "Avatar",
+                val characterResId = state2.characterSprite.toIntOrNull() ?: R.drawable.character_base_single_green
+                JumpingCharacter(
+                    baseId = characterResId,
                     modifier = Modifier.fillMaxSize()
                 )
             }
 
-
-            Text(text = "Lvl. 4", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
+            val userLevel = (state2.grownPlants * 3) + state2.plantLevel + 1
+            Text(text = "Lvl. $userLevel", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.width(16.dp))
 
         // Stats Section
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = state2.userName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            StatBar(label = "Health", current = 50, max = 50, color = Color(0xFFFF5252))
-            StatBar(label = "Experience", current = 16, max = 100, color = Color(0xFFFFD700))
+            // Username (Optional, but keeping it if needed)
+            // Text(text = state2.userName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            // Dynamic Experience Section
+            val currentLevelThreshold = if (state2.plantLevel > 0) gameViewModel.plantThresholds[state2.plantLevel - 1] else 0
+            val nextLevelThreshold = if (state2.plantLevel < gameViewModel.plantThresholds.size) gameViewModel.plantThresholds[state2.plantLevel] else gameViewModel.plantThresholds.last()
+            
+            val progressInCurrentLevel = state2.completedChallenges - currentLevelThreshold
+            val neededForNextLevel = nextLevelThreshold - currentLevelThreshold
+
+            StatBar(
+                label = "Experience", 
+                current = progressInCurrentLevel, 
+                max = neededForNextLevel, 
+                color = Color(0xFFC8E6C9) // Matching the green theme in screenshot
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(), 
+                horizontalArrangement = Arrangement.SpaceBetween, 
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        painter = painterResource(R.drawable.placeholder_icon),
-                        contentDescription = null
+                    Text(text = "🔥", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${state2.streak} Week Streak", 
+                        fontSize = 14.sp, 
+                        fontWeight = FontWeight.Bold, 
+                        color = Color(0xFFF44336)
                     )
-                    Text(text = " CO\u2082 Saved", fontSize = 12.sp)
                 }
-                Text(text = "🪙 ${state2.coins}  💎 20", fontSize = 14.sp)
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "🪙", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${state2.coins}", 
+                        fontSize = 14.sp, 
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFFD700)
+                    )
+                }
             }
         }
     }
@@ -415,9 +445,21 @@ fun GridHeader(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
     ) {
         // Avatar Section
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(Color(0xFFB2A8FF), RoundedCornerShape(8.dp))
+                    .padding(4.dp)
+            ) {
+                val characterResId = state2.characterSprite.toIntOrNull() ?: R.drawable.character_base_single_green
+                JumpingCharacter(
+                    baseId = characterResId,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-
-            Text(text = "Lvl. 4", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            val userLevel = (state2.grownPlants * 3) + state2.plantLevel + 1
+            Text(text = "Lvl. $userLevel", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
 
@@ -428,17 +470,11 @@ fun GridHeader(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Spacer(modifier = Modifier.width(20.dp))
-                Image(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    painter = painterResource(R.drawable.placeholder_icon),
-                    contentDescription = null
-                )
-                Text(text = " CO\u2082 Saved", fontSize = 12.sp)
+                Text(text = "🔥", fontSize = 14.sp)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "${state2.streak}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFFF44336))
             }
-            Text(text = "🪙 ${state2.coins}  💎 20", fontSize = 14.sp)
+            Text(text = "🪙 ${state2.coins}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
 

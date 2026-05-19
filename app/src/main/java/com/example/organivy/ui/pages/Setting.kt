@@ -1,6 +1,7 @@
 package com.example.organivy.ui.pages
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,23 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                    onThemeChange: (ThemeOption) -> Unit
 ) {
 
+    val isDark = when (selectedTheme) {
+        ThemeOption.SYSTEM -> isSystemInDarkTheme()
+        ThemeOption.LIGHT -> false
+        ThemeOption.DARK -> true
+    }
 
+    val cardContainerColor = if (isDark) {
+        MaterialTheme.colorScheme.secondaryContainer
+    } else {
+        MaterialTheme.colorScheme.primaryContainer
+    }
+
+    val cardContentColor = if (isDark) {
+        MaterialTheme.colorScheme.onSecondaryContainer
+    } else {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -41,11 +58,7 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
         horizontalAlignment = Alignment.Start,
     ) {
 
-        item {
-            val photoViewModel = viewModel<PhotoViewModel>()
-            val gameViewModel = viewModel<GameViewModel>()
-            Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
-        }
+
         item { Spacer(modifier = Modifier.height(16.dp)) }
         item {
             Text(
@@ -62,8 +75,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor,
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
@@ -79,8 +92,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor,
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
@@ -111,8 +124,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor, 
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
@@ -128,8 +141,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor,
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
@@ -145,8 +158,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor,
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
@@ -162,8 +175,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor,
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
@@ -178,8 +191,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardContainerColor,
+                    contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {

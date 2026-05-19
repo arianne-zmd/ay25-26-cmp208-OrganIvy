@@ -79,7 +79,7 @@ fun GardenScreen(
                         }) {
                             Text(
                                 text = "Green Journal",
-                                color = textLight,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
                         }
@@ -89,7 +89,7 @@ fun GardenScreen(
                         }) {
                             Text(
                                 text = "Shop",
-                                color = textLight,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
                         }
@@ -129,7 +129,7 @@ fun GardenScreen(
                 // Garden Title
                 Surface(
                     shape = CircleShape,
-                    color = primaryContainerLight,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -140,14 +140,14 @@ fun GardenScreen(
                         textAlign = TextAlign.Center,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = primaryLight
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
                 // Garden Name
                 Surface(
                     shape = CircleShape,
-                    color = secondaryContainerLight,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                 ) {
@@ -156,7 +156,7 @@ fun GardenScreen(
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
-                        color = primaryLight
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -262,7 +262,7 @@ fun StatBar(icon: ImageVector, progress: Float) {
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(20.dp),
-            tint = primaryLight
+            tint = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.width(8.dp))
         LinearProgressIndicator(
@@ -271,8 +271,8 @@ fun StatBar(icon: ImageVector, progress: Float) {
                 .height(8.dp)
                 .fillMaxWidth()
                 .clip(CircleShape),
-            color = primaryLight,
-            trackColor = secondaryContainerLight,
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.secondaryContainer,
         )
     }
 }
@@ -285,7 +285,7 @@ fun CategoryButton(text: String, onClick: () -> Unit) {
     ) {
         Text(
             text = text,
-            color = primaryLight,
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium
         )
@@ -315,12 +315,12 @@ fun PlantItem() {
         Box(
             modifier = Modifier
                 .size(60.dp)
-                .background(secondaryContainerLight, RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(8.dp))
         )
         Text(
             text = "Fra...",
             fontSize = 10.sp,
-            color = outlineLight,
+            color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(top = 4.dp)
         )
     }

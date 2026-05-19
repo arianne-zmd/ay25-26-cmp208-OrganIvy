@@ -52,7 +52,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
             "id" to photo.id
         )
 
-        database.collection("users")
+        database.collection("Users")
             .document(userId)
             .collection("devices")
             .document(deviceId)
@@ -66,7 +66,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
         val userId = auth.currentUser?.uid ?: return
 
-        database.collection("users")
+        database.collection("Users")
             .document(userId)
             .collection("devices")
             .document(deviceId)
@@ -82,7 +82,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
         val userId = auth.currentUser?.uid ?: return
 
-        database.collection("users")
+        database.collection("Users")
             .document(userId)
             .collection("devices")
             .document(deviceId)

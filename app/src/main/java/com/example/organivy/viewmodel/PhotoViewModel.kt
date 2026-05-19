@@ -22,6 +22,7 @@ import com.example.organivy.data.SafeDeletion
 import com.example.organivy.ui.components.BottomNavItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -291,9 +292,12 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             .document(userId)
             .collection("devices")
             .document(deviceId)
-            .update(
-                "localDeletedPhotos", uiState.totalDeletedPics,
-                "localDeletedPhotoBytes", uiState.totalDeletedBytes
+            .set(
+                mapOf(
+                    "localDeletedPhotos" to uiState.totalDeletedPics,
+                    "localDeletedPhotoBytes" to uiState.totalDeletedBytes
+                ),
+                SetOptions.merge()
             )
     }
 

@@ -268,7 +268,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
             LoginScreen( onNavigateToProfile = { navController.navigate("profile")},
                 onNavigateToSignUp = { navController.navigate("signup")},
                 onNavigateToForget = { navController.navigate("forget_password")},
-                onNavigateToHome = { navController.navigate("app") } // Changed to 'app' to show onboarding
+                onNavigateToHome = { navController.navigate("onboarding") } // Navigate to avatar creation first
                 )
         }
 
@@ -276,7 +276,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
             SignUpScreen( onNavigateToProfile = { navController.navigate("profile") },
                 onNavigateToForget = { navController.navigate("forget_password")},
                 onNavigateToLogin = { navController.navigate("login")},
-                onNavigateToHome = { navController.navigate("app") }, // Navigate to 'app' after signup
+                onNavigateToHome = { navController.navigate("onboarding") }, // Navigate to avatar creation first
                 //onNavigateToOnboarding  = { navController.navigate("onboarding")}
                 )
         }
