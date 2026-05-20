@@ -209,7 +209,7 @@ fun GardenScreen(
                 //plant
                 Box{
                     Image(
-                        painter = painterResource(id = R.drawable.garden_temp),
+                        painter = painterResource(id = R.drawable.garden_official),
                         contentDescription = "Garden",
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop
