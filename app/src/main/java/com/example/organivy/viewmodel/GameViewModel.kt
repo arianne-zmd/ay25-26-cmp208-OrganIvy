@@ -51,12 +51,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                 observeUserData(context)
             } else {
                 isObservingFirebase = false
+                clearUserSession()
             }
         }
         // Cold start: user already logged in from previous session
         if (auth.currentUser != null) {
             observeUserData(context)
         }
+    }
+
+    /** Clears in-memory progression so the next account does not see the previous user's data. */
+    fun clearUserSession() {
+        uiState = GameState()
+        generateWeeklyChallenges()
     }
 
     /** Attaches three snapshot listeners: profile doc, Photos subcollection, this device doc. */
@@ -311,7 +318,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                 newlyUnlockedFact = randomFact
             )
 
-            //saveEcoFactsToFirebase()
+            saveEcoFactsToFirebase()
         }
 
     }
@@ -327,12 +334,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     // ON DELETE
     //coins
     fun onDeletion (photoNum: Int){
-        // 1. Update local coins (The listener will sync back later, but we push immediately)
+        // Update local coins (The listener will sync back later, but we push immediately)
         val newCoins = uiState.coins + (photoNum * 5)
 
         uiState = uiState.copy(
             coins = newCoins
         )
+
+        saveUserDataToFirebase()
     }
 
     fun spendCoins(amount: Int) {
@@ -340,6 +349,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             uiState = uiState.copy(
                 coins = uiState.coins - amount
             )
+            saveUserDataToFirebase()
         }
     }
 
@@ -394,7 +404,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             "co2savedGrams" to uiState.co2saved,
             "totalDeletedPhotos" to uiState.streak,
             "BadgesEarned" to uiState.badgesEarned,
-            "FactsGained" to uiState.factsGained,
+            "FactsGained" to uiState.unlockedEcoFacts.map { it.id },
             "CharacterColour" to uiState.characterColour,
             "CharacterSprite" to uiState.characterSprite,
             "completedChallenges" to uiState.completedChallenges,

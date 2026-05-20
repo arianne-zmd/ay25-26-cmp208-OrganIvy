@@ -88,7 +88,8 @@ fun OnStartOnboarding1 (onNavigateToNext: () -> Unit){
                                 "increasing energy usage in data centers worldwide.",
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
@@ -127,7 +128,8 @@ fun OnStartOnboarding1 (onNavigateToNext: () -> Unit){
                 Text(
                     "Back",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -140,7 +142,8 @@ fun OnStartOnboarding1 (onNavigateToNext: () -> Unit){
                 Text(
                     "Next",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -191,7 +194,8 @@ fun OnStartOnboarding2 (onNavigateBack: () -> Unit,
                                 "unnecessary photos in seconds.",
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Image(
                         painter = painterResource(id = R.drawable.photos),
@@ -218,7 +222,8 @@ fun OnStartOnboarding2 (onNavigateBack: () -> Unit,
                 Text(
                     "Back",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -231,7 +236,8 @@ fun OnStartOnboarding2 (onNavigateBack: () -> Unit,
                 Text(
                     "Next",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -274,7 +280,8 @@ fun OnStartOnboarding3 (onNavigateBack: () -> Unit,
                         text = "Every cleanup challenge helps your plant grow healthier and stronger.",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -312,7 +319,8 @@ fun OnStartOnboarding3 (onNavigateBack: () -> Unit,
                 Text(
                     "Back",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -325,7 +333,8 @@ fun OnStartOnboarding3 (onNavigateBack: () -> Unit,
                 Text(
                     "Next",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -368,7 +377,8 @@ fun OnStartOnboarding4 (onNavigateBack: () -> Unit,
                         text = "Earn badges, complete challenges, build streaks, and track your impact over time.",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -406,7 +416,8 @@ fun OnStartOnboarding4 (onNavigateBack: () -> Unit,
                 Text(
                     "Back",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -419,7 +430,8 @@ fun OnStartOnboarding4 (onNavigateBack: () -> Unit,
                 Text(
                     "Next",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -454,21 +466,6 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
                 Toast.makeText(context, "Permission required to access photos", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-//    // Delay popup for 2 seconds
-//    LaunchedEffect(Unit) {
-//
-//        kotlinx.coroutines.delay(2000)
-//
-//        // Request permissions
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-//            requestPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
-//        } else {
-//            requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-//        }
-//    }
-
 
 
 
@@ -513,7 +510,8 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
                                 "gallery.",
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
             }
@@ -534,7 +532,8 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
                 Text(
                     "Back",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -554,7 +553,8 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
                 Text(
                     "Continue",
                     modifier = Modifier.padding(10.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

@@ -20,8 +20,10 @@ import com.example.organivy.data.PhotoScanner
 import com.example.organivy.data.PhotoState
 import com.example.organivy.data.SafeDeletion
 import com.example.organivy.ui.components.BottomNavItem
+import com.google.android.gms.common.util.CollectionUtils.mapOf
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,7 +39,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
 
     init {
-
+        loadPhotos()
     }
 
     fun loadPhotos() {
@@ -235,6 +237,15 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             launcher.launch(request)
         }
     }
+    /** Clears user-specific cleaning state after sign-out (secure folder, pending deletions). */
+    fun clearUserSession() {
+        uiState = uiState.copy(
+            deletionList = emptyList(),
+            secureFolderList = emptyList(),
+            totalDeletedPics = 0,
+            totalDeletedBytes = 0
+        )
+    }
     fun clearDeletionList() {
 
 
@@ -319,10 +330,14 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             .document(userId)
             .collection("devices")
             .document(deviceId)
-            .update(
-                "localDeletedPhotos", uiState.totalDeletedPics,
-                "localDeletedPhotoBytes", uiState.totalDeletedBytes,
-                "totalCO2Saved", uiState.totalCO2Saved,
+            .set(
+                mapOf(
+                    "localDeletedPhotos", uiState.totalDeletedPics,
+                    "localDeletedPhotoBytes", uiState.totalDeletedBytes,
+                    "totalCO2Saved", uiState.totalCO2Saved,
+                ),
+                SetOptions.merge()
+
             )
     }
 

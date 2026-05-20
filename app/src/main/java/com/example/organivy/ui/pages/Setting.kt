@@ -25,12 +25,47 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.data.Header
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
+import android.widget.Toast
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.organivy.data.Header
+import com.example.organivy.sign_in.OrganIvyViewModel
+import com.example.organivy.viewmodel.ThemeViewModel
+import kotlin.getValue
+
 
 @Composable
 fun SettingsScreen(onNavigateToProfile: () -> Unit,
                    selectedTheme: ThemeOption,
-                   onThemeChange: (ThemeOption) -> Unit
+                   onThemeChange: (ThemeOption) -> Unit,
+                   onLogout: () -> Unit
 ) {
+
+    val themeViewModel: ThemeViewModel = viewModel()
+    val selectedTheme by themeViewModel::selectedTheme
+    val authViewModel: OrganIvyViewModel = viewModel()
+    val photoViewModel: PhotoViewModel = viewModel()
+    val gameViewModel: GameViewModel = viewModel()
+    val context = LocalContext.current
 
     val isDark = when (selectedTheme) {
         ThemeOption.SYSTEM -> isSystemInDarkTheme()
@@ -75,14 +110,44 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = cardContainerColor,
-                    contentColor = cardContentColor
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
-                Text(text = "Accounts", Modifier.padding(15.dp))
-                // under this will be add, delete, change accounts
-
+                Column(modifier = Modifier.padding(15.dp)) {
+                    Text(text = "Accounts")
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = {
+                            authViewModel.signOut { error ->
+                                if (error != null) {
+                                    Toast.makeText(
+                                        context,
+                                        "Logout failed: $error",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                } else {
+                                    photoViewModel.clearUserSession()
+                                    gameViewModel.clearUserSession()
+                                    Toast.makeText(
+                                        context,
+                                        "Logged out",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    onLogout()
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        )
+                    ) {
+                        Text("Log out")
+                    }
+                }
             }
         }
 

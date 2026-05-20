@@ -77,18 +77,15 @@ class MainActivity : ComponentActivity() {
         setContent {
 
 
-            //val hasPermission = hasPermissionState
 
+
+            // ViewModels scoped to this Activity — shared across all NavHost destinations
             val photoViewModel: PhotoViewModel = viewModel()
-            val gameViewModel: GameViewModel = viewModel()
-            val firebaseViewModel: FirebaseViewModel = viewModel()
+            val gameViewModel: GameViewModel = viewModel()       // game + Users/{uid} sync
+            val firebaseViewModel: FirebaseViewModel = viewModel() // secure folder Firestore
+//
 
-            // to load photos after permission is granted
-//            LaunchedEffect(hasPermission) {
-//                if (hasPermission) {
-//                    photoViewModel.loadPhotos()
-//                }
-//            }
+
 
             var selectedTheme by remember { mutableStateOf(ThemeOption.SYSTEM) }
 
@@ -183,7 +180,7 @@ fun MainApp(navController: NavHostController,
 
             NavHost(
                 navController = navController,
-                startDestination = "auth"
+                startDestination = "auth" //startDestination
             ) {
 
                 authGraph(navController, gameViewModel, photoViewModel)
@@ -254,7 +251,9 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
             LoginScreen( onNavigateToProfile = { navController.navigate("profile")},
                 onNavigateToSignUp = { navController.navigate("signup")},
                 onNavigateToForget = { navController.navigate("forget_password")},
-                onNavigateToHome = { navController.navigate("onboarding") } // Navigate to avatar creation first
+                // After Firebase Auth succeeds, enter main app graph (not a single screen)
+                onNavigateToHome = { navController.navigate("app") }
+
                 )
         }
 
@@ -478,7 +477,12 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
             SettingsScreen(
                 onNavigateToProfile = { navController.navigate("profile") },
                 selectedTheme = selectedTheme,
-                onThemeChange = { newTheme -> onThemeChange(newTheme) })
+                onThemeChange = { newTheme -> onThemeChange(newTheme) },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("app") { inclusive = true }
+                    }
+                })
         }
         composable("journal") {
             GreenJournalScreen(onNavigateToProfile = { navController.navigate("profile") },
@@ -490,7 +494,12 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
             SettingsScreen(
                 onNavigateToProfile = { navController.navigate("profile") },
                 selectedTheme = selectedTheme,
-                onThemeChange = { newTheme -> onThemeChange(newTheme) })
+                onThemeChange = { newTheme -> onThemeChange(newTheme) },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("app") { inclusive = true }
+                    }
+                })
         }
 
     }

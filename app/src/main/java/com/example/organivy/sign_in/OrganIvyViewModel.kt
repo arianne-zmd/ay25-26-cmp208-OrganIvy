@@ -1,11 +1,13 @@
 
 package com.example.organivy.sign_in
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.organivy.SignInState
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,6 +16,8 @@ import kotlinx.coroutines.tasks.await
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Central ViewModel for Firebase Authentication (email/password).
@@ -30,12 +34,9 @@ import com.google.firebase.firestore.SetOptions
  *   to the main app graph ("app" in MainActivity).
  * - GameViewModel separately listens for auth and syncs Firestore once a uid exists.
  */
-
-
 class OrganIvyViewModel : ViewModel() {
 
     /** UI-facing auth result. Screens collect this Flow instead of holding auth flags locally. */
-
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
 
@@ -44,15 +45,12 @@ class OrganIvyViewModel : ViewModel() {
      * getInstance() is the SDK pattern — Firebase keeps the signed-in session in memory
      * and on disk so users stay logged in between app launches.
      */
-
     private val auth = FirebaseAuth.getInstance()
-
 
     /**
      * Called after signIn/signUp completes.
      * WHY: Composables react to [state] rather than parsing Task callbacks in the UI layer.
      */
-
     fun onSignInResult(result: SignInResult) {
         _state.update {
             it.copy(
@@ -61,12 +59,11 @@ class OrganIvyViewModel : ViewModel() {
             )
         }
     }
-    /** Clears one-shot success flag so navigating back to login does not immediately re-trigger navigation. */
 
+    /** Clears one-shot success flag so navigating back to login does not immediately re-trigger navigation. */
     fun resetState() {
         _state.update { SignInState() }
     }
-
 
     /**
      * Registers a new user in Firebase Authentication.
@@ -78,8 +75,6 @@ class OrganIvyViewModel : ViewModel() {
      *
      * onResult(null) means success; a non-null String is the Firebase error message for Toast.
      */
-
-
     fun signUp(email: String, password: String, username: String, onResult: (String?) -> Unit) {
         viewModelScope.launch {
             try {
@@ -90,19 +85,23 @@ class OrganIvyViewModel : ViewModel() {
                     .get()
                     .await()
 
+
                 if (!existing.isEmpty) {
                     onResult("Username is already taken")
                     return@launch
                 }
 
+
                 // 2. Create Firebase Auth user
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
                 val user = result.user
+
 
                 // 3. Set display name (username) in Auth profile
                 user?.updateProfile(userProfileChangeRequest {
                     displayName = username
                 })?.await()
+
 
                 // 4. Create initial User document in Firestore so we can look up email by username later
                 user?.uid?.let { uid ->
@@ -117,6 +116,7 @@ class OrganIvyViewModel : ViewModel() {
                         .set(initialData, SetOptions.merge()).await()
                 }
 
+
                 val userData = result.user?.let {
                     UserData(it.uid, it.displayName, it.photoUrl?.toString())
                 }
@@ -128,32 +128,13 @@ class OrganIvyViewModel : ViewModel() {
             }
         }
     }
+
 
     /** Same pattern as signUp — Firebase validates credentials server-side. */
-
-    fun signIn(usernameOrEmail: String, password: String, onResult: (String?) -> Unit) {
+    fun signIn(email: String, password: String, onResult: (String?) -> Unit) {
         viewModelScope.launch {
             try {
-                // 1. Determine if input is email or username
-                val emailToUse = if (usernameOrEmail.contains("@")) {
-                    usernameOrEmail
-                } else {
-                    // It's a username, look up the email in Firestore
-                    val snapshot = FirebaseFirestore.getInstance()
-                        .collection("Users")
-                        .whereEqualTo("name", usernameOrEmail)
-                        .get()
-                        .await()
-
-                    if (snapshot.isEmpty) {
-                        throw Exception("Username not found")
-                    }
-                    snapshot.documents.first().getString("email")
-                        ?: throw Exception("User email not found")
-                }
-
-                // 2. Sign in with the resolved email
-                val result = auth.signInWithEmailAndPassword(emailToUse, password).await()
+                val result = auth.signInWithEmailAndPassword(email, password).await()
                 val userData = result.user?.let {
                     UserData(it.uid, it.displayName, it.photoUrl?.toString())
                 }
@@ -165,7 +146,6 @@ class OrganIvyViewModel : ViewModel() {
             }
         }
     }
-
 
     /**
      * Re-checks the user's password before sensitive actions (e.g. delete account later).
@@ -174,14 +154,11 @@ class OrganIvyViewModel : ViewModel() {
      * Firebase requires a recent login for destructive operations. This proves the person
      * at the device still knows the password without storing it in the app.
      */
-
-
     fun verifyPassword(
         password: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
-
         val user = auth.currentUser
 
         if (user == null || user.email == null) {
@@ -193,6 +170,7 @@ class OrganIvyViewModel : ViewModel() {
             user.email!!,
             password
         )
+
         user.reauthenticate(credential)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener {
@@ -207,32 +185,51 @@ class OrganIvyViewModel : ViewModel() {
      * We never build or host reset links ourselves — Firebase generates a secure link
      * and emails it, which avoids storing reset tokens in our Firestore database.
      */
-
-
     fun sendPasswordReset(email: String, onResult: (String?) -> Unit) {
+        val trimmed = email.trim()
+        if (trimmed.isEmpty()) {
+            onResult("Please enter your email")
+            return
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(trimmed).matches()) {
+            onResult("Please enter a valid email address")
+            return
+        }
+
         viewModelScope.launch {
             try {
-                auth.sendPasswordResetEmail(email).await()
-                onResult(null)
+                auth.sendPasswordResetEmail(trimmed).await()
+                withContext(Dispatchers.Main) { onResult(null) }
+            } catch (e: FirebaseAuthInvalidUserException) {
+                withContext(Dispatchers.Main) {
+                    onResult(
+                        "No account found for this email. Sign up first or check the address."
+                    )
+                }
             } catch (e: Exception) {
-                onResult(e.message)
+                withContext(Dispatchers.Main) {
+                    onResult(e.message ?: "Could not send reset email. Try again.")
+                }
             }
         }
     }
 
-    /** Ends the Firebase session locally and clears UI auth state (e.g. for a future Sign Out button). */
-    fun signOut() {
-        auth.signOut()
-        resetState()
+    /**
+     * Ends the Firebase session and clears one-shot sign-in UI state.
+     * onResult(null) on success; non-null String is an error message for Toast.
+     */
+    fun signOut(onResult: (String?) -> Unit = {}) {
+        viewModelScope.launch {
+            try {
+                auth.signOut()
+                resetState()
+                onResult(null)
+            } catch (e: Exception) {
+                onResult(e.message ?: "Sign out failed")
+            }
+        }
     }
 
     /** Convenience check for navigation or settings without reading Firebase directly in UI. */
     fun isSignedIn(): Boolean = auth.currentUser != null
 }
-
-
-
-
-
-
-

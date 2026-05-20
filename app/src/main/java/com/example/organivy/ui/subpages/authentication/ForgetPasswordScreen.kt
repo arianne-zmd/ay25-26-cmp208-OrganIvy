@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.sign_in.OrganIvyViewModel
 
+
 /**
  * Password reset screen — no custom backend.
  *
@@ -46,6 +48,8 @@ fun ForgetPasswordScreen(
     viewModel: OrganIvyViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
+    var isSending by remember { mutableStateOf(false) }
+    var emailSent by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Box(
@@ -84,33 +88,68 @@ fun ForgetPasswordScreen(
                     onValueChange = { email = it },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    enabled = !isSending && !emailSent
                 )
+            }
+
+            if (emailSent) {
+                item {
+                    Text(
+                        text = "If an account exists for this email, we sent a reset link. " +
+                                "Open the email, set a new password, then return here to log in.",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
 
             item {
                 Button(
                     onClick = {
-                        if (email.isBlank()) {
-                            Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
+                        isSending = true
                         viewModel.sendPasswordReset(email) { error ->
+                            isSending = false
                             if (error != null) {
                                 Toast.makeText(context, error, Toast.LENGTH_LONG).show()
                             } else {
+                                emailSent = true
                                 Toast.makeText(
                                     context,
                                     "Password reset email sent. Check your inbox.",
                                     Toast.LENGTH_LONG
                                 ).show()
-                                onNavigateToLogin()
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isSending && !emailSent
                 ) {
-                    Text("Send reset link", modifier = Modifier.padding(16.dp), fontSize = 16.sp)
+                    if (isSending) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.padding(16.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Text(
+                            if (emailSent) "Email sent" else "Send reset link",
+                            modifier = Modifier.padding(16.dp),
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+
+            if (emailSent) {
+                item {
+                    Button(
+                        onClick = onNavigateToLogin,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Back to login", modifier = Modifier.padding(16.dp), fontSize = 16.sp)
+                    }
                 }
             }
 

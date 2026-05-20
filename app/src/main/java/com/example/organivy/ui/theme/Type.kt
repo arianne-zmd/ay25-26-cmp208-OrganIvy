@@ -55,11 +55,11 @@ val AppTypography = Typography(
     titleSmall = baseline.titleSmall.copy(fontFamily = pixelFontFamily),
 
     //readable text stays normal
-    bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
-    bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
-    bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = displayFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(fontFamily = displayFontFamily),
+    bodySmall = baseline.bodySmall.copy(fontFamily = displayFontFamily),
 
-    labelLarge = baseline.labelLarge.copy(fontFamily = bodyFontFamily),
-    labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
-    labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
+    labelLarge = baseline.labelLarge.copy(fontFamily = displayFontFamily),
+    labelMedium = baseline.labelMedium.copy(fontFamily = displayFontFamily),
+    labelSmall = baseline.labelSmall.copy(fontFamily = displayFontFamily),
 )
