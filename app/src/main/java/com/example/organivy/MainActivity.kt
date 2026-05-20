@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import com.example.organivy.ui.theme.AppTheme
 import com.example.organivy.viewmodel.PhotoViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import com.example.organivy.ui.pages.SecureFolderLockScreen
 import com.example.organivy.ui.pages.SecureFolderPage
 import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding1
 import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding2
@@ -70,39 +72,18 @@ class MainActivity : ComponentActivity() {
 
 
 
-        var hasPermissionState by mutableStateOf(false)
-
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-
-                    // needed to access the photos on the user's phone
-                    hasPermissionState = isGranted
-
-
-                } else {
-                    // permission denied
-                    Toast.makeText(this, "Permission required to access photos", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        // Request permissions
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
-        } else {
-            requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
+        //var hasPermissionState by mutableStateOf(false)
 
         setContent {
 
 
-            val hasPermission = hasPermissionState
+            //val hasPermission = hasPermissionState
 
             val photoViewModel: PhotoViewModel = viewModel()
             val gameViewModel: GameViewModel = viewModel()
             val firebaseViewModel: FirebaseViewModel = viewModel()
+
+            // to load photos after permission is granted
 //            LaunchedEffect(hasPermission) {
 //                if (hasPermission) {
 //                    photoViewModel.loadPhotos()
@@ -130,7 +111,7 @@ class MainActivity : ComponentActivity() {
                     gameViewModel,
                     selectedTheme,
                     { newTheme -> selectedTheme = newTheme },
-                    hasPermission = hasPermission,
+                    //hasPermission = hasPermission,
                     firebaseViewModel = firebaseViewModel
                     )
 
@@ -162,7 +143,7 @@ fun MainApp(navController: NavHostController,
             gameViewModel: GameViewModel,
             selectedTheme: ThemeOption,
             onThemeChange: (ThemeOption) -> Unit,
-            hasPermission: Boolean,
+            //hasPermission: Boolean,
             firebaseViewModel: FirebaseViewModel
 ) {
     //val navController = rememberNavController()
@@ -178,8 +159,6 @@ fun MainApp(navController: NavHostController,
 //    )
 
 
-//    val showBottomBar = navBackStackEntry?.destination?.hierarchy
-//        ?.any { it.route !in listOf("login", "signup", "forget_password") } == true
 
     val showBottomBar = navBackStackEntry?.destination?.hierarchy
         ?.any { it.route in listOf("app") } == true
@@ -207,13 +186,13 @@ fun MainApp(navController: NavHostController,
                 startDestination = "auth"
             ) {
 
-                authGraph(navController, gameViewModel)
+                authGraph(navController, gameViewModel, photoViewModel)
                 appGraph(navController,
                     photoViewModel,
                     gameViewModel,
                     selectedTheme,
                     onThemeChange,
-                    hasPermission,
+                    //hasPermission,
                     firebaseViewModel)
 
             }
@@ -224,7 +203,7 @@ fun MainApp(navController: NavHostController,
 
 
 
-fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: GameViewModel) {
+fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: GameViewModel,photoViewModel: PhotoViewModel,) {
     navigation(
         startDestination = "onboarding1",
         route = "auth"
@@ -266,6 +245,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
 
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToLogin = { navController.navigate("login")},
+                photoViewModel= photoViewModel,
 
             )
         }
@@ -314,7 +294,7 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                              gameViewModel: GameViewModel,
                              selectedTheme: ThemeOption,
                              onThemeChange: (ThemeOption) -> Unit,
-                             hasPermission: Boolean,
+                             //hasPermission: Boolean,
                              firebaseViewModel: FirebaseViewModel
 ) {
 
@@ -393,8 +373,9 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                     onNavigateToDuplicated = { navController.navigate("duplicated") },
                     photoViewModel = photoViewModel,
                     gameViewModel = gameViewModel,
-                    hasPermission = hasPermission,
-                    onNavigateToSecureFolder = { navController.navigate("secure") }
+                    //hasPermission = hasPermission,
+                    onNavigateToSecureFolder = { navController.navigate("secure") },
+                    onNavigateToSecureFolderLock = { navController.navigate("securelock") }
                 )
             }
 
@@ -481,6 +462,15 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 )
             }
 
+            composable("securelock") {
+                SecureFolderLockScreen(
+                    onCancel = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToSecureFolder = { navController.navigate("secure") }
+                )
+            }
+
 
         }
 
@@ -507,8 +497,3 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
 }
 
 
-
-
-
-
-//adding this

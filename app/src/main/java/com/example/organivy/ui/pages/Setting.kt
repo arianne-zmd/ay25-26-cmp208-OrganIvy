@@ -110,10 +110,7 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
                     selectedTheme = selectedTheme,
                     onThemeSelected = onThemeChange
                 )
-                //WARNINGGGGGGGGGGGG
-                //button does not work. idk y. if you can fix it then fix it. i added
-                // something in the themes file at the end for this  so i can take it out
-                //and there's some stuff in mainkt as well
+
 
             }
         }
@@ -185,21 +182,21 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
             }
         }
 
-        item {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp, 20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = cardContainerColor,
-                    contentColor = cardContentColor
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-            ) {
-                Text(text = "Invite People!", Modifier.padding(15.dp))
-
-            }
-        }
+//        item {
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(20.dp, 20.dp),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = cardContainerColor,
+//                    contentColor = cardContentColor
+//                ),
+//                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+//            ) {
+//                Text(text = "Invite People!", Modifier.padding(15.dp))
+//
+//            }
+//        }
     }
 
 

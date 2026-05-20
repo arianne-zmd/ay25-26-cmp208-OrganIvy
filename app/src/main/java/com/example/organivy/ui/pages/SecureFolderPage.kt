@@ -83,6 +83,8 @@ fun LazyGridScreenSecureFP(photoViewModel: PhotoViewModel, gameViewModel: GameVi
     var userVerification by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf("") }
 
+
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         LazyVerticalGrid(
@@ -318,7 +320,7 @@ fun LazyGridScreenSecureFP(photoViewModel: PhotoViewModel, gameViewModel: GameVi
 
 
 
-    }
+    } // put under here
 
 
 }

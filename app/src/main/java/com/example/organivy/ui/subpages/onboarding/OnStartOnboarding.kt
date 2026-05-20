@@ -1,5 +1,8 @@
 package com.example.organivy.ui.subpages.onboarding
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +27,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.example.organivy.R
+import com.example.organivy.viewmodel.PhotoViewModel
 
 //Screen 1
 @Composable
@@ -419,7 +429,50 @@ fun OnStartOnboarding4 (onNavigateBack: () -> Unit,
 //Screen 5
 @Composable
 fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
-                        onNavigateToLogin: () -> Unit){
+                        onNavigateToLogin: () -> Unit,
+                        photoViewModel: PhotoViewModel){
+
+
+    val context = LocalContext.current
+
+    //var hasPermissionState by remember { mutableStateOf(false) }
+
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+
+                // needed to access the photos on the user's phone
+                //hasPermissionState = true
+
+                photoViewModel.loadPhotos()
+
+                onNavigateToLogin()
+            } else {
+                // permission denied
+                Toast.makeText(context, "Permission required to access photos", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+//    // Delay popup for 2 seconds
+//    LaunchedEffect(Unit) {
+//
+//        kotlinx.coroutines.delay(2000)
+//
+//        // Request permissions
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+//            requestPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
+//        } else {
+//            requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+//        }
+//    }
+
+
+
+
+
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(20.dp),
@@ -488,7 +541,14 @@ fun OnStartOnboarding5 (onNavigateBack: () -> Unit,
             Spacer(modifier = Modifier.width(15.dp))
 
             Button(
-                onClick = onNavigateToLogin,
+                onClick = {
+                    // Request permissions
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        requestPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
+                    } else {
+                        requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    }
+                          },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(

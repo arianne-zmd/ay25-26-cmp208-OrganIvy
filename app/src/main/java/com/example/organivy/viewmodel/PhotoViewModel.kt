@@ -37,7 +37,6 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
 
     init {
-        loadPhotos()
 
     }
 

@@ -225,6 +225,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                 if (completedNow && !challenge.isCompleted) {
                     rewardCoins += challenge.reward
                     completedCountIncrease++
+
+                    // eco fact after challenge is complete
+                    unlockRandomEcoFact()
                 }
 
                 challenge.copy(
@@ -321,11 +324,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
     }
 
 
-    // ON DELETEEEEEEEEEEEEEEEE
+    // ON DELETE
     //coins
     fun onDeletion (photoNum: Int){
         // 1. Update local coins (The listener will sync back later, but we push immediately)
-        val newCoins = uiState.coins + 20 + (photoNum * 5)
+        val newCoins = uiState.coins + (photoNum * 5)
 
         uiState = uiState.copy(
             coins = newCoins

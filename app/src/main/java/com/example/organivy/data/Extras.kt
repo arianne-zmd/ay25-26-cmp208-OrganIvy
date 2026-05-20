@@ -33,6 +33,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -271,7 +272,6 @@ fun BoxScope.BoxExtras ( photoViewModel: PhotoViewModel, gameViewModel: GameView
                 deletedCount
             )
 
-            gameViewModel.unlockRandomEcoFact()
             photoViewModel.clearDeletionList()
             photoViewModel.saveDeletedCountToFirebase()
             photoViewModel.loadPhotos()
@@ -445,18 +445,18 @@ fun GridHeader(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
     ) {
         // Avatar Section
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .background(Color(0xFFB2A8FF), RoundedCornerShape(8.dp))
-                    .padding(4.dp)
-            ) {
-                val characterResId = state2.characterSprite.toIntOrNull() ?: R.drawable.character_base_single_green
-                JumpingCharacter(
-                    baseId = characterResId,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+//            Box(
+//                modifier = Modifier
+//                    .size(50.dp)
+//                    .background(Color(0xFFB2A8FF), RoundedCornerShape(8.dp))
+//                    .padding(4.dp)
+//            ) {
+//                val characterResId = state2.characterSprite.toIntOrNull() ?: R.drawable.character_base_single_green
+//                JumpingCharacter(
+//                    baseId = characterResId,
+//                    modifier = Modifier.fillMaxSize()
+//                )
+//            }
 
             val userLevel = (state2.grownPlants * 3) + state2.plantLevel + 1
             Text(text = "Lvl. $userLevel", fontSize = 14.sp, fontWeight = FontWeight.Bold)
@@ -532,3 +532,73 @@ fun EcoPopUp(photoViewModel: PhotoViewModel, gameViewModel: GameViewModel){
     }
 }
 // ECOPOPUP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+//Box(modifier = Modifier.fillMaxSize()) {
+//    Text("hi")
+//    //verify user password panel
+//    //verify user password panel
+//    if (userVerification){
+//        AlertDialog(
+//            onDismissRequest = { },
+//
+//            title = {
+//                Text("Password Verification")
+//            },
+//
+//            text = {
+//                Column {
+//
+//                    Text("Enter your account password")
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    OutlinedTextField(
+//                        value = password,
+//                        onValueChange = {
+//                            password = it
+//                        },
+//                        label = {
+//                            Text("Password")
+//                        }
+//                    )
+//                }
+//            },
+//
+//            confirmButton = {
+//                TextButton(onClick = {
+//
+//                    viewModel.verifyPassword(
+//                        password = password,
+//                        onSuccess = {
+//
+//                            userVerification = false
+//
+//
+//
+//                            //from here
+//                        },
+//
+//                        onError = {
+//                            Toast.makeText(context, "Verification failed", Toast.LENGTH_SHORT).show()
+//                        }
+//                    )
+//
+//                }) {
+//                    Text("Verify")
+//                }
+//            },
+//
+//            dismissButton = {
+//                TextButton(onClick = {
+//                    userVerification = false
+//                }) {
+//                    Text("Cancel")
+//                }
+//            }
+//
+//        )
+//    }
+//
+//} // to here
