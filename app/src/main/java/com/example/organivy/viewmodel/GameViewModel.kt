@@ -205,20 +205,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             Challenge("15", "Delete 20 old images", 20, 0, ChallengeType.CLEAN_OLD, 150),
         )
 
-        // Group by category and pick one from each based on total completion tier
-        val categories = ChallengeType.values()
-        val tier = uiState.completedChallenges / categories.size
-        
-        val selectedChallenges = categories.mapNotNull { type ->
-            val itemsInCategory = pool.filter { it.type == type }
-            if (itemsInCategory.isNotEmpty()) {
-                // Pick the item for the current tier, or the last one if we exceed the pool
-                val index = tier.coerceAtMost(itemsInCategory.size - 1)
-                itemsInCategory[index]
-            } else null
-        }
-
-        uiState = uiState.copy(challenges = selectedChallenges)
+        // Pick 3 random challenges from the pool
+        uiState = uiState.copy(challenges = pool.shuffled().take(3))
     }
 
 
@@ -290,12 +278,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             pendingGrowthAnimation = growthAnimation
         )
         
-        // Refresh challenges to next tier ONLY if we completed all in the current tier
-        val categoriesCount = ChallengeType.values().size
-        val tierBefore = oldCompletedChallenges / categoriesCount
-        val tierAfter = newCompletedChallenges / categoriesCount
-        
-        if (tierAfter > tierBefore) {
+        // Refresh challenges if all currently assigned ones are completed
+        if (updatedChallenges.all { it.isCompleted }) {
             generateWeeklyChallenges()
         }
 

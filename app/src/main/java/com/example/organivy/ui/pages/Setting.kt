@@ -1,5 +1,7 @@
 package com.example.organivy.ui.pages
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -201,23 +203,38 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
 
         item {
             Card(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://arianne-zmd.github.io/ay25-26-cmp208-OrganIvy/privacy.html")
+                    )
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(20.dp, 20.dp),
+                    .padding(20.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = cardContainerColor,
                     contentColor = cardContentColor
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             ) {
-                Text(text = "Privacy Policy", Modifier.padding(15.dp))
-                //webpage
-
+                Text(
+                    text = "Privacy Policy",
+                    modifier = Modifier.padding(15.dp)
+                )
             }
         }
 
         item {
             Card(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://arianne-zmd.github.io/ay25-26-cmp208-OrganIvy/terms.html")
+                    )
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
@@ -235,6 +252,13 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
 
         item {
             Card(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://arianne-zmd.github.io/ay25-26-cmp208-OrganIvy/help.html")
+                    )
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp, 20.dp),
