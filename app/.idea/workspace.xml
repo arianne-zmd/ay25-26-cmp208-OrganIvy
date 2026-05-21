@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a299887f-ef13-4adf-941f-8d24d65b93bc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/SignInState.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/sign_in/OrganIvyViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/sign_in/SignInResult.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/bow_accessories.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_green.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_layers_sheet_orange.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_layers_sheet_purple.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_layers_sheet_yellow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_sheet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_single_blue.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_single_green.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_single_orange.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_single_pink.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_single_purple.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_single_yellow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_base_still.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_blue.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/character_pink.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/cowboy_hat.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/daisy_blooming.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/daisy_blooming_final.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/daisy_still_shot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/duck_head.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/headphones.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/mushroomt.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/plant_budding.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/plant_budding_photo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/plant_hat.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/pot_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/pot_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/pot_4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/pot_stripes.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/pot_vine.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/seeds_falling.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/data/Extras.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/data/Extras.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/data/GameState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/data/GameState.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/model/UserProgress.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/model/UserProgress.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/components/Character.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/components/Character.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/pages/HomePage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/pages/HomePage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/pages/OnboardingPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/pages/OnboardingPage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/pages/ShopPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/pages/ShopPage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/subpages/authentication/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/subpages/authentication/LoginScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/subpages/authentication/SignUpScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/ui/subpages/authentication/SignUpScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/viewmodel/GameViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/viewmodel/GameViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/organivy/viewmodel/GardenViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/organivy/viewmodel/GardenViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade10.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade11.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade3.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade4.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade5.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade6.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade8.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_base_shade9.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_base_shade9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob10.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob11.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob12.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob13.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob14.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob3.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob4.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob5.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob6.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob8.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_bob9.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_bob9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap10.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap11.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap12.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap13.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap14.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap3.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap4.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap5.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap6.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap8.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/char_hair_dap9.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/not in use/char_hair_dap9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/libs.versions.toml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Veronee-Maxius"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/arianne-zmd/ay25-26-cmp208-OrganIvy.git",
+    "accountId": "f8bfca5b-bae6-40ae-a62d-0391b257f493"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="3DJpzHW5RkzEPFlH8qyX97BDPR2" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "Merging main",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a299887f-ef13-4adf-941f-8d24d65b93bc" name="Changes" comment="" />
+      <created>1778010290404</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778010290404</updated>
+    </task>
+    <servers />
+  </component>
+</project>
