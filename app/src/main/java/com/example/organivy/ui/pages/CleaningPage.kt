@@ -108,7 +108,7 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
 
-            item{
+            /*item{
                 Box{
                     Image(
                         painter = painterResource(id = R.drawable.long_card),
@@ -135,7 +135,7 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
             }
 
             item { Spacer(modifier = Modifier.height(5.dp)) }
-
+*/
 
             //ADDDDDDDDDDDDDDDDDDED
             item { Spacer(modifier = Modifier.height(30.dp)) }

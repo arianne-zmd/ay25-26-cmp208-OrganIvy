@@ -148,17 +148,17 @@ fun StatsandImpactPage(onNavigateToProfile: () -> Unit,
             ){
                 LazyColumn{
                     item {
-                        StatBox("Deleted Images", "${state.totalDeletedPics}")
+                        StatBox("Deleted Images", "${state2.localDeletedPhotos}")
                     }
 
 
                     item {
-                        StatBox("Deleted Images' \nBytes", "${state.totalDeletedBytes}")
+                        StatBox("Deleted Images' \nBytes", "${state2.localDeletedPhotoBytes}")
                     }
 
 
                     item {
-                        StatBox("CO2 saved \nEstimation", "${state.totalCO2Saved}")
+                        StatBox("CO2 saved \nEstimation", "${state2.localco2saved}")
                     }
 
 
@@ -168,17 +168,17 @@ fun StatsandImpactPage(onNavigateToProfile: () -> Unit,
 
 
                     item {
-                        StatBox("Streak", "0")
+                        StatBox("Streak", "${state2.streak}")
                     }
 
 
                     item {
-                        StatBox("Challenges Completed", "0")
+                        StatBox("Challenges Completed", "${state2.completedChallenges}")
                     }
 
 
                     item {
-                        StatBox("Badges Earned", "0")
+                        StatBox("Badges Earned", "${state2.badgesEarned}")
                     }
                 }
             }

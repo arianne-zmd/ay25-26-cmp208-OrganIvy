@@ -179,7 +179,7 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
 
             }
         }
-
+/*
         item {
             Card(
                 modifier = Modifier
@@ -196,6 +196,8 @@ fun SettingsScreen(onNavigateToProfile: () -> Unit,
 
             }
         }
+
+ */
 
         item {
             Card(

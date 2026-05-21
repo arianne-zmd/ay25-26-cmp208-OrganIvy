@@ -97,37 +97,33 @@ class OrganIvyViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                android.util.Log.d("AUTH_DEBUG", "Starting sign up for: $trimmedUsername")
-                
-                // 1. Check if username is already taken in Firestore
-                // NOTE: If this fails with "Permission Denied", check Firebase Rules.
-                // You might need to allow unauthenticated reads for username checks.
-                val existing = FirebaseFirestore.getInstance()
-                    .collection("Users")
-                    .whereEqualTo("name", trimmedUsername)
-                    .get()
-                    .await()
+                android.util.Log.d("AUTH_DEBUG", "1. Creating Auth user...")
+                // 1. Create account first to get a valid token for Firestore rules
+                val authResult = auth.createUserWithEmailAndPassword(trimmedEmail, password).await()
+                val user = authResult.user ?: throw Exception("Failed to create user")
 
-                if (!existing.isEmpty) {
-                    android.util.Log.d("AUTH_DEBUG", "Username taken")
-                    onResult("Username is already taken")
-                    return@launch
-                }
+                try {
+                    android.util.Log.d("AUTH_DEBUG", "2. Checking username availability...")
+                    // 2. Check if username is taken (now authenticated)
+                    val existing = FirebaseFirestore.getInstance()
+                        .collection("Users")
+                        .whereEqualTo("name", trimmedUsername)
+                        .get()
+                        .await()
 
-                android.util.Log.d("AUTH_DEBUG", "Creating Auth user...")
-                // 2. Create Firebase Auth user
-                val result = auth.createUserWithEmailAndPassword(trimmedEmail, password).await()
-                val user = result.user
+                    if (!existing.isEmpty) {
+                        android.util.Log.d("AUTH_DEBUG", "Username taken, deleting auth user")
+                        user.delete().await() // Clean up
+                        onResult("Username is already taken")
+                        return@launch
+                    }
 
-                android.util.Log.d("AUTH_DEBUG", "Updating profile...")
-                // 3. Set display name (username) in Auth profile
-                user?.updateProfile(userProfileChangeRequest {
-                    displayName = trimmedUsername
-                })?.await()
+                    android.util.Log.d("AUTH_DEBUG", "3. Updating profile...")
+                    user.updateProfile(userProfileChangeRequest {
+                        displayName = trimmedUsername
+                    }).await()
 
-                android.util.Log.d("AUTH_DEBUG", "Creating Firestore document...")
-                // 4. Create initial User document in Firestore
-                user?.uid?.let { uid ->
+                    android.util.Log.d("AUTH_DEBUG", "4. Creating Firestore document...")
                     val initialData = mapOf(
                         "name" to trimmedUsername,
                         "email" to trimmedEmail,
@@ -139,30 +135,58 @@ class OrganIvyViewModel : ViewModel() {
                         "CharacterColour" to "",
                         "CharacterSprite" to ""
                     )
-                    FirebaseFirestore.getInstance().collection("Users").document(uid)
+                    FirebaseFirestore.getInstance().collection("Users").document(user.uid)
                         .set(initialData, SetOptions.merge()).await()
+
+                    android.util.Log.d("AUTH_DEBUG", "Sign up complete!")
+                    val userData = UserData(user.uid, user.displayName, user.photoUrl?.toString())
+                    onSignInResult(SignInResult(userData, null))
+                    onResult(null)
+
+                } catch (inner: Exception) {
+                    android.util.Log.e("AUTH_DEBUG", "Setup failed, cleaning up auth account", inner)
+                    user.delete().await() // Ensure we don't leave zombie accounts
+                    throw inner
                 }
 
-                android.util.Log.d("AUTH_DEBUG", "Sign up success!")
-                val userData = result.user?.let {
-                    UserData(it.uid, it.displayName, it.photoUrl?.toString())
-                }
-                onSignInResult(SignInResult(userData, null))
-                onResult(null)
             } catch (e: Exception) {
                 android.util.Log.e("AUTH_DEBUG", "Sign up failed", e)
-                onSignInResult(SignInResult(null, e.message))
-                onResult(e.message)
+                val errorMessage = if (e.message?.contains("already in use", ignoreCase = true) == true) {
+                    "This email is already registered. Please log in or use another email."
+                } else {
+                    e.message ?: "An unknown error occurred"
+                }
+                onSignInResult(SignInResult(null, errorMessage))
+                onResult(errorMessage)
             }
         }
     }
 
 
     /** Same pattern as signUp — Firebase validates credentials server-side. */
-    fun signIn(email: String, password: String, onResult: (String?) -> Unit) {
+    fun signIn(usernameOrEmail: String, password: String, onResult: (String?) -> Unit) {
         viewModelScope.launch {
             try {
-                val result = auth.signInWithEmailAndPassword(email, password).await()
+                // 1. Determine if input is email or username
+                val emailToUse = if (usernameOrEmail.contains("@")) {
+                    usernameOrEmail.trim()
+                } else {
+                    // It's a username, look up the email in Firestore
+                    val snapshot = FirebaseFirestore.getInstance()
+                        .collection("Users")
+                        .whereEqualTo("name", usernameOrEmail.trim())
+                        .get()
+                        .await()
+
+                    if (snapshot.isEmpty) {
+                        throw Exception("Username not found")
+                    }
+                    snapshot.documents.first().getString("email")
+                        ?: throw Exception("User email not found")
+                }
+
+                // 2. Sign in with the resolved email
+                val result = auth.signInWithEmailAndPassword(emailToUse, password).await()
                 val userData = result.user?.let {
                     UserData(it.uid, it.displayName, it.photoUrl?.toString())
                 }
