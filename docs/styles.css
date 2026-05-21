@@ -475,3 +475,35 @@
 .terms__container  a {
     color: #348f64;
 }
+/* terms page */
+
+
+/* pp page */
+ .privacy {
+    padding: 8rem calc((100vw - 1200px)/2);
+    background-color:#015234;
+    color: #ACF2C8;
+    
+    
+ }
+
+ .privacy__container {
+    padding: 1rem;
+    text-decoration: none;
+    
+ }
+
+.privacy__container  h1 {
+    margin-bottom: 2rem;
+    color: #348f64;
+    font-size: 1.5rem; 
+}
+
+.privacy__container  p {
+    margin-bottom: 1rem;
+}
+
+.privacy__container  a {
+    color: #348f64;
+}
+/* pp page */
