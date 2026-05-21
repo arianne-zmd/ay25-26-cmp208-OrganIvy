@@ -34,9 +34,9 @@ fun ShopScreen(
     var showFlowers by remember { mutableStateOf(false) }
     var showAccessories by remember { mutableStateOf(false) }
 
-    var selectedPot by remember { mutableStateOf<Int?>(null) }
-    var selectedFlower by remember { mutableStateOf<Int?>(null) }
-    var selectedAccessory by remember { mutableStateOf<Int?>(null) }
+    var selectedPot by remember { mutableStateOf<Int?>(uiState.selectedPot) }
+    var selectedFlower by remember { mutableStateOf<Int?>(uiState.selectedFlower) }
+    var selectedAccessory by remember { mutableStateOf<Int?>(uiState.characterSprite.toIntOrNull()) }
 
     val baseCharacterResource = when (currentColor) {
         "Blue" -> R.drawable.character_base_single_blue
@@ -247,22 +247,42 @@ fun ShopScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(currentList) { item ->
+                        val isOwned = when {
+                            showPlantPots -> uiState.ownedPots.contains(item.imageRes)
+                            showFlowers -> uiState.ownedFlowers.contains(item.imageRes)
+                            showAccessories -> uiState.ownedAccessories.contains(item.name)
+                            else -> false
+                        }
+                        
+                        // Pots and Flowers require Plant Level 3 to purchase
+                        val isLocked = (showPlantPots || showFlowers) && uiState.plantLevel < 3
+
                         ShopGridItem(
                             item = item,
                             userCoins = coins,
-                            onBuy = {
+                            isOwned = isOwned,
+                            isLocked = isLocked,
+                            onAction = {
                                 when {
                                     showPlantPots -> {
-                                        gameViewModel.spendCoins(item.price)
+                                        if (!isOwned) {
+                                            gameViewModel.buyPot(item.imageRes, item.price)
+                                        }
                                         selectedPot = item.imageRes
+                                        gameViewModel.updateSelectedPot(item.imageRes)
                                     }
                                     showFlowers -> {
-                                        gameViewModel.spendCoins(item.price)
+                                        if (!isOwned) {
+                                            gameViewModel.buyFlower(item.imageRes, item.price)
+                                        }
                                         selectedFlower = item.imageRes
+                                        gameViewModel.updateSelectedFlower(item.imageRes)
                                     }
                                     showAccessories -> {
                                         val correctSprite = getComposedSprite(item, currentColor)
-                                        gameViewModel.spendCoins(item.price)
+                                        if (!isOwned) {
+                                            gameViewModel.buyAccessory(item.name, item.price)
+                                        }
                                         gameViewModel.updateCharacterSprite(correctSprite)
                                         selectedAccessory = correctSprite
                                     }
@@ -281,7 +301,7 @@ fun ShopScreen(
 }
 
 @Composable
-fun ShopGridItem(item: ShopItem, userCoins: Int, onBuy: () -> Unit) {
+fun ShopGridItem(item: ShopItem, userCoins: Int, isOwned: Boolean, isLocked: Boolean, onAction: () -> Unit) {
     Card(
         modifier = Modifier.padding(4.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -291,22 +311,48 @@ fun ShopGridItem(item: ShopItem, userCoins: Int, onBuy: () -> Unit) {
             modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
-                model = item.imageRes,
-                modifier = Modifier.size(60.dp),
-                contentDescription = item.name
-            )
+            Box(contentAlignment = Alignment.Center) {
+                AsyncImage(
+                    model = item.imageRes,
+                    modifier = Modifier.size(60.dp),
+                    contentDescription = item.name,
+                    alpha = if (isLocked) 0.5f else 1.0f
+                )
+                if (isLocked) {
+                    Text("🔒", fontSize = 24.sp)
+                }
+            }
+            
             Text(text = item.name, fontSize = 10.sp, maxLines = 1)
-            Text(text = "🪙 ${item.price}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            
+            if (isLocked) {
+                Text(text = "Lvl 4 Required", fontSize = 10.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+            } else if (!isOwned) {
+                Text(text = "🪙 ${item.price}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            } else {
+                Text(text = "Owned", fontSize = 12.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
+            }
 
             Button(
-                onClick = onBuy,
-                enabled = userCoins >= item.price,
+                onClick = onAction,
+                enabled = !isLocked && (isOwned || userCoins >= item.price),
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(0.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                colors = when {
+                    isLocked -> ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                    isOwned -> ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    else -> ButtonDefaults.buttonColors()
+                }
             ) {
-                Text(text = "Buy", fontSize = 10.sp)
+                Text(
+                    text = when {
+                        isLocked -> "Locked"
+                        isOwned -> "Equip"
+                        else -> "Buy"
+                    }, 
+                    fontSize = 10.sp
+                )
             }
         }
     }

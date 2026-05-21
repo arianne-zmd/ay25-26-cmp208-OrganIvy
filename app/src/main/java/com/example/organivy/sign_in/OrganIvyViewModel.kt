@@ -77,53 +77,80 @@ class OrganIvyViewModel : ViewModel() {
      * onResult(null) means success; a non-null String is the Firebase error message for Toast.
      */
     fun signUp(email: String, password: String, username: String, onResult: (String?) -> Unit) {
+        val trimmedEmail = email.trim()
+        val trimmedUsername = username.trim()
+
+        if (trimmedEmail.isEmpty() || password.isEmpty() || trimmedUsername.isEmpty()) {
+            onResult("Please fill in all fields")
+            return
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches()) {
+            onResult("Invalid email format")
+            return
+        }
+
+        if (password.length < 7) {
+            onResult("Password must be at least 7 characters long")
+            return
+        }
+
         viewModelScope.launch {
             try {
+                android.util.Log.d("AUTH_DEBUG", "Starting sign up for: $trimmedUsername")
+                
                 // 1. Check if username is already taken in Firestore
+                // NOTE: If this fails with "Permission Denied", check Firebase Rules.
+                // You might need to allow unauthenticated reads for username checks.
                 val existing = FirebaseFirestore.getInstance()
                     .collection("Users")
-                    .whereEqualTo("name", username)
+                    .whereEqualTo("name", trimmedUsername)
                     .get()
                     .await()
 
-
                 if (!existing.isEmpty) {
+                    android.util.Log.d("AUTH_DEBUG", "Username taken")
                     onResult("Username is already taken")
                     return@launch
                 }
 
-
+                android.util.Log.d("AUTH_DEBUG", "Creating Auth user...")
                 // 2. Create Firebase Auth user
-                val result = auth.createUserWithEmailAndPassword(email, password).await()
+                val result = auth.createUserWithEmailAndPassword(trimmedEmail, password).await()
                 val user = result.user
 
-
+                android.util.Log.d("AUTH_DEBUG", "Updating profile...")
                 // 3. Set display name (username) in Auth profile
                 user?.updateProfile(userProfileChangeRequest {
-                    displayName = username
+                    displayName = trimmedUsername
                 })?.await()
 
-
-                // 4. Create initial User document in Firestore so we can look up email by username later
+                android.util.Log.d("AUTH_DEBUG", "Creating Firestore document...")
+                // 4. Create initial User document in Firestore
                 user?.uid?.let { uid ->
                     val initialData = mapOf(
-                        "name" to username,
-                        "email" to email,
-                        "gardenName" to "$username's Garden",
+                        "name" to trimmedUsername,
+                        "email" to trimmedEmail,
+                        "gardenName" to "$trimmedUsername's Garden",
                         "Coins" to 0,
-                        "co2savedGrams" to 0
+                        "co2savedGrams" to 0,
+                        "plantLevel" to 0,
+                        "completedChallenges" to 0,
+                        "CharacterColour" to "",
+                        "CharacterSprite" to ""
                     )
                     FirebaseFirestore.getInstance().collection("Users").document(uid)
                         .set(initialData, SetOptions.merge()).await()
                 }
 
-
+                android.util.Log.d("AUTH_DEBUG", "Sign up success!")
                 val userData = result.user?.let {
                     UserData(it.uid, it.displayName, it.photoUrl?.toString())
                 }
                 onSignInResult(SignInResult(userData, null))
                 onResult(null)
             } catch (e: Exception) {
+                android.util.Log.e("AUTH_DEBUG", "Sign up failed", e)
                 onSignInResult(SignInResult(null, e.message))
                 onResult(e.message)
             }

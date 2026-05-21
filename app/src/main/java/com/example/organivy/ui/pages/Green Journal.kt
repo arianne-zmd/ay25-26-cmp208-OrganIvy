@@ -2,13 +2,13 @@ package com.example.organivy.ui.pages
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -53,72 +53,85 @@ fun GreenJournalScreen(
         allEcoFacts.groupBy { it.title }
     }
 
+    var expandedFact by remember { mutableStateOf<EcoFact?>(null) }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Title Pill
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.fillMaxWidth()
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Green Journal",
-                    modifier = Modifier.padding(vertical = 12.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Title Pill
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Green Journal",
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        textAlign = TextAlign.Center,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
 
-            // Progress Pill
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                modifier = Modifier.width(120.dp)
-            ) {
-                Text(
-                    text = "$unlockedCount/$totalFactsCount",
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+                // Progress Pill
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                    modifier = Modifier.width(120.dp)
+                ) {
+                    Text(
+                        text = "$unlockedCount/$totalFactsCount",
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
 
-            // Categories List
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(32.dp),
-                contentPadding = PaddingValues(bottom = 24.dp)
-            ) {
-                factsByCategory.forEach { (category, facts) ->
-                    item {
-                        val earnedInCategory = facts.count { fact -> unlockedFacts.any { it.id == fact.id } }
-                        CategorySection(
-                            name = category,
-                            earned = earnedInCategory,
-                            total = facts.size,
-                            facts = facts,
-                            unlockedFacts = unlockedFacts
-                        )
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Categories List
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(32.dp),
+                    contentPadding = PaddingValues(bottom = 24.dp)
+                ) {
+                    factsByCategory.forEach { (category, facts) ->
+                        item {
+                            val earnedInCategory = facts.count { fact -> unlockedFacts.any { it.id == fact.id } }
+                            CategorySection(
+                                name = category,
+                                earned = earnedInCategory,
+                                total = facts.size,
+                                facts = facts,
+                                unlockedFacts = unlockedFacts,
+                                onFactClick = { fact -> expandedFact = fact }
+                            )
+                        }
                     }
                 }
+            }
+
+            // Expanded Version Overlay
+            expandedFact?.let { fact ->
+                EcoFactDialog(
+                    fact = fact,
+                    onDismiss = { expandedFact = null }
+                )
             }
         }
     }
@@ -130,7 +143,8 @@ fun CategorySection(
     earned: Int,
     total: Int,
     facts: List<EcoFact>,
-    unlockedFacts: List<EcoFact>
+    unlockedFacts: List<EcoFact>,
+    onFactClick: (EcoFact) -> Unit
 ) {
     Column {
         Text(
@@ -157,7 +171,11 @@ fun CategorySection(
                 ) {
                     items(facts) { fact ->
                         val isUnlocked = unlockedFacts.any { it.id == fact.id }
-                        FactCard(fact = fact, isUnlocked = isUnlocked)
+                        FactCard(
+                            fact = fact, 
+                            isUnlocked = isUnlocked,
+                            onLongClick = { onFactClick(fact) }
+                        )
                     }
                 }
 
@@ -173,8 +191,9 @@ fun CategorySection(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FactCard(fact: EcoFact, isUnlocked: Boolean) {
+fun FactCard(fact: EcoFact, isUnlocked: Boolean, onLongClick: () -> Unit) {
     val context = LocalContext.current
     var rotated by remember { mutableStateOf(false) }
 
@@ -191,9 +210,11 @@ fun FactCard(fact: EcoFact, isUnlocked: Boolean) {
                 rotationY = rotation
                 cameraDistance = 8 * density
             }
-            .clickable(enabled = isUnlocked) {
-                rotated = !rotated
-            },
+            .combinedClickable(
+                enabled = isUnlocked,
+                onClick = { rotated = !rotated },
+                onLongClick = onLongClick
+            ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -225,13 +246,15 @@ fun FactCard(fact: EcoFact, isUnlocked: Boolean) {
                 } else if (!rotated) {
                     // Small hint that it can be flipped
                     Text(
-                        text = "Tap to flip",
+                        text = "Tap to flip\nLong tap to expand",
                         fontSize = 10.sp,
                         color = Color.White,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .background(Color.Black.copy(alpha = 0.5f))
-                            .padding(horizontal = 4.dp)
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
                     )
                 }
             }
@@ -277,4 +300,65 @@ fun FactCard(fact: EcoFact, isUnlocked: Boolean) {
             }
         }
     }
+}
+
+@Composable
+fun EcoFactDialog(fact: EcoFact, onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        },
+        title = {
+            Text(
+                text = fact.title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (fact.imageRes != 0) {
+                    Image(
+                        painter = painterResource(id = fact.imageRes),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                
+                Text(
+                    text = fact.fact,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+                
+                if (fact.source.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "View Source",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline,
+                        modifier = Modifier.clickable {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fact.source))
+                            context.startActivity(intent)
+                        }
+                    )
+                }
+            }
+        },
+        shape = RoundedCornerShape(24.dp)
+    )
 }

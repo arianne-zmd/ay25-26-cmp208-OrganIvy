@@ -102,12 +102,20 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
                         //factsGained = snapshot.getString("FactsGained") ?: "",
                         characterColour = snapshot.getString("CharacterColour") ?: "",
                         characterSprite = snapshot.getString("CharacterSprite") ?: R.drawable.character_base_single_green.toString(),
+                        selectedPot = snapshot.getLong("selectedPot")?.toInt(),
+                        selectedFlower = snapshot.getLong("selectedFlower")?.toInt(),
+                        ownedAccessories = snapshot.get("ownedAccessories") as? List<String> ?: emptyList(),
+                        ownedPots = (snapshot.get("ownedPots") as? List<Long>)?.map { it.toInt() } ?: emptyList(),
+                        ownedFlowers = (snapshot.get("ownedFlowers") as? List<Long>)?.map { it.toInt() } ?: emptyList(),
                         unlockedEcoFacts = unlockedFacts,
                         completedChallenges = (snapshot.getLong("completedChallenges")?.toInt() ?: 0),
                         plantLevel = (snapshot.getLong("plantLevel")?.toInt() ?: 0),
-                        grownPlants = (snapshot.getLong("grownPlants")?.toInt() ?: 0)
-
+                        grownPlants = (snapshot.getLong("grownPlants")?.toInt() ?: 0),
+                        isInitialLoadComplete = true
                     )
+                    
+                    // Populate challenges based on loaded progress
+                    generateWeeklyChallenges()
 
                 }
 
@@ -195,11 +203,22 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             Challenge("13", "Delete 5 old images", 5, 0, ChallengeType.CLEAN_OLD, 50),
             Challenge("14", "Clear 10 old images", 10, 0, ChallengeType.CLEAN_OLD, 100),
             Challenge("15", "Delete 20 old images", 20, 0, ChallengeType.CLEAN_OLD, 150),
+        )
 
+        // Group by category and pick one from each based on total completion tier
+        val categories = ChallengeType.values()
+        val tier = uiState.completedChallenges / categories.size
+        
+        val selectedChallenges = categories.mapNotNull { type ->
+            val itemsInCategory = pool.filter { it.type == type }
+            if (itemsInCategory.isNotEmpty()) {
+                // Pick the item for the current tier, or the last one if we exceed the pool
+                val index = tier.coerceAtMost(itemsInCategory.size - 1)
+                itemsInCategory[index]
+            } else null
+        }
 
-            )
-
-        uiState = uiState.copy(challenges = pool.shuffled().take(3))
+        uiState = uiState.copy(challenges = selectedChallenges)
     }
 
 
@@ -248,12 +267,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         }
 
         // total completed challenges
+        // total completed challenges
+        val oldCompletedChallenges = uiState.completedChallenges
         val newCompletedChallenges =
-            uiState.completedChallenges + completedCountIncrease
+            oldCompletedChallenges + completedCountIncrease
 
         // calculate plant level
         val newPlantLevel =
             calculatePlantLevel(newCompletedChallenges)
+
+        val growthAnimation = if (newPlantLevel > uiState.plantLevel) newPlantLevel else uiState.pendingGrowthAnimation
 
         uiState = uiState.copy(
             challenges = updatedChallenges,
@@ -263,8 +286,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
 
             // plant progression
             completedChallenges = newCompletedChallenges,
-            plantLevel = newPlantLevel
+            plantLevel = newPlantLevel,
+            pendingGrowthAnimation = growthAnimation
         )
+        
+        // Refresh challenges to next tier ONLY if we completed all in the current tier
+        val categoriesCount = ChallengeType.values().size
+        val tierBefore = oldCompletedChallenges / categoriesCount
+        val tierAfter = newCompletedChallenges / categoriesCount
+        
+        if (tierAfter > tierBefore) {
+            generateWeeklyChallenges()
+        }
+
         saveUserDataToFirebase()
     }
 
@@ -330,6 +364,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         )
     }
 
+    fun clearGrowthAnimation() {
+        uiState = uiState.copy(pendingGrowthAnimation = null)
+    }
+
 
     // ON DELETE
     //coins
@@ -348,6 +386,36 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         if (uiState.coins >= amount) {
             uiState = uiState.copy(
                 coins = uiState.coins - amount
+            )
+            saveUserDataToFirebase()
+        }
+    }
+
+    fun buyAccessory(name: String, price: Int) {
+        if (uiState.coins >= price && !uiState.ownedAccessories.contains(name)) {
+            uiState = uiState.copy(
+                coins = uiState.coins - price,
+                ownedAccessories = uiState.ownedAccessories + name
+            )
+            saveUserDataToFirebase()
+        }
+    }
+
+    fun buyPot(resId: Int, price: Int) {
+        if (uiState.coins >= price && !uiState.ownedPots.contains(resId)) {
+            uiState = uiState.copy(
+                coins = uiState.coins - price,
+                ownedPots = uiState.ownedPots + resId
+            )
+            saveUserDataToFirebase()
+        }
+    }
+
+    fun buyFlower(resId: Int, price: Int) {
+        if (uiState.coins >= price && !uiState.ownedFlowers.contains(resId)) {
+            uiState = uiState.copy(
+                coins = uiState.coins - price,
+                ownedFlowers = uiState.ownedFlowers + resId
             )
             saveUserDataToFirebase()
         }
@@ -384,6 +452,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
         saveUserDataToFirebase()
     }
 
+    fun updateSelectedPot(resId: Int) {
+        uiState = uiState.copy(selectedPot = resId)
+        saveUserDataToFirebase()
+    }
+
+    fun updateSelectedFlower(resId: Int) {
+        uiState = uiState.copy(selectedFlower = resId)
+        saveUserDataToFirebase()
+    }
+
     // --- Firebase write paths (push local state → cloud) ---
 
     /**
@@ -409,7 +487,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application){
             "CharacterSprite" to uiState.characterSprite,
             "completedChallenges" to uiState.completedChallenges,
             "plantLevel" to uiState.plantLevel,
-            "grownPlants" to uiState.grownPlants
+            "grownPlants" to uiState.grownPlants,
+            "selectedPot" to uiState.selectedPot,
+            "selectedFlower" to uiState.selectedFlower,
+            "ownedAccessories" to uiState.ownedAccessories,
+            "ownedPots" to uiState.ownedPots,
+            "ownedFlowers" to uiState.ownedFlowers
         )
 
         db.collection("Users").document(userId)

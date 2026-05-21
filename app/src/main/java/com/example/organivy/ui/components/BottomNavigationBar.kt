@@ -10,6 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.size
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
@@ -23,7 +24,8 @@ fun BottomNavigationBar(navController: NavController) {
 
     NavigationBar {
         val currentBackStackEntry = navController.currentBackStackEntryAsState()
-        val currentRoute = currentBackStackEntry.value?.destination?.route
+        val currentDestination = currentBackStackEntry.value?.destination
+        val currentRoute = currentDestination?.route
         
         items.forEach { item ->
             NavigationBarItem(
@@ -38,18 +40,18 @@ fun BottomNavigationBar(navController: NavController) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
+                        // Dynamically determine the root of the current navigation flow.
+                        // If we are in the 'app' graph, we pop to it to maintain internal state.
+                        val popRoute = if (currentDestination?.hierarchy?.any { it.route == "app" } == true) {
+                            "app"
+                        } else {
+                            navController.graph.startDestinationRoute ?: "auth"
                         }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
+
+                        popUpTo(popRoute) {
+                            saveState = true
+                        }
                         launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
                         restoreState = true
                     }
                 }

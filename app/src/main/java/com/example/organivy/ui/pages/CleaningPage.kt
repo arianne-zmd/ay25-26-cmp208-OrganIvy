@@ -3,6 +3,7 @@ package com.example.organivy.ui.pages
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -204,33 +206,26 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
             android.util.Log.d("PHOTO_TEST", "Old photos: ${state?.oldPhotos}")
             android.util.Log.d("PHOTO_TEST", "Duplicate groups: ${state?.duplicatePhotos}")
 
-            item { Spacer(modifier = Modifier.height(60.dp)) }
+            item { Spacer(modifier = Modifier.height(100.dp)) }
 
         }
 
 
-        Box(modifier = Modifier.clickable { onNavigateToSecureFolderLock() }.align(alignment = Alignment.BottomEnd)) {
-
-
-            Image(
-                painter = painterResource(id = R.drawable.card),
-                contentDescription = "Game card",
-                modifier = Modifier.size(100.dp),
-                contentScale = ContentScale.Fit,
-                //filterQuality = FilterQuality.None
-
-            )
-
-            Text(
-                text = "\uD83D\uDD12 ",
-                modifier = Modifier.align(Alignment.Center),
-                textAlign = TextAlign.Center,
-                fontSize = 35.sp
-            )
-        }
-
-
-
+        // Hidden swipe-up trigger at the bottom
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .align(Alignment.BottomCenter)
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures { change, dragAmount ->
+                        if (dragAmount < -50) { // Threshold for swipe up
+                            change.consume()
+                            onNavigateToSecureFolderLock()
+                        }
+                    }
+                }
+        )
 
 
         if (state?.isLoading == true) {

@@ -40,7 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.organivy.R
 import com.example.organivy.data.GameState
 import com.example.organivy.data.Header
-import com.example.organivy.ui.subpages.garden.SpriteAnimation
 import com.example.organivy.ui.theme.*
 import com.example.organivy.viewmodel.GameViewModel
 import com.example.organivy.viewmodel.PhotoViewModel
@@ -241,8 +240,6 @@ fun GardenScreen(
                 Button(onClick = onNavigateToMap ) {
                     Text(" OrganIvy World Map")
                 }*/
-
-                //SpriteAnimation()
             }
 
 
@@ -330,21 +327,56 @@ fun getPlantImage(level: Int): Int {
 fun PlantSection(
     uiState: GameState
 ) {
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(
+            modifier = Modifier.size(220.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            // Pot
+            uiState.selectedPot?.let { potRes ->
+                Image(
+                    painter = painterResource(id = potRes),
+                    contentDescription = "Selected Pot",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+            }
 
-        Image(
-            painter = painterResource(
-                id = getPlantImage(uiState.plantLevel)
-            ),
-            contentDescription = "Plant",
-            modifier = Modifier.size(220.dp)
-        )
+            // Plant Level Image
+            val plantRes = getPlantImage(uiState.plantLevel)
+            Image(
+                painter = painterResource(id = plantRes),
+                contentDescription = "Plant",
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .align(Alignment.BottomCenter)
+                    .offset(y = (-60).dp)
+            )
 
+            // Custom Flower (if any)
+            uiState.selectedFlower?.let { flowerRes ->
+                val (xOffset, yOffset) = when (flowerRes) {
+                    R.drawable.mushroom_1 -> (-5).dp to (-70).dp
+                    else -> 0.dp to (-92).dp
+                }
+                Image(
+                    painter = painterResource(id = flowerRes),
+                    contentDescription = "Selected Flower",
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .align(Alignment.BottomCenter)
+                        .offset(x = xOffset, y = yOffset)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Plant Level ${uiState.plantLevel}"
+            text = "Plant Level ${uiState.plantLevel}",
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

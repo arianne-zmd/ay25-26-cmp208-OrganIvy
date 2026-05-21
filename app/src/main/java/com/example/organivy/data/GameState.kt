@@ -42,7 +42,16 @@ data class GameState(
 
     val completedChallenges: Int = 0,
     val plantLevel: Int = 0,
-    val grownPlants: Int = 0
+    val grownPlants: Int = 0,
+    val pendingGrowthAnimation: Int? = null,
 
 
+    val ownedAccessories: List<String> = emptyList(),
+    val ownedPots: List<Int> = emptyList(),
+    val ownedFlowers: List<Int> = emptyList(),
+
+    val selectedPot: Int? = null,
+    val selectedFlower: Int? = null,
+
+    val isInitialLoadComplete: Boolean = false
 )

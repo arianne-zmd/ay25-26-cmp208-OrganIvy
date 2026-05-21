@@ -40,9 +40,6 @@ fun OnboardingScreen(
         ColorOption(R.drawable.character_base_single_yellow, "Yellow", Color(0xFFFFEB3B))
     )
 
-
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()

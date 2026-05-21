@@ -75,7 +75,9 @@ fun HomeScreen(
     val state = photoViewModel.uiState
     val state2 = gameViewModel.uiState
 
-
+    LaunchedEffect(Unit) {
+        onReady()
+    }
 
         Box {
 
@@ -187,7 +189,7 @@ fun HomeScreen(
                         Column(modifier = Modifier.padding(16.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = " ✨ Challenge for this week",
+                                    text = " Challenge for this week",
                                     modifier = Modifier.weight(1f)
                                 )
                                 Text(

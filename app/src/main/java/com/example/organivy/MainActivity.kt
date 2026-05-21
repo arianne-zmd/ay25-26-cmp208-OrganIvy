@@ -4,14 +4,25 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,6 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
@@ -61,6 +75,10 @@ import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding2
 import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding3
 import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding4
 import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding5
+import com.example.organivy.ui.subpages.garden.SeedsFallingAnimation
+import com.example.organivy.ui.subpages.garden.PlantBuddingAnimation
+import com.example.organivy.ui.subpages.garden.DaisyBloomingAnimation
+import com.example.organivy.ui.subpages.garden.FinalShotAnimation
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -163,7 +181,8 @@ fun MainApp(navController: NavHostController,
         "login",
         "signup",
         "forget_password",
-        "onboarding"
+        "onboarding",
+        "seed_transition"
     )
 
 
@@ -183,53 +202,70 @@ fun MainApp(navController: NavHostController,
         modifier = Modifier.fillMaxSize(),
         //bottomBar = { BottomNavigationBar(navController) },
 
-        bottomBar = { if (showBottomBar&&homeReady) BottomNavigationBar(navController) },
+        bottomBar = { if (showBottomBar && homeReady) BottomNavigationBar(navController) },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            color = MaterialTheme.colorScheme.background
-        ) {
-
-//            LaunchedEffect(Unit) {
-//
-//                if (FirebaseAuth.getInstance().currentUser != null) {
-//
-//                    navController.navigate("app") {
-//
-//                        popUpTo("auth") {
-//                            inclusive = true
-//                        }
-//                    }
-//                }
-//            }
-
-
-            // Skip onboarding/login if Firebase still has a valid session from last launch.
-            // "auth" graph = onboarding + login; "app" graph = home, garden, cleaning, etc.
-
-            val startDestination =
-                if (FirebaseAuth.getInstance().currentUser != null) "app" else "auth"
-
-            NavHost(
-                navController = navController,
-                startDestination = "auth"//startDestination //"auth"
+        val gameState = gameViewModel.uiState
+        Box(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .blur(if (gameState.pendingGrowthAnimation != null) 16.dp else 0.dp),
+                color = MaterialTheme.colorScheme.background
             ) {
 
-                authGraph(navController, gameViewModel, photoViewModel)
-                appGraph(navController,
-                    photoViewModel,
-                    gameViewModel,
-                    selectedTheme,
-                    onThemeChange,
-                    //hasPermission,
-                    firebaseViewModel,
-                    onHomeReady = { homeReady = true })
+                // Calculate startDestination only ONCE when MainApp is first created.
+                // This prevents the NavHost from resetting to "app" immediately after a successful signup/login.
+                val initialStartDestination = remember {
+                    if (FirebaseAuth.getInstance().currentUser != null) "app" else "auth"
+                }
+
+                NavHost(
+                    navController = navController,
+                    startDestination = initialStartDestination
+                ) {
+
+                    authGraph(navController, gameViewModel, photoViewModel)
+                    appGraph(navController,
+                        photoViewModel,
+                        gameViewModel,
+                        selectedTheme,
+                        onThemeChange,
+                        //hasPermission,
+                        firebaseViewModel,
+                        onHomeReady = { homeReady = true })
+
+                }
 
             }
 
+            // Global Growth Animation Overlay
+            if (gameState.pendingGrowthAnimation != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.7f))
+                        .clickable(enabled = false) {}, // Consume clicks
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Level Up!",
+                            style = MaterialTheme.typography.displayMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+
+                        when (gameState.pendingGrowthAnimation) {
+                            1 -> PlantBuddingAnimation(onAnimationFinished = { gameViewModel.clearGrowthAnimation() })
+                            2 -> DaisyBloomingAnimation(onAnimationFinished = { gameViewModel.clearGrowthAnimation() })
+                            3 -> FinalShotAnimation(onAnimationFinished = { gameViewModel.clearGrowthAnimation() })
+                            else -> gameViewModel.clearGrowthAnimation()
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -288,9 +324,8 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
             LoginScreen( onNavigateToProfile = { navController.navigate("profile")},
                 onNavigateToSignUp = { navController.navigate("signup")},
                 onNavigateToForget = { navController.navigate("forget_password")},
-                // After Firebase Auth succeeds, enter main app graph (not a single screen)
-                onNavigateToHome = { navController.navigate("app") }
-
+                // After Firebase Auth succeeds, play seeds falling animation
+                onNavigateToHome = { navController.navigate("seed_transition") }
                 )
         }
 
@@ -299,7 +334,6 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
                 onNavigateToForget = { navController.navigate("forget_password")},
                 onNavigateToLogin = { navController.navigate("login")},
                 onNavigateToHome = { navController.navigate("onboarding") }, // Navigate to avatar creation first
-                //onNavigateToOnboarding  = { navController.navigate("onboarding")}
                 )
         }
 
@@ -314,11 +348,48 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
                 gameViewModel = gameViewModel,
                 onFinishOnboarding = {
                     gameViewModel.saveUserDataToFirebase()
-                    navController.navigate("home") {
+                    navController.navigate("seed_transition") {
                         popUpTo("onboarding") { inclusive = true }
                     }
                 }
             )
+        }
+
+        composable("seed_transition") {
+            val gameState = gameViewModel.uiState
+            
+            if (gameState.isInitialLoadComplete) {
+                if (gameState.plantLevel > 0) {
+                    // Skip animation if already past level 0
+                    LaunchedEffect(Unit) {
+                        navController.navigate("app") {
+                            popUpTo("seed_transition") { inclusive = true }
+                        }
+                    }
+                } else {
+                    // Show animation for level 0 users
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        SeedsFallingAnimation(onAnimationFinished = {
+                            navController.navigate("app") {
+                                popUpTo("seed_transition") { inclusive = true }
+                            }
+                        })
+                    }
+                }
+            } else {
+                // Loading user progress to decide whether to show animation
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
         }
     }
 }
