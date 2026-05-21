@@ -5,8 +5,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -16,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -61,6 +64,7 @@ import com.example.organivy.ui.subpages.onboarding.OnStartOnboarding5
 import com.example.organivy.viewmodel.FirebaseViewModel
 import com.example.organivy.viewmodel.GameViewModel
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -146,24 +150,40 @@ fun MainApp(navController: NavHostController,
     //val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    //val currentRoute = navBackStackEntry?.destination?.route
+    val currentRoute = navBackStackEntry?.destination?.route
 
     // Hide the bottom bar on auth screens
-//    val showBottomBar = currentRoute !in listOf(
-//        "login",
-//        "signup",
-//        "forget_password"
-//    )
+    val showBottomBar = currentRoute !in listOf(
+        "loading",
+        "onboarding1",
+        "onboarding2",
+        "onboarding3",
+        "onboarding4",
+        "onboarding5",
+        "login",
+        "signup",
+        "forget_password",
+        "onboarding"
+    )
 
 
 
-    val showBottomBar = navBackStackEntry?.destination?.hierarchy
-        ?.any { it.route in listOf("app") } == true
+//    val showBottomBar = navBackStackEntry?.destination?.hierarchy
+//        ?.any { it.route in listOf(
+//            "home",
+//            "garden",
+//            "cleaning_main",
+//            "journal",
+//            "settings"
+//        ) } == true
+
+    var homeReady by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         //bottomBar = { BottomNavigationBar(navController) },
-        bottomBar = { if (showBottomBar) BottomNavigationBar(navController) },
+
+        bottomBar = { if (showBottomBar&&homeReady) BottomNavigationBar(navController) },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Surface(
@@ -173,14 +193,29 @@ fun MainApp(navController: NavHostController,
             color = MaterialTheme.colorScheme.background
         ) {
 
+//            LaunchedEffect(Unit) {
+//
+//                if (FirebaseAuth.getInstance().currentUser != null) {
+//
+//                    navController.navigate("app") {
+//
+//                        popUpTo("auth") {
+//                            inclusive = true
+//                        }
+//                    }
+//                }
+//            }
+
+
             // Skip onboarding/login if Firebase still has a valid session from last launch.
             // "auth" graph = onboarding + login; "app" graph = home, garden, cleaning, etc.
+
             val startDestination =
                 if (FirebaseAuth.getInstance().currentUser != null) "app" else "auth"
 
             NavHost(
                 navController = navController,
-                startDestination = "auth" //startDestination
+                startDestination = "auth"//startDestination //"auth"
             ) {
 
                 authGraph(navController, gameViewModel, photoViewModel)
@@ -190,7 +225,8 @@ fun MainApp(navController: NavHostController,
                     selectedTheme,
                     onThemeChange,
                     //hasPermission,
-                    firebaseViewModel)
+                    firebaseViewModel,
+                    onHomeReady = { homeReady = true })
 
             }
 
@@ -205,6 +241,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController, gameViewModel: G
         startDestination = "onboarding1",
         route = "auth"
     ) {
+
         composable("onboarding1") {
 
             OnStartOnboarding1(onNavigateToNext = { navController.navigate("onboarding2") })
@@ -294,8 +331,12 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                              selectedTheme: ThemeOption,
                              onThemeChange: (ThemeOption) -> Unit,
                              //hasPermission: Boolean,
-                             firebaseViewModel: FirebaseViewModel
+                             firebaseViewModel: FirebaseViewModel,
+                             onHomeReady: () -> Unit
+
 ) {
+
+
 
     navigation(
         startDestination = "home",
@@ -314,6 +355,7 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
                 onNavigateToGarden = { navController.navigate("garden") },
                 photoViewModel = photoViewModel,
                 gameViewModel = gameViewModel,
+                onReady = onHomeReady
             )
         }
         composable("garden") {
@@ -504,5 +546,4 @@ fun NavGraphBuilder.appGraph(navController: NavHostController,
 
     }
 }
-
 

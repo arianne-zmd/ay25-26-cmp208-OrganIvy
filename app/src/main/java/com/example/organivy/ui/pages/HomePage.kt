@@ -33,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,65 +68,14 @@ fun HomeScreen(
     onNavigateToGarden: () -> Unit,
     photoViewModel: PhotoViewModel,
     gameViewModel: GameViewModel,
+    onReady: () -> Unit = {}
 ) {
+
 
     val state = photoViewModel.uiState
     val state2 = gameViewModel.uiState
 
 
-    //val photoViewModel: PhotoViewModel = viewModel()
-    var expanded by remember { mutableStateOf(false) }
-
-    Scaffold(
-        floatingActionButton = {
-            Column(
-                modifier = Modifier.wrapContentHeight(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-                // Expanded FABs
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        FloatingActionButton(onClick = {
-                            expanded = false
-                            onNavigateToBadges()
-                        }) {
-                            Text(
-                                text = "Badges",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                        FloatingActionButton(onClick = {
-                            expanded = false
-                            onNavigateToStatsandImpact()
-                        }) {
-                            Text(
-                                text = "Stats and Impact",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                    }
-                }
-
-                // Main toggle FAB
-                FloatingActionButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.Close else Icons.Default.Add,
-                        contentDescription = "Expand/Collapse"
-                    )
-                }
-            }
-        }
-    ) { innerPadding ->
 
         Box {
 
@@ -135,7 +85,7 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    //.padding(innerPadding)
                     .padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
@@ -174,14 +124,7 @@ fun HomeScreen(
                             .size(280.dp)
                             .clickable { onNavigateToGarden() }
                     ){
-                       /* Image(
-                            painter = painterResource(id = R.drawable.wooden_border),
-                            contentDescription = "Garden Image",
-                            modifier = Modifier.size(280.dp),
-                            contentScale = ContentScale.Fit,
-                            //filterQuality = FilterQuality.None
 
-                        )*/
 
 
                         Card(
@@ -323,8 +266,8 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-                //item 2
-                Box(modifier = Modifier.clickable { onNavigateToBadges() }) {
+                //item 2 stats
+                Box(modifier = Modifier.clickable { onNavigateToStatsandImpact() }) {
 
 
                     Image(
@@ -337,7 +280,7 @@ fun HomeScreen(
                     )
 
                     Text(
-                        text = "\uD83D\uDCD6 ",
+                        text = "\uD83D\uDCC8 ",
                         modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center,
                         fontSize = 35.sp
@@ -345,39 +288,8 @@ fun HomeScreen(
                 }
 
 
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
-
-
-    }
 }
 
 /*

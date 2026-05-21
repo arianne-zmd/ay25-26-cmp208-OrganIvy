@@ -47,6 +47,7 @@ class OrganIvyViewModel : ViewModel() {
      */
     private val auth = FirebaseAuth.getInstance()
 
+
     /**
      * Called after signIn/signUp completes.
      * WHY: Composables react to [state] rather than parsing Task callbacks in the UI layer.

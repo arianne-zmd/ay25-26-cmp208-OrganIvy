@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -66,64 +67,64 @@ fun GardenScreen(
         }
     }
 
-    var expanded by remember { mutableStateOf(false) }
-
-    Scaffold(
-        floatingActionButton = {
-            Column(
-                modifier = Modifier.wrapContentHeight(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-                // Expanded FABs
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        FloatingActionButton(onClick = {
-                            expanded = false
-                            onNavigateToJournal()
-                        }) {
-                            Text(
-                                text = "Green Journal",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                        FloatingActionButton(onClick = {
-                            expanded = false
-                            onNavigateToShop()
-                        }) {
-                            Text(
-                                text = "Shop",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                    }
-                }
-
-                // Main toggle FAB
-                FloatingActionButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.Close else Icons.Default.Add,
-                        contentDescription = "Expand/Collapse"
-                    )
-                }
-            }
-        }
-    ) { innerPadding ->
+//    var expanded by remember { mutableStateOf(false) }
+//
+//    Scaffold(
+//        floatingActionButton = {
+//            Column(
+//                modifier = Modifier.wrapContentHeight(),
+//                verticalArrangement = Arrangement.spacedBy(16.dp),
+//                horizontalAlignment = Alignment.End
+//            ) {
+//                // Expanded FABs
+//                AnimatedVisibility(
+//                    visible = expanded,
+//                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+//                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
+//                ) {
+//                    Column(
+//                        verticalArrangement = Arrangement.spacedBy(16.dp),
+//                        horizontalAlignment = Alignment.End
+//                    ) {
+//                        FloatingActionButton(onClick = {
+//                            expanded = false
+//                            onNavigateToJournal()
+//                        }) {
+//                            Text(
+//                                text = "Green Journal",
+//                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+//                                modifier = Modifier.padding(horizontal = 16.dp)
+//                            )
+//                        }
+//                        FloatingActionButton(onClick = {
+//                            expanded = false
+//                            onNavigateToShop()
+//                        }) {
+//                            Text(
+//                                text = "Shop",
+//                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+//                                modifier = Modifier.padding(horizontal = 16.dp)
+//                            )
+//                        }
+//                    }
+//                }
+//
+//                // Main toggle FAB
+//                FloatingActionButton(onClick = { expanded = !expanded }) {
+//                    Icon(
+//                        imageVector = if (expanded) Icons.Default.Close else Icons.Default.Add,
+//                        contentDescription = "Expand/Collapse"
+//                    )
+//                }
+//            }
+//        }
+//    ) { innerPadding ->
 
         // i will be changing this down. i wonder if i should comment it out?
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                //.padding(innerPadding)
         ) {
             Column(
                 modifier = Modifier
@@ -243,12 +244,69 @@ fun GardenScreen(
 
                 //SpriteAnimation()
             }
-        } // all of thing can be in a lazy colunm ^
 
 
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 10.dp, top = 250.dp),
+                horizontalAlignment = Alignment.End
+            ) {
 
 
-    }
+                // item 1
+                Box(modifier = Modifier
+                    .size(100.dp)
+                    .clickable { onNavigateToJournal() }) {
+
+
+                    Image(
+                        painter = painterResource(id = R.drawable.card),
+                        contentDescription = "card",
+                        modifier = Modifier.size(100.dp),
+                        contentScale = ContentScale.Fit,
+                        //filterQuality = FilterQuality.None
+
+                    )
+
+                    Text(
+                        text = "\uD83D\uDCD6 ",
+                        modifier = Modifier.align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        fontSize = 35.sp
+                    )
+
+                }
+
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+
+                //item 2 shop
+                Box(modifier = Modifier.clickable { onNavigateToShop() }) {
+
+
+                    Image(
+                        painter = painterResource(id = R.drawable.card),
+                        contentDescription = "Garden Image",
+                        modifier = Modifier.size(100.dp),
+                        contentScale = ContentScale.Fit,
+                        //filterQuality = FilterQuality.None
+
+                    )
+
+                    Text(
+                        text = "\uD83D\uDED2 ",
+                        modifier = Modifier.align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        fontSize = 35.sp
+                    )
+                }
+
+
+            }
+
+        }
 
 }
 

@@ -90,7 +90,6 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
 
             item {
                 val photoViewModel = viewModel<PhotoViewModel>()
-                //val gameViewModel = viewModel<GameViewModel>()
                 Header(photoViewModel = photoViewModel, gameViewModel = gameViewModel)
             }
 
@@ -123,8 +122,10 @@ fun CleaningPage (onNavigateToProfile: () -> Unit,
                         .fillMaxWidth()
                         .height(100.dp)
                         .align(Alignment.Center)){
-                        Text(text = "Top category:", Modifier.padding(horizontal = 20.dp, vertical = 15.dp))
-                        Text(text = "Photos deleted this week:", Modifier.padding(horizontal = 20.dp))
+                        Text(text = "Top category:", Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+                                color = MaterialTheme.colorScheme.onPrimary)
+                        Text(text = "Photos deleted this week:", Modifier.padding(horizontal = 20.dp),
+                            color = MaterialTheme.colorScheme.onPrimary)
                     }
 
                 }

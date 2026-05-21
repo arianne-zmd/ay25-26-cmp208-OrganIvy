@@ -263,16 +263,6 @@ fun BadgePage(
             }
         }
 
-
-
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Badges Page")
-        }
     }
 
 
